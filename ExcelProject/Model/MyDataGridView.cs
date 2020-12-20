@@ -33,7 +33,6 @@ namespace ExcelProject.Model
 
             return lst;
         }
-
         public List<string> getColumnData(DataGridView dataGridView1, int colIndex)
         {
             List<string> lst = new List<string>();
@@ -48,7 +47,6 @@ namespace ExcelProject.Model
 
             return lst;
         }
-
         public List<List<string>> getRowData(DataGridView dataGridView1)
         {
             List<List<string>> lst = new List<List<string>>();
@@ -72,7 +70,6 @@ namespace ExcelProject.Model
 
             return lst;
         }
-
         public double getSumOfWET(DataGridView dataGridView1)
         {
             double sum = 0;
@@ -101,7 +98,6 @@ namespace ExcelProject.Model
 
             return headerWETIndex;
         }
-
         public string calculatePercentage(DataGridView dgv, string val)
         {
             MyDataGridView mdgv = new MyDataGridView();
@@ -113,7 +109,7 @@ namespace ExcelProject.Model
             {
                 var item = getRowData[i];
                 var q1_1_value = item[item.Count() - 1]; // getting last value
-                if (q1_1_value.ToString() == val) // comparing last value with comboBox value
+                if (q1_1_value.ToString() == val) // comparing last value with comboBox value i.e Q1_1
                 {
                     brandSum += double.Parse(item[item.Count() - 2]);
                 }

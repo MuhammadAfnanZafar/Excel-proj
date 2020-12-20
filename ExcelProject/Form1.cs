@@ -237,6 +237,8 @@ namespace ExcelProject
             this.panelDropdown.AutoScroll = true;
             textBox1.Hide();
             label1.Hide();
+            label5.Hide();
+            btnSaveChanges.Enabled = false;
         }
 
         private void copyAlltoClipboard()
@@ -344,6 +346,8 @@ namespace ExcelProject
             catch (Exception ex)
             {
                 //MessageBox.Show("All heading must be in CAMELCASE");
+                label5.Show();
+                label5.Text = "Error: " + ex.Message;
             }
         }
 
@@ -396,31 +400,11 @@ namespace ExcelProject
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                label5.Show();
+                label5.Text = "Error: " + ex.Message;
             }
         }
 
-        private void btnCalculate_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                //if (comboBoxQ1_1.Text.ToLower() == "none" || comboBoxQ1_1.Text.ToLower().Trim() == "-- select --")
-                //{
-                //    MessageBox.Show("Kindly select value from dropwon.");
-                //    return;
-                //}
-
-                //MyDataGridView mdgv = new MyDataGridView();
-                //var percentage = mdgv.calculatePercentage(dataGridView1, comboBoxQ1_1.Text);
-
-                //labelTotal.Text = percentage;
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-        }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -447,16 +431,22 @@ namespace ExcelProject
         {
             if (e.RowIndex > -1)
             {
+                var selectedVal = dataGridView2.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                if (selectedVal == null || selectedVal == "")
+                {
+                    return;
+                }
                 MyDataGridView mdgv = new MyDataGridView();
                 var getIndexesAfterWET = mdgv.getIndexesAfterWET(dataGridView2);
                 if (getIndexesAfterWET.Count() > 0)
                 {
                     if (e.ColumnIndex == getIndexesAfterWET[0])
                     {
-                        var val = dataGridView2.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                        var val = selectedVal;
                         textBoxValue.Text = val;
 
                         var percentage = mdgv.calculatePercentage(dataGridView2, val);
+                        SingleInstance.percentage = percentage;
 
                         textBoxPercentage.Text = percentage;
                     }
@@ -467,6 +457,173 @@ namespace ExcelProject
         private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        private void btnChangePercentage_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (textBoxValue.Text == "")
+                {
+                    MessageBox.Show("Kindly select a value.");
+                    return;
+                }
+                if (double.Parse(textBoxPercentage.Text) > 100)
+                {
+                    MessageBox.Show("Percentage must pe less then or equal to 100.");
+                    return;
+                }
+                if (SingleInstance.percentage == textBoxPercentage.Text)
+                {
+                    return;
+                }
+
+                int i = 0;
+                bool flag = false;
+                MyDataGridView mdgv = new MyDataGridView();
+                DataGridView tmpDataGridView = dataGridView2;
+                var getIndexesAfterWET = mdgv.getIndexesAfterWET(tmpDataGridView);
+                if (getIndexesAfterWET.Count() > 0)
+                {
+                    for (int rows = 0; rows < tmpDataGridView.Rows.Count - 1; rows++)
+                    {
+                        for (int col = 0; col < tmpDataGridView.Rows[rows].Cells.Count; col++)
+                        {
+                            if (i == getIndexesAfterWET[0])
+                            {
+                                string value = tmpDataGridView.Rows[rows].Cells[col].Value.ToString();
+                                if (value != textBoxValue.Text)
+                                {
+                                    var currentValue = value;
+                                    tmpDataGridView.Rows[rows].Cells[col].Value = textBoxValue.Text;
+                                    var percentage = mdgv.calculatePercentage(tmpDataGridView, textBoxValue.Text);
+                                    if (double.Parse(textBoxPercentage.Text) <= double.Parse(percentage))
+                                    {
+                                        flag = true;
+                                        textBoxPercentage.Text = percentage;
+                                        SingleInstance.percentage = percentage;
+                                        break;
+                                    }
+                                    //else
+                                    //{
+                                    //    tmpDataGridView.Rows[rows].Cells[col].Value = currentValue;
+                                    //}
+                                }
+                            }
+                            i++;
+                        }
+                        if (flag)
+                        {
+                            break;
+                        }
+                        i = 0;
+                    }
+                }
+                if (!flag)
+                {
+                    MessageBox.Show("Not Possible");
+                }
+                dataGridView2.DataSource = tmpDataGridView.DataSource;
+            }
+            catch (Exception ex)
+            {
+                label5.Show();
+                label5.Text = "Error: " + ex.Message;
+            }
+        }
+
+        private void btnSaveToExcel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Panel childPanel = panelDropdown as Panel;
+                int i = 0;
+                string filters = "";
+                if (childPanel.Controls.Count > 0)
+                {
+                    foreach (Control c in childPanel.Controls)
+                    {
+                        if (c is ComboBox)
+                        {
+                            Control cc = this.Controls.Find(c.Name, true).First();
+                            string text = cc.Text;
+                            var NotEmpty = cc.Text.Trim();
+                            var NotNone = cc.Text.ToString().Trim().ToLower();
+                            var NotSelect = cc.Text.ToString().Trim().ToLower();
+                            if (NotEmpty != "" && NotNone != "none" && NotSelect != "-- select --")
+                            {
+                                string headerText = dataGridView1.Columns[i].HeaderText;
+
+                                // Setting query
+                                filters += headerText + "+";
+                            }
+                            i++;
+                        }
+                    }
+
+                    filters = filters.Trim('+');
+
+                    // Getting Q1_1 header options
+                    MyDataGridView mdgv = new MyDataGridView();
+                    var getIndexesAfterWET = mdgv.getIndexesAfterWET(dataGridView1);
+                    var q1_1_index = getIndexesAfterWET[0];
+                    var colData = mdgv.getColumnData(dataGridView2, q1_1_index);
+                    colData = colData.Distinct().ToList();
+
+                    // Calculating Percentage of each option/data
+                    List<SaveToExcel> lstPercentage = new List<SaveToExcel>();
+                    if (colData.Count() > 0)
+                    {
+                        for (int j = 0; j < colData.Count(); j++)
+                        {
+                            var percentage = mdgv.calculatePercentage(dataGridView2, colData[j]);
+                            SaveToExcel saveToExcel = new SaveToExcel();
+                            saveToExcel.optionName = colData[j];
+                            saveToExcel.percentage = percentage;
+                            lstPercentage.Add(saveToExcel);
+                        }
+                    }
+
+                    // Saving Data to excel
+                    string filePath = string.Empty;
+                    string fileExt = string.Empty;
+                    SaveFileDialog saveDialog = new SaveFileDialog();
+                    saveDialog.Filter = "Excel files (*.xlsx)|*.xlsx";
+                    saveDialog.FilterIndex = 2;
+                    if (saveDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    {
+                        filePath = saveDialog.FileName; //get the path of the file  
+                        fileExt = Path.GetExtension(filePath);
+
+                        //Spire.Xls.Workbook workbook = new Spire.Xls.Workbook();
+
+                        //// Getting First Work Sheet
+                        //SpireImplementations si = new SpireImplementations();
+                        //WorksheetsCollection allWorkeets = si.GetAllWorksheets(currentlyRunningFile);
+                        //string sheetName = allWorkeets[0].Name;
+                        //Spire.Xls.Worksheet sheet = workbook.CreateEmptySheet(sheetName);
+                        //System.Data.DataTable dataTable = this.dataGridView1.DataSource as System.Data.DataTable;
+                        //sheet.InsertDataTable(dataTable, true, 1, 1);
+                        //workbook.SaveToFile(currentlyRunningFile);
+
+                        //dataGridView2.DataSource = null;
+                        //for (int k = 0; k < lstPercentage.Count - 1; k++)
+                        //{
+                        //    for (int j = 0; j < dataGridView1.Columns.Count; j++)
+                        //    {
+                        //        dataGridView2.Rows[k].Cells[j].Value = lstPercentage[k];
+                        //    }
+                        //}
+                        
+                        MessageBox.Show("Export Successful");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                label5.Show();
+                label5.Text = "Error: " + ex.Message;
+            }
         }
     }
 }
