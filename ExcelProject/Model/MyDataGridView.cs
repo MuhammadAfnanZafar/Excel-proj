@@ -49,22 +49,12 @@ namespace ExcelProject.Model
             return lst;
         }
 
-        public List<List<string>> getRowData(DataGridView dataGridView1, int rowIndex)
+        public List<List<string>> getRowData(DataGridView dataGridView1)
         {
             List<List<string>> lst = new List<List<string>>();
 
             int rowCount = dataGridView1.Rows.Count;
-            int colCount = dataGridView1.Columns.Count;
-            int headerWETIndex = 0;
-            for (int i = 0; i < colCount; i++)
-            {
-                string text = dataGridView1.Columns[i].HeaderText;
-                if (text.ToLower() == "wet")
-                {
-                    headerWETIndex = i + 1;
-                    break;
-                }
-            }
+            int headerWETIndex = getWETIndex(dataGridView1) + 1;
 
             for (int i = 0; i < rowCount - 1; i++)
             {
@@ -86,18 +76,7 @@ namespace ExcelProject.Model
         public double getSumOfWET(DataGridView dataGridView1)
         {
             double sum = 0;
-            int headerWETIndex = 0;
-            int colCount = dataGridView1.Columns.Count;
-            for (int i = 0; i < colCount; i++)
-            {
-                string text = dataGridView1.Columns[i].HeaderText;
-                if (text.ToLower() == "wet")
-                {
-                    headerWETIndex = i;
-                    break;
-                }
-            }
-
+            int headerWETIndex = getWETIndex(dataGridView1);
 
             for (int i = 0; i < dataGridView1.Rows.Count; ++i)
             {
@@ -105,6 +84,63 @@ namespace ExcelProject.Model
             }
             //label1.Text = sum.ToString();
             return sum;
+        }
+        public int getWETIndex(DataGridView dgv)
+        {
+            int headerWETIndex = 0;
+            int colCount = dgv.Columns.Count;
+            for (int i = 0; i < colCount; i++)
+            {
+                string text = dgv.Columns[i].HeaderText;
+                if (text.ToLower() == "wet")
+                {
+                    headerWETIndex = i;
+                    break;
+                }
+            }
+
+            return headerWETIndex;
+        }
+
+        public string calculatePercentage(DataGridView dgv, string val)
+        {
+            MyDataGridView mdgv = new MyDataGridView();
+            double calulateWETSum = mdgv.getSumOfWET(dgv);
+
+            var getRowData = mdgv.getRowData(dgv);
+            double brandSum = 0;
+            for (int i = 0; i < getRowData.Count(); i++)
+            {
+                var item = getRowData[i];
+                var q1_1_value = item[item.Count() - 1]; // getting last value
+                if (q1_1_value.ToString() == val) // comparing last value with comboBox value
+                {
+                    brandSum += double.Parse(item[item.Count() - 2]);
+                }
+            }
+
+            var total = brandSum / calulateWETSum;
+            return (total * 100).ToString();
+        }
+        public List<int> getIndexesAfterWET(DataGridView dgv)
+        {
+            List<int> lst = new List<int>();
+            bool IsHeaderWETIndex = false;
+            int colCount = dgv.Columns.Count;
+            for (int i = 0; i < colCount; i++)
+            {
+                string text = dgv.Columns[i].HeaderText;
+                if (text.ToLower() == "wet")
+                {
+                    IsHeaderWETIndex = true;
+                }
+                else if (IsHeaderWETIndex)
+                {
+                    lst.Add(i);
+                }
+            }
+
+            return lst;
         }
 
     }

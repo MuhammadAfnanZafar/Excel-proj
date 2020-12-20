@@ -100,7 +100,7 @@ namespace ExcelProject
                         cb.createComboBox(panelDropdown, dataGridView1, lstCoulumnNames);
 
                         // Setting Q1_1 combobox
-                        cb.setQ1_1ComboBox(dataGridView1, comboBoxQ1_1);
+                        //cb.setQ1_1ComboBox(dataGridView1, comboBoxQ1_1);
                     }
                     catch (Exception ex)
                     {
@@ -148,7 +148,7 @@ namespace ExcelProject
                         cb.createComboBox(panelDropdown, dataGridView1, lstCoulumnNames);
 
                         // Setting Q1_1 combobox
-                        cb.setQ1_1ComboBox(dataGridView1, comboBoxQ1_1);
+                        //cb.setQ1_1ComboBox(dataGridView1, comboBoxQ1_1);
                     }
                     catch (Exception ex)
                     {
@@ -188,7 +188,7 @@ namespace ExcelProject
                 cb.createComboBox(panelDropdown, dataGridView1, lstCoulumnNames);
 
                 // Setting Q1_1 combobox
-                cb.setQ1_1ComboBox(dataGridView1, comboBoxQ1_1);
+                //cb.setQ1_1ComboBox(dataGridView1, comboBoxQ1_1);
 
             }
             catch (Exception ex)
@@ -223,7 +223,7 @@ namespace ExcelProject
                 cb.createComboBox(panelDropdown, dataGridView1, lstCoulumnNames);
 
                 // Setting Q1_1 combobox
-                cb.setQ1_1ComboBox(dataGridView1, comboBoxQ1_1);
+                //cb.setQ1_1ComboBox(dataGridView1, comboBoxQ1_1);
 
             }
             catch (Exception ex)
@@ -239,13 +239,6 @@ namespace ExcelProject
             label1.Hide();
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex > -1)
-            {
-
-            }
-        }
         private void copyAlltoClipboard()
         {
             dataGridView1.SelectAll();
@@ -346,7 +339,7 @@ namespace ExcelProject
                     query = query.Trim();
                     (dataGridView1.DataSource as System.Data.DataTable).DefaultView.RowFilter = query;
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -388,7 +381,16 @@ namespace ExcelProject
                     Regex regex = new Regex("(\\s+(AND|OR)\\s*)$");
                     query = regex.Replace(query, "");
                     query = query.Trim();
-                    (dataGridView1.DataSource as System.Data.DataTable).DefaultView.RowFilter = query;
+                    System.Data.DataTable dtExcel = new System.Data.DataTable();
+                    dtExcel = dataGridView1.DataSource as System.Data.DataTable; //read excel file  
+                    dataGridView2.Visible = true;
+                    dataGridView2.DataSource = dtExcel;
+                    (dataGridView2.DataSource as System.Data.DataTable).DefaultView.RowFilter = query;
+
+                    // Reading data from Excel File again for datagridview1
+                    dtExcel = ReadExcel(currentlyRunningFile, currentFileExt); //read excel file  
+                    dataGridView1.Visible = true;
+                    dataGridView1.DataSource = dtExcel;
                     //dataGridView1.DataSource = dt.DataSource;
                 }
             }
@@ -402,34 +404,69 @@ namespace ExcelProject
         {
             try
             {
-                if (comboBoxQ1_1.Text.ToLower() == "none" || comboBoxQ1_1.Text.ToLower().Trim() == "-- select --")
-                {
-                    MessageBox.Show("Kindly select value from dropwon.");
-                    return;
-                }
-                MyDataGridView mdgv = new MyDataGridView();
-                double calulateWETSum = mdgv.getSumOfWET(dataGridView1);
+                //if (comboBoxQ1_1.Text.ToLower() == "none" || comboBoxQ1_1.Text.ToLower().Trim() == "-- select --")
+                //{
+                //    MessageBox.Show("Kindly select value from dropwon.");
+                //    return;
+                //}
 
-                var getRowData = mdgv.getRowData(dataGridView1, 2);
-                double brandSum = 0;
-                for (int i = 0; i < getRowData.Count(); i++)
-                {
-                    var item = getRowData[i];
-                    var q1_1_value = item[item.Count() - 1]; // getting last value
-                    if (q1_1_value.ToString() == comboBoxQ1_1.Text.ToString()) // comparing last value with comboBox value
-                    {
-                        brandSum += double.Parse(item[item.Count() - 2]);
-                    }
-                }
+                //MyDataGridView mdgv = new MyDataGridView();
+                //var percentage = mdgv.calculatePercentage(dataGridView1, comboBoxQ1_1.Text);
 
-                var total = brandSum / calulateWETSum;
-                labelTotal.Text = (total * 100).ToString() + "%";
+                //labelTotal.Text = percentage;
             }
             catch (Exception ex)
             {
 
                 throw;
             }
+        }
+
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            //if(e.RowIndex > -1)
+            //{
+            //    MyDataGridView mdgv = new MyDataGridView();
+            //    var getIndexesAfterWET = mdgv.getIndexesAfterWET(dataGridView1);
+            //    if (getIndexesAfterWET.Count() > 0)
+            //    {
+            //        if (e.ColumnIndex == getIndexesAfterWET[0])
+            //        {
+            //            var val = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+            //            textBoxValue.Text = val;
+
+            //            var percentage = mdgv.calculatePercentage(dataGridView1, val);
+
+            //            textBoxPercentage.Text = percentage;
+            //        }
+            //    }
+            //}
+        }
+
+        private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex > -1)
+            {
+                MyDataGridView mdgv = new MyDataGridView();
+                var getIndexesAfterWET = mdgv.getIndexesAfterWET(dataGridView2);
+                if (getIndexesAfterWET.Count() > 0)
+                {
+                    if (e.ColumnIndex == getIndexesAfterWET[0])
+                    {
+                        var val = dataGridView2.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                        textBoxValue.Text = val;
+
+                        var percentage = mdgv.calculatePercentage(dataGridView2, val);
+
+                        textBoxPercentage.Text = percentage;
+                    }
+                }
+            }
+        }
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

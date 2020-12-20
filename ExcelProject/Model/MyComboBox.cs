@@ -44,6 +44,7 @@ namespace ExcelProject.Model
 
         public void setQ1_1ComboBox(DataGridView dataGridView1, ComboBox comboBoxQ1_1)
         {
+            comboBoxQ1_1.Items.Clear();
             int q1_1_Index = 0;
             int colCount = dataGridView1.Columns.Count;
             for (int i = 0; i < colCount; i++)
