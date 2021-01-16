@@ -72,5 +72,16 @@ namespace ExcelProject.Model
                 comboBox.Items.Add(item);
             }
         }
+
+        public void assignHeaderNameAfterWETToComboBox(DataGridView dataGridView1, ComboBox comboBox, List<string> Data)
+        {
+            MyDataGridView mdgv = new MyDataGridView();
+            //columnData = columnData.Distinct().ToList();
+            comboBox.Items.Add("none");
+            foreach (var item in Data)
+            {
+                comboBox.Items.Add(item);
+            }
+        }
     }
 }

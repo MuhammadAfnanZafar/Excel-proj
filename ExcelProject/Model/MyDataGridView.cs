@@ -9,7 +9,7 @@ namespace ExcelProject.Model
 {
     class MyDataGridView
     {
-        public List<string> getColumnNames(DataGridView dataGridView1, int rowIndex)
+        public List<string> getColumnNames(DataGridView dataGridView1, int colIndex)
         {
             List<string> lst = new List<string>();
 
@@ -29,6 +29,66 @@ namespace ExcelProject.Model
                     break;
                 }
                 lst.Add(text);
+            }
+
+            return lst;
+        }
+        public List<string> getSingleColumnNames(DataGridView dataGridView1)
+        {
+            List<string> lstSingleCol = new List<string>();
+
+            int colCount = dataGridView1.Columns.Count;
+            for (int i = 0; i < colCount; i++)
+            {
+                string text = dataGridView1.Columns[i].HeaderText;
+                if (text.Contains("(S)"))
+                {
+                    lstSingleCol.Add(text);
+                }
+            }
+
+            return lstSingleCol;
+        }
+        public List<string> getMultiColumnNames(DataGridView dataGridView1)
+        {
+            List<string> lstMultiCol = new List<string>();
+
+            int colCount = dataGridView1.Columns.Count;
+            for (int i = 0; i < colCount; i++)
+            {
+                string text = dataGridView1.Columns[i].HeaderText;
+                if (text.Contains("(M)"))
+                {
+                    lstMultiCol.Add(text);
+                }
+            }
+
+            return lstMultiCol;
+        }
+        public List<string> getColumnNamesAfterWET(DataGridView dataGridView1)
+        {
+            List<string> lst = new List<string>();
+            bool isWet = false;
+
+            int colCount = dataGridView1.Columns.Count;
+            for (int i = 0; i < colCount; i++)
+            {
+                //DataGridViewRow selectedRow = dataGridView1.Rows[rowIndex];
+                //var item = selectedRow.Cells[i].Value.ToString();
+                //if (item.ToLower() == "wet")
+                //{
+                //    break;
+                //}
+                //lst.Add(item);
+                string text = dataGridView1.Columns[i].HeaderText;
+                if (isWet)
+                {
+                    lst.Add(text);
+                }
+                if (text.ToLower() == "wet")
+                {
+                    isWet = true;
+                }
             }
 
             return lst;
@@ -138,6 +198,5 @@ namespace ExcelProject.Model
 
             return lst;
         }
-
     }
 }

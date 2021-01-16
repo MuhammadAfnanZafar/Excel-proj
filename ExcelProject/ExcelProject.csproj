@@ -73,6 +73,7 @@
     <Compile Include="Model\MyComboBox.cs" />
     <Compile Include="Model\MyDataGridView.cs" />
     <Compile Include="Model\myExcel.cs" />
+    <Compile Include="Model\MyListBox.cs" />
     <Compile Include="Model\SaveToExcel.cs" />
     <Compile Include="Model\SingleInstance.cs" />
     <Compile Include="Model\SpireImplementations.cs" />
