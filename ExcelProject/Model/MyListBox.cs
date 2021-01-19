@@ -10,6 +10,15 @@ namespace ExcelProject.Model
 {
     class MyListBox
     {
+
+        public string ColumnName { get; set; }
+        public List<string> Data { get; set; }
+
+        public MyListBox()
+        {
+            Data = new List<string>();
+        }
+
         ListBox[] lb;
 
         public void createListBox(Panel panelDropdown, DataGridView dataGridView1, List<string> lstCoulumnNames)
@@ -27,6 +36,7 @@ namespace ExcelProject.Model
                 mylab.Text = (lstCoulumnNames[i] != null || lstCoulumnNames[i] != "") ? lstCoulumnNames[i] : "-- Unknown --";
                 mylab.Location = new System.Drawing.Point((i * (width + 2)) + spacing, 0);
                 mylab.AutoSize = true;
+                mylab.Name = "label" + string.Format("{0}_{1:N}", i, Guid.NewGuid());
                 panelDropdown.Controls.Add(mylab);
 
                 ListBox newBox = new ListBox();

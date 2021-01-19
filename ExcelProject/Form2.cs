@@ -58,7 +58,54 @@ namespace ExcelProject
 
         private void Button3_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Are You Sure?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            //MessageBox.Show("Are You Sure?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            try
+            {
+                Panel childPanel = panelDropdown as Panel;
+                List<MyListBox> lst = new List<MyListBox>();
+                if (childPanel.Controls.Count > 0)
+                {
+                    foreach (Control c in childPanel.Controls)
+                    {
+                        if (c is ListBox)
+                        {
+                            Control cc = this.Controls.Find(c.Name, true).First();
+                            var tmpListBox = cc as ListBox;
+                            var tmpListBoxItems = tmpListBox.SelectedItems;
+                            if (tmpListBoxItems.Count > 0)
+                            {
+                                MyListBox obj = new MyListBox();
+                                foreach (var item in tmpListBoxItems)
+                                {
+                                    obj.Data.Add(item.ToString());
+                                }
+                                lst.Add(obj);
+                            }
+                        }
+                    }
+                    // Masla
+                    //foreach (Control c in childPanel.Controls)
+                    //{
+                    //    if (c is Label)
+                    //    {
+                    //        Control cc = this.Controls.Find(c.Name, true).First();
+                    //        foreach (var item in lst)
+                    //        {
+                    //            item.ColumnName = cc.Text;
+                    //        }
+                    //    }
+                    //}
+                }
+                //var lst = lbDepCol.SelectedItems;
+                //foreach (var item in lst)
+                //{
+                //    MessageBox.Show(item.ToString());
+                //}
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -69,7 +116,7 @@ namespace ExcelProject
             if (file.ShowDialog() == System.Windows.Forms.DialogResult.OK) //if there is a file choosen by the user  
             {
                 filePath = file.FileName; //get the path of the file  
-                lblFileName.Text = file.SafeFileName; 
+                lblFileName.Text = file.SafeFileName;
                 // Displaying currently running file
                 //currentlyRunningFile = "File Name: " + file.SafeFileName + currentFileExt;
 
@@ -83,7 +130,7 @@ namespace ExcelProject
                         System.Data.DataTable dtExcel = new System.Data.DataTable();
                         dtExcel = ReadExcel(filePath, fileExt); //read excel file  
                         dataGridView1.Visible = true;
-                        
+
                         dataGridView1.DataSource = dtExcel;
 
 
@@ -144,7 +191,7 @@ namespace ExcelProject
                             }
                         }
                         toBeDeleted.ForEach(d => dataGridView2.Rows.Remove(d));
-                                               
+
                         // Setting Q1_1 combobox
                         //cb.setQ1_1ComboBox(dataGridView1, comboBoxQ1_1);
                     }
@@ -161,34 +208,9 @@ namespace ExcelProject
             }
         }
 
-        void testFunc()
-        {
-            int i = 1;
-            // Removing previous rows
-            foreach (DataGridViewRow row in dataGridView1.Rows)
-            {
-                string value1 = row.Cells[0].Value.ToString();
-                if (value1.ToLower() == "p" || value1 == "")
-                {
-                    dataGridView1.Rows.Remove(row);
-                }
-            }
-
-            // Removing current rows
-            i = 0;
-            foreach (DataGridViewRow row in dataGridView2.Rows)
-            {
-                string value1 = row.Cells[0].Value.ToString();
-                if (value1.ToLower() == "c" || value1 == "")
-                {
-                    dataGridView2.Rows.Remove(row);
-                }
-            }
-        }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            testFunc();
         }
     }
 }
