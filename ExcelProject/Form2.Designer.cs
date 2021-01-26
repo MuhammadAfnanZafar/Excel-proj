@@ -36,8 +36,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.cbWorkingColumn = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.rbRelational = new System.Windows.Forms.RadioButton();
+            this.rbNonRelational = new System.Windows.Forms.RadioButton();
             this.btnProcessData = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
@@ -48,8 +48,13 @@
             this.lbMustCol = new System.Windows.Forms.ListBox();
             this.lblError = new System.Windows.Forms.Label();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.dataGridView3 = new System.Windows.Forms.DataGridView();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
@@ -130,29 +135,30 @@
             this.label3.TabIndex = 10;
             this.label3.Text = "Working Column";
             // 
-            // radioButton1
+            // rbRelational
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(662, 54);
-            this.radioButton1.Margin = new System.Windows.Forms.Padding(4);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(92, 21);
-            this.radioButton1.TabIndex = 11;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Relational";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.rbRelational.AutoSize = true;
+            this.rbRelational.Checked = true;
+            this.rbRelational.Location = new System.Drawing.Point(662, 54);
+            this.rbRelational.Margin = new System.Windows.Forms.Padding(4);
+            this.rbRelational.Name = "rbRelational";
+            this.rbRelational.Size = new System.Drawing.Size(92, 21);
+            this.rbRelational.TabIndex = 11;
+            this.rbRelational.TabStop = true;
+            this.rbRelational.Text = "Relational";
+            this.rbRelational.UseVisualStyleBackColor = true;
             // 
-            // radioButton2
+            // rbNonRelational
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(662, 83);
-            this.radioButton2.Margin = new System.Windows.Forms.Padding(4);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(123, 21);
-            this.radioButton2.TabIndex = 12;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Non-Relational";
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.rbNonRelational.AutoSize = true;
+            this.rbNonRelational.Location = new System.Drawing.Point(662, 83);
+            this.rbNonRelational.Margin = new System.Windows.Forms.Padding(4);
+            this.rbNonRelational.Name = "rbNonRelational";
+            this.rbNonRelational.Size = new System.Drawing.Size(123, 21);
+            this.rbNonRelational.TabIndex = 12;
+            this.rbNonRelational.TabStop = true;
+            this.rbNonRelational.Text = "Non-Relational";
+            this.rbNonRelational.UseVisualStyleBackColor = true;
             // 
             // btnProcessData
             // 
@@ -167,13 +173,14 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(16, 380);
+            this.button4.Location = new System.Drawing.Point(16, 351);
             this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(151, 28);
             this.button4.TabIndex = 14;
             this.button4.Text = "Upload Target File";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // label5
             // 
@@ -187,12 +194,12 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(173, 380);
+            this.button5.Location = new System.Drawing.Point(1284, 380);
             this.button5.Margin = new System.Windows.Forms.Padding(4);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(151, 28);
             this.button5.TabIndex = 18;
-            this.button5.Text = "Process Data";
+            this.button5.Text = "Save to Excel";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
@@ -213,7 +220,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(556, 278);
+            this.dataGridView1.Size = new System.Drawing.Size(441, 278);
             this.dataGridView1.TabIndex = 21;
             // 
             // lbDepCol
@@ -250,18 +257,62 @@
             // dataGridView2
             // 
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(578, 415);
+            this.dataGridView2.Location = new System.Drawing.Point(463, 415);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersWidth = 51;
             this.dataGridView2.RowTemplate.Height = 24;
-            this.dataGridView2.Size = new System.Drawing.Size(560, 278);
+            this.dataGridView2.Size = new System.Drawing.Size(442, 278);
             this.dataGridView2.TabIndex = 25;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(13, 395);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(55, 17);
+            this.label1.TabIndex = 26;
+            this.label1.Text = "Current";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(460, 395);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(63, 17);
+            this.label4.TabIndex = 27;
+            this.label4.Text = "Previous";
+            // 
+            // dataGridView3
+            // 
+            this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView3.Location = new System.Drawing.Point(911, 415);
+            this.dataGridView3.Name = "dataGridView3";
+            this.dataGridView3.RowHeadersWidth = 51;
+            this.dataGridView3.RowTemplate.Height = 24;
+            this.dataGridView3.Size = new System.Drawing.Size(525, 278);
+            this.dataGridView3.TabIndex = 28;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(908, 395);
+            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(59, 17);
+            this.label7.TabIndex = 29;
+            this.label7.Text = "Process";
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1243, 705);
+            this.ClientSize = new System.Drawing.Size(1448, 705);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.dataGridView3);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.lblError);
             this.Controls.Add(this.lbMustCol);
@@ -272,8 +323,8 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.btnProcessData);
-            this.Controls.Add(this.radioButton2);
-            this.Controls.Add(this.radioButton1);
+            this.Controls.Add(this.rbNonRelational);
+            this.Controls.Add(this.rbRelational);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cbWorkingColumn);
             this.Controls.Add(this.label2);
@@ -288,6 +339,7 @@
             this.Load += new System.EventHandler(this.Form2_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -303,8 +355,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cbWorkingColumn;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.RadioButton rbRelational;
+        private System.Windows.Forms.RadioButton rbNonRelational;
         private System.Windows.Forms.Button btnProcessData;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Label label5;
@@ -315,5 +367,9 @@
         private System.Windows.Forms.ListBox lbMustCol;
         private System.Windows.Forms.Label lblError;
         private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.DataGridView dataGridView3;
+        private System.Windows.Forms.Label label7;
     }
 }

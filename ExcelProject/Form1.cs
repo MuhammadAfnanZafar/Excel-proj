@@ -65,6 +65,60 @@ namespace ExcelProject
             return dtexcel;
         }
 
+        public void filteration()
+        {
+            try
+            {
+                Panel childPanel = panelDropdown as Panel;
+                int i = 0;
+                string query = "";
+                if (childPanel.Controls.Count > 0)
+                {
+                    foreach (Control c in childPanel.Controls)
+                    {
+                        if (c is ComboBox)
+                        {
+                            Control cc = this.Controls.Find(c.Name, true).First();
+                            string text = cc.Text;
+                            var NotEmpty = cc.Text.Trim();
+                            var NotNone = cc.Text.ToString().Trim().ToLower();
+                            var NotSelect = cc.Text.ToString().Trim().ToLower();
+                            if (NotEmpty != "" && NotNone != "none" && NotSelect != "-- select --")
+                            {
+                                string headerText = dataGridView1.Columns[i].HeaderText;
+                                //(dataGridView1.DataSource as System.Data.DataTable).DefaultView.RowFilter = string.Format("{0} = '{1}'", headerText, cc.Text);
+                                //(dt.DataSource as System.Data.DataTable).DefaultView.RowFilter = string.Format("{0} = '{1}'", headerText, cc.Text);
+
+                                // Setting query
+                                query += " " + headerText + "='" + cc.Text + "' AND";
+                            }
+                            i++;
+                        }
+                    }
+                    //If the last word is always AND or OR then it's pretty simple, just use a regex
+                    Regex regex = new Regex("(\\s+(AND|OR)\\s*)$");
+                    query = regex.Replace(query, "");
+                    query = query.Trim();
+                    System.Data.DataTable dtExcel = new System.Data.DataTable();
+                    dtExcel = dataGridView1.DataSource as System.Data.DataTable; //read excel file  
+                    dataGridView2.Visible = true;
+                    dataGridView2.DataSource = dtExcel;
+                    (dataGridView2.DataSource as System.Data.DataTable).DefaultView.RowFilter = query;
+
+                    // Reading data from Excel File again for datagridview1
+                    dtExcel = ReadExcel(currentlyRunningFile, currentFileExt); //read excel file  
+                    dataGridView1.Visible = true;
+                    dataGridView1.DataSource = dtExcel;
+                    //dataGridView1.DataSource = dt.DataSource;
+                }
+            }
+            catch (Exception ex)
+            {
+                label5.Show();
+                label5.Text = "Error: " + ex.Message;
+            }
+        }
+
         private void btnCurrentFile_Click(object sender, EventArgs e)
         {
             string filePath = string.Empty;
@@ -353,56 +407,7 @@ namespace ExcelProject
 
         private void button1_Click(object sender, EventArgs e)
         {
-            try
-            {
-                Panel childPanel = panelDropdown as Panel;
-                int i = 0;
-                string query = "";
-                if (childPanel.Controls.Count > 0)
-                {
-                    foreach (Control c in childPanel.Controls)
-                    {
-                        if (c is ComboBox)
-                        {
-                            Control cc = this.Controls.Find(c.Name, true).First();
-                            string text = cc.Text;
-                            var NotEmpty = cc.Text.Trim();
-                            var NotNone = cc.Text.ToString().Trim().ToLower();
-                            var NotSelect = cc.Text.ToString().Trim().ToLower();
-                            if (NotEmpty != "" && NotNone != "none" && NotSelect != "-- select --")
-                            {
-                                string headerText = dataGridView1.Columns[i].HeaderText;
-                                //(dataGridView1.DataSource as System.Data.DataTable).DefaultView.RowFilter = string.Format("{0} = '{1}'", headerText, cc.Text);
-                                //(dt.DataSource as System.Data.DataTable).DefaultView.RowFilter = string.Format("{0} = '{1}'", headerText, cc.Text);
-
-                                // Setting query
-                                query += " " + headerText + "='" + cc.Text + "' AND";
-                            }
-                            i++;
-                        }
-                    }
-                    //If the last word is always AND or OR then it's pretty simple, just use a regex
-                    Regex regex = new Regex("(\\s+(AND|OR)\\s*)$");
-                    query = regex.Replace(query, "");
-                    query = query.Trim();
-                    System.Data.DataTable dtExcel = new System.Data.DataTable();
-                    dtExcel = dataGridView1.DataSource as System.Data.DataTable; //read excel file  
-                    dataGridView2.Visible = true;
-                    dataGridView2.DataSource = dtExcel;
-                    (dataGridView2.DataSource as System.Data.DataTable).DefaultView.RowFilter = query;
-
-                    // Reading data from Excel File again for datagridview1
-                    dtExcel = ReadExcel(currentlyRunningFile, currentFileExt); //read excel file  
-                    dataGridView1.Visible = true;
-                    dataGridView1.DataSource = dtExcel;
-                    //dataGridView1.DataSource = dt.DataSource;
-                }
-            }
-            catch (Exception ex)
-            {
-                label5.Show();
-                label5.Text = "Error: " + ex.Message;
-            }
+            filteration();
         }
 
 

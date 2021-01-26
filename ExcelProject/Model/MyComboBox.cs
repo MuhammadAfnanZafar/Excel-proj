@@ -11,6 +11,7 @@ namespace ExcelProject.Model
     class MyComboBox
     {
         ComboBox[] cmb;
+        int colIndex = 2;
 
         public void createComboBox(Panel panelDropdown, DataGridView dataGridView1, List<string> lstCoulumnNames)
         {
@@ -21,6 +22,7 @@ namespace ExcelProject.Model
             int width = 150;
             int height = 35;
             int spacing = 5;
+            int colIndex = this.colIndex;
             for (int i = 0; i <= comboBoxCount - 1; ++i)
             {
                 Label mylab = new Label();
@@ -38,7 +40,8 @@ namespace ExcelProject.Model
                 panelDropdown.Controls.Add(newBox);
                 
                 // Adding items in combo box
-                assignItemsToComboBox(dataGridView1, newBox, i);
+                assignItemsToComboBox(dataGridView1, newBox, colIndex);
+                colIndex++;
             }
         }
 
@@ -75,6 +78,7 @@ namespace ExcelProject.Model
 
         public void assignHeaderNameAfterWETToComboBox(DataGridView dataGridView1, ComboBox comboBox, List<string> Data)
         {
+            comboBox.Items.Clear();
             MyDataGridView mdgv = new MyDataGridView();
             //columnData = columnData.Distinct().ToList();
             comboBox.Items.Add("none");

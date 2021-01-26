@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -20,6 +21,9 @@ namespace ExcelProject
         {
             InitializeComponent();
         }
+        string currentFile = "";
+        string currentFileExt = "";
+        string currentFileName = "";
 
 
         public System.Data.DataTable ReadExcel(string fileName, string fileExt)
@@ -50,6 +54,430 @@ namespace ExcelProject
             }
             return dtexcel;
         }
+        public void WriteExcel()
+        {
+            try
+            {
+                ////Working Code of add data to excel file
+                string filePath = @"C:\Users\MuhammadNauman\Desktop\abc.xlsx";
+                string conn = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" +
+                        filePath +
+                        ";Extended Properties='Excel 12.0 XML;HDR=Yes;';"; //for above excel 2007  
+                System.Data.OleDb.OleDbConnection MyConnection;
+                System.Data.OleDb.OleDbCommand myCommand = new System.Data.OleDb.OleDbCommand();
+                string sql = null;
+                MyConnection = new System.Data.OleDb.OleDbConnection(conn);
+                MyConnection.Open();
+                myCommand.Connection = MyConnection;
+                sql = "Insert into [Sheet1$] values('5','e')";
+                myCommand.CommandText = sql;
+                myCommand.ExecuteNonQuery();
+                MyConnection.Close();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+        }
+        public void filteration(string query, DataGridView dataGridView)
+        {
+            try
+            {
+
+                if (query != "")
+                {
+                    Panel childPanel = panelDropdown as Panel;
+                    int i = 0;
+                    if (childPanel.Controls.Count > 0)
+                    {
+
+                        //If the last word is always AND or OR then it's pretty simple, just use a regex
+                        Regex regex = new Regex("(\\s+(AND|OR)\\s*)$");
+                        query = regex.Replace(query, "");
+                        query = query.Trim();
+                        System.Data.DataTable dtExcel = new System.Data.DataTable();
+                        dtExcel = dataGridView.DataSource as System.Data.DataTable; //read excel file 
+                        dataGridView3.Refresh();
+                        dataGridView3.Visible = true;
+                        dataGridView3.DataSource = dtExcel;
+                        (dataGridView3.DataSource as System.Data.DataTable).DefaultView.RowFilter = query;
+
+                        // Reading data from Excel File again for datagridview1
+                        dtExcel = ReadExcel(currentFile, currentFileExt); //read excel file  
+                        dataGridView1.Visible = true;
+                        dataGridView1.DataSource = dtExcel;
+                        //dataGridView1.DataSource = dt.DataSource;
+
+                        i = 0;
+                        // Removing previous rows
+                        var toBeDeleted = new List<DataGridViewRow>();
+                        foreach (DataGridViewRow row in dataGridView1.Rows)
+                        {
+                            if (row.Cells[0].Value == null || row.Cells[0].Value == DBNull.Value || String.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
+                            {
+                                break;
+                            }
+                            string value1 = row.Cells[0].Value.ToString();
+                            if (value1 == "")
+                            {
+                                break;
+                            }
+                            if (value1.ToLower() == "p")
+                            {
+                                i++;
+                                //processing data
+                                toBeDeleted.Add(row);
+                            }
+                        }
+                        toBeDeleted.ForEach(d => dataGridView1.Rows.Remove(d));
+
+                        // dataGridView2
+                        System.Data.DataTable dtExcel2 = new System.Data.DataTable();
+                        dtExcel2 = ReadExcel(currentFile, currentFileExt); //read excel file  
+                        dataGridView2.DataSource = dtExcel2;
+                        //// Removing current rows
+                        toBeDeleted = new List<DataGridViewRow>();
+                        foreach (DataGridViewRow row in dataGridView2.Rows)
+                        {
+                            if (row.Cells[0].Value == null || row.Cells[0].Value == DBNull.Value || String.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
+                            {
+                                break;
+                            }
+                            string value1 = row.Cells[0].Value.ToString();
+                            if (value1 == "")
+                            {
+                                break;
+                            }
+                            if (value1.ToLower() == "c")
+                            {
+                                //processing data
+                                toBeDeleted.Add(row);
+                            }
+                        }
+                        toBeDeleted.ForEach(d => dataGridView2.Rows.Remove(d));
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                label5.Show();
+                label5.Text = "Error: " + ex.Message;
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+        void current(List<MyListBox> lst, DataGridView dataGridView3, DataGridView dataGridView, ComboBox cbWorkingColumn)
+        {
+
+            if (lst.Count() > 0)
+            {
+
+                dataGridView3.Refresh();
+                dataGridView3.DataSource = null;
+                dataGridView3.Rows.Clear();
+                dataGridView3.Columns.Clear();
+                Percentages.percentagesList = new List<List<Percentages>>();
+
+                // Getting all possible combinations
+                Dictionary<int, List<string>> tags = new Dictionary<int, List<string>>();
+                for (int j = 0; j < lst.Count(); j++)
+                {
+                    tags.Add(j, lst[j].Data);
+                }
+                NListBuilder nListBuilder = new NListBuilder(tags, "AND");
+                var AllCombosList = nListBuilder.AllCombos;
+
+                //string query = "";
+                //int u = 0;
+                foreach (var query in AllCombosList)
+                {
+                    List<Percentages> percentagesList = new List<Percentages>();
+                    // Filtration
+                    Form2 form2 = new Form2();
+                    form2.filteration(query, dataGridView);
+
+                    var selectedVal = cbWorkingColumn.Text;
+                    MyDataGridView mdgv = new MyDataGridView();
+                    var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
+                    var workingColumnData = mdgv.getColumnData(dataGridView3, searchColumnNameIndexAfterWET); // Getting selected working column data
+                    workingColumnData = workingColumnData.Distinct().ToList();
+                    if (searchColumnNameIndexAfterWET == 0)
+                    {
+                        MessageBox.Show("Kindly add atleast one column after WET column.");
+                        return;
+                    }
+
+                    if (searchColumnNameIndexAfterWET > 0)
+                    {
+                        if (workingColumnData.Count() > 0)
+                        {
+                            foreach (var item in workingColumnData)
+                            {
+                                // Calulating Percentage
+                                var percentage = mdgv.calculatePercentage(dataGridView3, item); // Getting percentage of each column in selected working column data
+                                Percentages per = new Percentages()
+                                {
+                                    ColumnValue = item,
+                                    Percentage = percentage,
+                                    Query = query
+                                };
+
+                                percentagesList.Add(per);
+                            }
+                        }
+                        else
+                        {
+                            Percentages per = new Percentages()
+                            {
+                                Query = query,
+                            };
+                            percentagesList.Add(per);
+                        }
+                    }
+                    Percentages.percentagesList.Add(percentagesList);
+                }
+                //filteration(query);
+                //filteration(query);
+
+            }
+
+            // Export all percentages to datagridView3
+            if (Percentages.percentagesList.Count > 0)
+            {
+                var selectedVal = cbWorkingColumn.Text;
+                MyDataGridView mdgv = new MyDataGridView();
+                var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView, selectedVal);  // Getting selected working column index
+                var workingColumnData = mdgv.getColumnData(dataGridView, searchColumnNameIndexAfterWET); // Getting selected working column data
+                workingColumnData = workingColumnData.Distinct().ToList();
+
+                // Setting up structure
+                System.Data.DataTable dt = new System.Data.DataTable();
+                //Setting Columns
+                dt.Columns.Add(new DataColumn(selectedVal, typeof(string)));
+                for (int r = 0; r < Percentages.percentagesList.Count; r++)
+                {
+                    var item = Percentages.percentagesList[r];
+                    var queryAsColumn = item[0].Query;
+                    dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
+                }
+
+
+                //// Setting Rows
+                for (int j = 0; j < workingColumnData.Count; j++)
+                {
+                    DataRow toInsert = dt.NewRow();
+
+                    toInsert[0] = workingColumnData[j];
+                    dt.Rows.InsertAt(toInsert, 0);
+                }
+                dataGridView3.DataSource = dt;
+
+                for (int r = 0; r < Percentages.percentagesList.Count; r++)
+                {
+                    var item = Percentages.percentagesList[r]; // Item
+                    for (int c = 0; c < item.Count; c++)
+                    {
+                        var colItem = item[c]; // Item
+                        int searchedRowIndexOfQ1_X = 0;
+                        var getQ1_X_Data = mdgv.getColumnData(dataGridView3, 0);
+                        if (colItem.ColumnValue != null)
+                        {
+                            searchedRowIndexOfQ1_X = getQ1_X_Data.FindIndex(x => x == colItem.ColumnValue);
+                            dataGridView3.Rows[searchedRowIndexOfQ1_X].Cells[r + 1].Value = colItem.Percentage;
+                        }
+                    }
+                }
+
+            }
+        }
+
+        public void isRelational()
+        {
+
+            try
+            {
+                // Getting all list boxes from panel
+                Panel childPanel = panelDropdown as Panel;
+                List<MyListBox> lst = new List<MyListBox>();
+                int i = 2;
+                MyListBox obj = new MyListBox();
+                if (childPanel.Controls.Count > 0)
+                {
+                    foreach (Control c in childPanel.Controls)
+                    {
+                        if (i % 2 == 0) // For label Name
+                        {
+                            obj = new MyListBox();
+                        }
+                        i++;
+
+                        if (c is Label)
+                        {
+                            Control cc = this.Controls.Find(c.Name, true).First();
+                            obj.ColumnName = cc.Text;
+                        }
+                        if (c is ListBox)
+                        {
+                            Control cc = this.Controls.Find(c.Name, true).First();
+                            var tmpListBox = cc as ListBox;
+                            var tmpListBoxItems = tmpListBox.SelectedItems;
+                            if (tmpListBoxItems.Count > 0)
+                            {
+                                //MyListBox obj = new MyListBox();
+                                foreach (var item in tmpListBoxItems)
+                                {
+                                    obj.Data.Add(string.Format("{0}='{1}'", obj.ColumnName, item.ToString()));
+                                }
+                                lst.Add(obj);
+                            }
+                        }
+                    }
+                }
+                // Current Excel Data
+                // current(lst, dataGridView3, dataGridView1, cbWorkingColumn);
+
+                if (lst.Count() > 0)
+                {
+
+                    dataGridView3.Refresh();
+                    this.dataGridView3.DataSource = null;
+                    dataGridView3.Rows.Clear();
+                    dataGridView3.Columns.Clear();
+                    Percentages.percentagesList = new List<List<Percentages>>();
+
+                    // Getting all possible combinations
+                    Dictionary<int, List<string>> tags = new Dictionary<int, List<string>>();
+                    for (int j = 0; j < lst.Count(); j++)
+                    {
+                        tags.Add(j, lst[j].Data);
+                    }
+                    NListBuilder nListBuilder = new NListBuilder(tags, "AND");
+                    var AllCombosList = nListBuilder.AllCombos;
+
+                    //string query = "";
+                    //int u = 0;
+                    foreach (var query in AllCombosList)
+                    {
+                        List<Percentages> percentagesList = new List<Percentages>();
+                        // Filtration
+                        filteration(query, dataGridView1);
+
+                        var selectedVal = cbWorkingColumn.Text;
+                        MyDataGridView mdgv = new MyDataGridView();
+                        var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
+                        var workingColumnData = mdgv.getColumnData(dataGridView3, searchColumnNameIndexAfterWET); // Getting selected working column data
+                        workingColumnData = workingColumnData.Distinct().ToList();
+                        if (searchColumnNameIndexAfterWET == 0)
+                        {
+                            MessageBox.Show("Kindly add atleast one column after WET column.");
+                            return;
+                        }
+
+                        if (searchColumnNameIndexAfterWET > 0)
+                        {
+                            if (workingColumnData.Count() > 0)
+                            {
+                                foreach (var item in workingColumnData)
+                                {
+                                    // Calulating Percentage
+                                    var percentage = mdgv.calculatePercentage(dataGridView3, item); // Getting percentage of each column in selected working column data
+                                    Percentages per = new Percentages()
+                                    {
+                                        ColumnValue = item,
+                                        Percentage = percentage,
+                                        Query = query
+                                    };
+
+                                    percentagesList.Add(per);
+                                }
+                            }
+                            else
+                            {
+                                Percentages per = new Percentages()
+                                {
+                                    Query = query,
+                                };
+                                percentagesList.Add(per);
+                            }
+                        }
+                        Percentages.percentagesList.Add(percentagesList);
+                    }
+                    //filteration(query);
+                    //filteration(query);
+
+                }
+
+                // Export all percentages to datagridView3
+                if (Percentages.percentagesList.Count > 0)
+                {
+                    var selectedVal = cbWorkingColumn.Text;
+                    MyDataGridView mdgv = new MyDataGridView();
+                    var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView1, selectedVal);  // Getting selected working column index
+                    var workingColumnData = mdgv.getColumnData(dataGridView1, searchColumnNameIndexAfterWET); // Getting selected working column data
+                    workingColumnData = workingColumnData.Distinct().ToList();
+
+                    // Setting up structure
+                    DataTable dt = new DataTable();
+                    //Setting Columns
+                    dt.Columns.Add(new DataColumn(selectedVal, typeof(string)));
+                    for (int r = 0; r < Percentages.percentagesList.Count; r++)
+                    {
+                        var item = Percentages.percentagesList[r];
+                        var queryAsColumn = item[0].Query;
+                        dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
+                    }
+
+
+                    //// Setting Rows
+                    for (int j = 0; j < workingColumnData.Count; j++)
+                    {
+                        DataRow toInsert = dt.NewRow();
+
+                        toInsert[0] = workingColumnData[j];
+                        dt.Rows.InsertAt(toInsert, 0);
+                    }
+                    dataGridView3.DataSource = dt;
+
+                    for (int r = 0; r < Percentages.percentagesList.Count; r++)
+                    {
+                        var item = Percentages.percentagesList[r]; // Item
+                        for (int c = 0; c < item.Count; c++)
+                        {
+                            var colItem = item[c]; // Item
+                            int searchedRowIndexOfQ1_X = 0;
+                            var getQ1_X_Data = mdgv.getColumnData(dataGridView3, 0);
+                            if (colItem.ColumnValue != null)
+                            {
+                                searchedRowIndexOfQ1_X = getQ1_X_Data.FindIndex(x => x == colItem.ColumnValue);
+                                dataGridView3.Rows[searchedRowIndexOfQ1_X].Cells[r + 1].Value = colItem.Percentage;
+                            }
+                        }
+                    }
+
+
+                    // Save to Excel
+                    myExcel excel = new myExcel();
+                    string title = "Current Report";
+                    SaveFileDialog sfd = new SaveFileDialog();
+                    sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
+                    sfd.FileName = "report.xls";
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        excel.ToCsV(dataGridView3, "Current Report", "", "", title, sfd.FileName);
+                        MessageBox.Show("Finish");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                label5.Show();
+                label5.Text = "Error: " + ex.Message;
+                MessageBox.Show(ex.Message);
+            }
+        }
 
         private void Form2_Load(object sender, EventArgs e)
         {
@@ -58,54 +486,24 @@ namespace ExcelProject
 
         private void Button3_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show("Are You Sure?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-            try
+            if (rbRelational.Checked == true)
             {
-                Panel childPanel = panelDropdown as Panel;
-                List<MyListBox> lst = new List<MyListBox>();
-                if (childPanel.Controls.Count > 0)
+                if (cbWorkingColumn.Text == "-- Select --")
                 {
-                    foreach (Control c in childPanel.Controls)
-                    {
-                        if (c is ListBox)
-                        {
-                            Control cc = this.Controls.Find(c.Name, true).First();
-                            var tmpListBox = cc as ListBox;
-                            var tmpListBoxItems = tmpListBox.SelectedItems;
-                            if (tmpListBoxItems.Count > 0)
-                            {
-                                MyListBox obj = new MyListBox();
-                                foreach (var item in tmpListBoxItems)
-                                {
-                                    obj.Data.Add(item.ToString());
-                                }
-                                lst.Add(obj);
-                            }
-                        }
-                    }
-                    // Masla
-                    //foreach (Control c in childPanel.Controls)
-                    //{
-                    //    if (c is Label)
-                    //    {
-                    //        Control cc = this.Controls.Find(c.Name, true).First();
-                    //        foreach (var item in lst)
-                    //        {
-                    //            item.ColumnName = cc.Text;
-                    //        }
-                    //    }
-                    //}
+                    MessageBox.Show("Kindly select working column");
+                    return;
                 }
-                //var lst = lbDepCol.SelectedItems;
-                //foreach (var item in lst)
-                //{
-                //    MessageBox.Show(item.ToString());
-                //}
+                isRelational();
             }
-            catch (Exception ex)
+            else if (rbNonRelational.Checked == true)
             {
-                MessageBox.Show(ex.Message);
+
             }
+            else
+            {
+
+            }
+            //MessageBox.Show("Are You Sure?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -117,6 +515,9 @@ namespace ExcelProject
             {
                 filePath = file.FileName; //get the path of the file  
                 lblFileName.Text = file.SafeFileName;
+                currentFile = filePath; // Set current File globally
+                currentFileExt = fileExt;
+                currentFileName = file.SafeFileName;
                 // Displaying currently running file
                 //currentlyRunningFile = "File Name: " + file.SafeFileName + currentFileExt;
 
@@ -137,8 +538,8 @@ namespace ExcelProject
                         //Creating Combo Boxes
                         MyDataGridView mdv = new MyDataGridView();
                         List<string> lstCoulumnNames = mdv.getColumnNames(dataGridView1, 0);
-                        var singleColumnNames = mdv.getSingleColumnNames(dataGridView1);
-                        var multiColumnNames = mdv.getMultiColumnNames(dataGridView1);
+                        //var singleColumnNames = mdv.getSingleColumnNames(dataGridView1);
+                        //var multiColumnNames = mdv.getMultiColumnNames(dataGridView1);
 
                         MyListBox lb = new MyListBox();
                         lb.createListBox(panelDropdown, dataGridView1, lstCoulumnNames);
@@ -154,10 +555,15 @@ namespace ExcelProject
                         // Assign values to Must Column
                         lb.assignHeaderNameAfterWETToListBox(dataGridView1, lbMustCol, lstCoulumnNames);
 
+                        int i = 0;
                         // Removing previous rows
                         var toBeDeleted = new List<DataGridViewRow>();
                         foreach (DataGridViewRow row in dataGridView1.Rows)
                         {
+                            if (row.Cells[0].Value == null || row.Cells[0].Value == DBNull.Value || String.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
+                            {
+                                break;
+                            }
                             string value1 = row.Cells[0].Value.ToString();
                             if (value1 == "")
                             {
@@ -165,6 +571,7 @@ namespace ExcelProject
                             }
                             if (value1.ToLower() == "p")
                             {
+                                i++;
                                 //processing data
                                 toBeDeleted.Add(row);
                             }
@@ -179,6 +586,10 @@ namespace ExcelProject
                         toBeDeleted = new List<DataGridViewRow>();
                         foreach (DataGridViewRow row in dataGridView2.Rows)
                         {
+                            if (row.Cells[0].Value == null || row.Cells[0].Value == DBNull.Value || String.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
+                            {
+                                break;
+                            }
                             string value1 = row.Cells[0].Value.ToString();
                             if (value1 == "")
                             {
@@ -211,6 +622,22 @@ namespace ExcelProject
 
         private void button5_Click(object sender, EventArgs e)
         {
+            //WriteExcel();
+            myExcel excel = new myExcel();
+            string title = "Excel Report";
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
+            sfd.FileName = "report.xls";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                excel.ToCsV(dataGridView3, "Report", "Current", "Karachi", title, sfd.FileName);
+                MessageBox.Show("Finish");
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

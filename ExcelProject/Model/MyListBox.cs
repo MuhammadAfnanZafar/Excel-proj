@@ -14,6 +14,9 @@ namespace ExcelProject.Model
         public string ColumnName { get; set; }
         public List<string> Data { get; set; }
 
+        int colIndex = 2;
+
+
         public MyListBox()
         {
             Data = new List<string>();
@@ -30,6 +33,7 @@ namespace ExcelProject.Model
             int width = 150;
             int height = 100;
             int spacing = 5;
+            int colIndex = this.colIndex;
             for (int i = 0; i <= listBoxCount - 1; ++i)
             {
                 Label mylab = new Label();
@@ -49,7 +53,8 @@ namespace ExcelProject.Model
                 panelDropdown.Controls.Add(newBox);
 
                 // Adding items in combo box
-                assignItemsToListBox(dataGridView1, newBox, i);
+                assignItemsToListBox(dataGridView1, newBox, colIndex);
+                colIndex++;
             }
         }
         public void assignHeaderNameAfterWETToListBox(DataGridView dataGridView1, ListBox listBox, List<string> Data)
