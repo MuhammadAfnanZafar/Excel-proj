@@ -169,7 +169,7 @@ namespace ExcelProject
         }
 
 
-        void current(List<MyListBox> lst, DataGridView dataGridView3, DataGridView dataGridView, ComboBox cbWorkingColumn)
+        void reportFormatDT(List<MyListBox> lst, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType)
         {
 
             if (lst.Count() > 0)
@@ -196,8 +196,7 @@ namespace ExcelProject
                 {
                     List<Percentages> percentagesList = new List<Percentages>();
                     // Filtration
-                    Form2 form2 = new Form2();
-                    form2.filteration(query, dataGridView);
+                    filteration(query, dataGridView);
 
                     var selectedVal = cbWorkingColumn.Text;
                     MyDataGridView mdgv = new MyDataGridView();
@@ -239,6 +238,7 @@ namespace ExcelProject
                     }
                     Percentages.percentagesList.Add(percentagesList);
                 }
+
                 //filteration(query);
                 //filteration(query);
 
@@ -249,32 +249,39 @@ namespace ExcelProject
             {
                 var selectedVal = cbWorkingColumn.Text;
                 MyDataGridView mdgv = new MyDataGridView();
-                var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView, selectedVal);  // Getting selected working column index
-                var workingColumnData = mdgv.getColumnData(dataGridView, searchColumnNameIndexAfterWET); // Getting selected working column data
+                var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView1, selectedVal);  // Getting selected working column index
+                var workingColumnData = mdgv.getColumnData(dataGridView1, searchColumnNameIndexAfterWET); // Getting selected working column data
                 workingColumnData = workingColumnData.Distinct().ToList();
 
-                // Setting up structure
-                System.Data.DataTable dt = new System.Data.DataTable();
+                // Setting up structure// If rows already created
+                DataTable dt = new DataTable();
                 //Setting Columns
-                dt.Columns.Add(new DataColumn(selectedVal, typeof(string)));
-                for (int r = 0; r < Percentages.percentagesList.Count; r++)
+                if (indexInsertData == 0) // Checking if clumn already exists or in short PERVIOUS
                 {
-                    var item = Percentages.percentagesList[r];
-                    var queryAsColumn = item[0].Query;
-                    dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
+                    dt.Columns.Add(new DataColumn(selectedVal, typeof(string)));
+                    for (int r = 0; r < Percentages.percentagesList.Count; r++)
+                    {
+                        var item = Percentages.percentagesList[r];
+                        var queryAsColumn = item[0].Query;
+                        dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
+                    }
                 }
-
-
+                DataRow toInsert = dt.NewRow();
                 //// Setting Rows
                 for (int j = 0; j < workingColumnData.Count; j++)
                 {
-                    DataRow toInsert = dt.NewRow();
+                    toInsert = dt.NewRow();
 
                     toInsert[0] = workingColumnData[j];
                     dt.Rows.InsertAt(toInsert, 0);
                 }
-                dataGridView3.DataSource = dt;
 
+
+                //toInsert[0] = "Pervious";
+                //dt.Rows.InsertAt(toInsert, 0);
+                reportDataGridView.DataSource = dt;
+
+                ////
                 for (int r = 0; r < Percentages.percentagesList.Count; r++)
                 {
                     var item = Percentages.percentagesList[r]; // Item
@@ -282,16 +289,29 @@ namespace ExcelProject
                     {
                         var colItem = item[c]; // Item
                         int searchedRowIndexOfQ1_X = 0;
-                        var getQ1_X_Data = mdgv.getColumnData(dataGridView3, 0);
+                        var getQ1_X_Data = mdgv.getColumnData(reportDataGridView, 0);
                         if (colItem.ColumnValue != null)
                         {
                             searchedRowIndexOfQ1_X = getQ1_X_Data.FindIndex(x => x == colItem.ColumnValue);
-                            dataGridView3.Rows[searchedRowIndexOfQ1_X].Cells[r + 1].Value = colItem.Percentage;
+                            reportDataGridView.Rows[searchedRowIndexOfQ1_X].Cells[r + 1].Value = colItem.Percentage;
                         }
                     }
                 }
 
+
+                // Save to Excel
+                myExcel excel = new myExcel();
+                string title = reportType + " Report";
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
+                sfd.FileName = reportType + ".xls";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    excel.ToCsV(reportDataGridView, reportType + " Report", "", "", title, sfd.FileName);
+                    MessageBox.Show("Finish");
+                }
             }
+
         }
 
         public void isRelational()
@@ -337,139 +357,9 @@ namespace ExcelProject
                     }
                 }
                 // Current Excel Data
-                // current(lst, dataGridView3, dataGridView1, cbWorkingColumn);
+                reportFormatDT(lst, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
+                reportFormatDT(lst, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
 
-                if (lst.Count() > 0)
-                {
-
-                    dataGridView3.Refresh();
-                    this.dataGridView3.DataSource = null;
-                    dataGridView3.Rows.Clear();
-                    dataGridView3.Columns.Clear();
-                    Percentages.percentagesList = new List<List<Percentages>>();
-
-                    // Getting all possible combinations
-                    Dictionary<int, List<string>> tags = new Dictionary<int, List<string>>();
-                    for (int j = 0; j < lst.Count(); j++)
-                    {
-                        tags.Add(j, lst[j].Data);
-                    }
-                    NListBuilder nListBuilder = new NListBuilder(tags, "AND");
-                    var AllCombosList = nListBuilder.AllCombos;
-
-                    //string query = "";
-                    //int u = 0;
-                    foreach (var query in AllCombosList)
-                    {
-                        List<Percentages> percentagesList = new List<Percentages>();
-                        // Filtration
-                        filteration(query, dataGridView1);
-
-                        var selectedVal = cbWorkingColumn.Text;
-                        MyDataGridView mdgv = new MyDataGridView();
-                        var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
-                        var workingColumnData = mdgv.getColumnData(dataGridView3, searchColumnNameIndexAfterWET); // Getting selected working column data
-                        workingColumnData = workingColumnData.Distinct().ToList();
-                        if (searchColumnNameIndexAfterWET == 0)
-                        {
-                            MessageBox.Show("Kindly add atleast one column after WET column.");
-                            return;
-                        }
-
-                        if (searchColumnNameIndexAfterWET > 0)
-                        {
-                            if (workingColumnData.Count() > 0)
-                            {
-                                foreach (var item in workingColumnData)
-                                {
-                                    // Calulating Percentage
-                                    var percentage = mdgv.calculatePercentage(dataGridView3, item); // Getting percentage of each column in selected working column data
-                                    Percentages per = new Percentages()
-                                    {
-                                        ColumnValue = item,
-                                        Percentage = percentage,
-                                        Query = query
-                                    };
-
-                                    percentagesList.Add(per);
-                                }
-                            }
-                            else
-                            {
-                                Percentages per = new Percentages()
-                                {
-                                    Query = query,
-                                };
-                                percentagesList.Add(per);
-                            }
-                        }
-                        Percentages.percentagesList.Add(percentagesList);
-                    }
-                    //filteration(query);
-                    //filteration(query);
-
-                }
-
-                // Export all percentages to datagridView3
-                if (Percentages.percentagesList.Count > 0)
-                {
-                    var selectedVal = cbWorkingColumn.Text;
-                    MyDataGridView mdgv = new MyDataGridView();
-                    var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView1, selectedVal);  // Getting selected working column index
-                    var workingColumnData = mdgv.getColumnData(dataGridView1, searchColumnNameIndexAfterWET); // Getting selected working column data
-                    workingColumnData = workingColumnData.Distinct().ToList();
-
-                    // Setting up structure
-                    DataTable dt = new DataTable();
-                    //Setting Columns
-                    dt.Columns.Add(new DataColumn(selectedVal, typeof(string)));
-                    for (int r = 0; r < Percentages.percentagesList.Count; r++)
-                    {
-                        var item = Percentages.percentagesList[r];
-                        var queryAsColumn = item[0].Query;
-                        dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
-                    }
-
-
-                    //// Setting Rows
-                    for (int j = 0; j < workingColumnData.Count; j++)
-                    {
-                        DataRow toInsert = dt.NewRow();
-
-                        toInsert[0] = workingColumnData[j];
-                        dt.Rows.InsertAt(toInsert, 0);
-                    }
-                    dataGridView3.DataSource = dt;
-
-                    for (int r = 0; r < Percentages.percentagesList.Count; r++)
-                    {
-                        var item = Percentages.percentagesList[r]; // Item
-                        for (int c = 0; c < item.Count; c++)
-                        {
-                            var colItem = item[c]; // Item
-                            int searchedRowIndexOfQ1_X = 0;
-                            var getQ1_X_Data = mdgv.getColumnData(dataGridView3, 0);
-                            if (colItem.ColumnValue != null)
-                            {
-                                searchedRowIndexOfQ1_X = getQ1_X_Data.FindIndex(x => x == colItem.ColumnValue);
-                                dataGridView3.Rows[searchedRowIndexOfQ1_X].Cells[r + 1].Value = colItem.Percentage;
-                            }
-                        }
-                    }
-
-
-                    // Save to Excel
-                    myExcel excel = new myExcel();
-                    string title = "Current Report";
-                    SaveFileDialog sfd = new SaveFileDialog();
-                    sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
-                    sfd.FileName = "report.xls";
-                    if (sfd.ShowDialog() == DialogResult.OK)
-                    {
-                        excel.ToCsV(dataGridView3, "Current Report", "", "", title, sfd.FileName);
-                        MessageBox.Show("Finish");
-                    }
-                }
             }
             catch (Exception ex)
             {

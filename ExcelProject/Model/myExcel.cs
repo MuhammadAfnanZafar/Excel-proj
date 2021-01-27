@@ -13,10 +13,6 @@ namespace ExcelProject.Model
 {
     class myExcel
     {
-        public string Value { get; set; }
-
-
-
         public void ToCsV(DataGridView dgv, string name, string age, string address, string title, string filename)
         {   
             string stOutput = "";
