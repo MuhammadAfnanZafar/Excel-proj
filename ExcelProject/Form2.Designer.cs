@@ -32,7 +32,7 @@
             this.lblFileName = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.panelDropdown = new System.Windows.Forms.Panel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tbDataChar = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.cbWorkingColumn = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -56,6 +56,10 @@
             this.label8 = new System.Windows.Forms.Label();
             this.dataGridView5 = new System.Windows.Forms.DataGridView();
             this.label9 = new System.Windows.Forms.Label();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
@@ -103,13 +107,15 @@
             this.panelDropdown.Size = new System.Drawing.Size(1217, 184);
             this.panelDropdown.TabIndex = 6;
             // 
-            // textBox1
+            // tbDataChar
             // 
-            this.textBox1.Location = new System.Drawing.Point(16, 54);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(160, 22);
-            this.textBox1.TabIndex = 7;
+            this.tbDataChar.Location = new System.Drawing.Point(16, 54);
+            this.tbDataChar.Margin = new System.Windows.Forms.Padding(4);
+            this.tbDataChar.Name = "tbDataChar";
+            this.tbDataChar.Size = new System.Drawing.Size(160, 22);
+            this.tbDataChar.TabIndex = 7;
+            this.tbDataChar.Text = "2";
+            this.tbDataChar.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbDataChar_KeyPress);
             // 
             // label2
             // 
@@ -222,12 +228,18 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3,
+            this.Column4});
             this.dataGridView1.Location = new System.Drawing.Point(16, 415);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
             this.dataGridView1.Size = new System.Drawing.Size(217, 278);
             this.dataGridView1.TabIndex = 21;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // lbDepCol
             // 
@@ -350,6 +362,26 @@
             this.label9.TabIndex = 33;
             this.label9.Text = "Report Previous";
             // 
+            // Column1
+            // 
+            this.Column1.HeaderText = "Column1";
+            this.Column1.Name = "Column1";
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Column2";
+            this.Column2.Name = "Column2";
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Column3";
+            this.Column3.Name = "Column3";
+            // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "Column4";
+            this.Column4.Name = "Column4";
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -378,7 +410,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cbWorkingColumn);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.tbDataChar);
             this.Controls.Add(this.panelDropdown);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.lblFileName);
@@ -403,7 +435,7 @@
         private System.Windows.Forms.Label lblFileName;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Panel panelDropdown;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox tbDataChar;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cbWorkingColumn;
         private System.Windows.Forms.Label label3;
@@ -427,5 +459,9 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.DataGridView dataGridView5;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
     }
 }

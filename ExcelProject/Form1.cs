@@ -450,7 +450,8 @@ namespace ExcelProject
                         var val = selectedVal;
                         textBoxValue.Text = val;
 
-                        var percentage = mdgv.calculatePercentage(dataGridView2, val);
+                        //var percentage = mdgv.calculatePercentage(dataGridView2, val);
+                        var percentage = mdgv.calculatePercentage(dataGridView2, val, 1);
                         SingleInstance.percentage = percentage;
 
                         textBoxPercentage.Text = percentage;
@@ -501,7 +502,8 @@ namespace ExcelProject
                                 {
                                     var currentValue = value;
                                     tmpDataGridView.Rows[rows].Cells[col].Value = textBoxValue.Text;
-                                    var percentage = mdgv.calculatePercentage(tmpDataGridView, textBoxValue.Text);
+                                    //var percentage = mdgv.calculatePercentage(tmpDataGridView, textBoxValue.Text);
+                                    var percentage = mdgv.calculatePercentage(tmpDataGridView, textBoxValue.Text, 1);
                                     if (double.Parse(textBoxPercentage.Text) <= double.Parse(percentage))
                                     {
                                         flag = true;
@@ -581,8 +583,10 @@ namespace ExcelProject
                     {
                         for (int j = 0; j < colData.Count(); j++)
                         {
-                            var percentage = mdgv.calculatePercentage(dataGridView2, colData[j]);
-                            SaveToExcel saveToExcel = new SaveToExcel();
+                            //var percentage = mdgv.calculatePercentage(dataGridView2, colData[j]);
+                            var percentage = mdgv.calculatePercentage(dataGridView2, colData[j], 1); 
+
+                             SaveToExcel saveToExcel = new SaveToExcel();
                             saveToExcel.optionName = colData[j];
                             saveToExcel.percentage = percentage;
                             lstPercentage.Add(saveToExcel);

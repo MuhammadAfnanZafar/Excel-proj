@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -140,12 +141,37 @@ namespace ExcelProject.Model
 
             return lst;
         }
-        public List<List<string>> getRowData(DataGridView dataGridView1)
+        public List<string> getColumnPlusRowData(DataGridView dataGridView1, int colIndex, int chunkSize)
+        {
+            List<string> lst = new List<string>();
+
+            int rowCount = dataGridView1.Rows.Count;
+            for (int i = 0; i < rowCount - 1; i++)
+            {
+                DataGridViewRow selectedRow = dataGridView1.Rows[i];
+                var item = selectedRow.Cells[colIndex].Value.ToString();
+                var rowDataList = Split(item, chunkSize);
+                for (int j = 0; j < rowDataList.Count; j++)
+                {
+                    lst.Add(rowDataList[j]);
+                }
+            }
+            lst = lst.Distinct().ToList();
+            return lst;
+        }
+        static List<string> Split(string str, int chunkSize)
+        {
+            str = str.Replace(" ", String.Empty);
+            return (from Match m in Regex.Matches(str, @"\d{1," + chunkSize + "}")
+                    select m.Value).ToList();
+        }
+        public List<List<string>> getRowData(DataGridView dataGridView1, int Q_index)
         {
             List<List<string>> lst = new List<List<string>>();
 
             int rowCount = dataGridView1.Rows.Count;
-            int headerWETIndex = getWETIndex(dataGridView1) + 1;
+            //int headerWETIndex = getWETIndex(dataGridView1) + 1;
+            int headerWETIndex = Q_index;
 
             for (int i = 0; i < rowCount - 1; i++)
             {
@@ -198,21 +224,34 @@ namespace ExcelProject.Model
 
             return headerWETIndex;
         }
-        public string calculatePercentage(DataGridView dgv, string val)
+        public string calculatePercentage(DataGridView dgv, string val, int Q_index)
         {
             MyDataGridView mdgv = new MyDataGridView();
             double calulateWETSum = mdgv.getSumOfWET(dgv);
 
-            var getRowData = mdgv.getRowData(dgv);
+            var getRowData = mdgv.getRowData(dgv, Q_index);
             double brandSum = 0;
+            var wetIndex = getWETIndex(dgv);
             for (int i = 0; i < getRowData.Count(); i++)
             {
                 var item = getRowData[i];
                 var q1_1_value = item[item.Count() - 1]; // getting last value
-                if (q1_1_value.ToString() == val) // comparing last value with comboBox value i.e Q1_1
+                var rowDataList = Split(q1_1_value, val.Length);
+                for (int j = 0; j < rowDataList.Count; j++)
                 {
-                    brandSum += double.Parse(item[item.Count() - 2]);
+                    var item2 = rowDataList[j];
+                    if (item2.ToString() == val) // comparing last value with comboBox value i.e Q1_1
+                    {
+                        brandSum += double.Parse(item[wetIndex]);
+                    }
                 }
+                //var item = getRowData[i];
+                //var q1_1_value = item[item.Count() - 1]; // getting last value
+
+                //if (q1_1_value.ToString() == val) // comparing last value with comboBox value i.e Q1_1
+                //{
+                //    brandSum += double.Parse(item[item.Count() - 2]);
+                //}
             }
 
             var total = brandSum / calulateWETSum;

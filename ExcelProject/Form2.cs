@@ -201,7 +201,7 @@ namespace ExcelProject
                     var selectedVal = cbWorkingColumn.Text;
                     MyDataGridView mdgv = new MyDataGridView();
                     var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
-                    var workingColumnData = mdgv.getColumnData(dataGridView3, searchColumnNameIndexAfterWET); // Getting selected working column data
+                    var workingColumnData = mdgv.getColumnPlusRowData(dataGridView3, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text)); // Getting selected working column data
                     workingColumnData = workingColumnData.Distinct().ToList();
                     if (searchColumnNameIndexAfterWET == 0)
                     {
@@ -209,6 +209,7 @@ namespace ExcelProject
                         return;
                     }
 
+                    decimal total = 0;
                     if (searchColumnNameIndexAfterWET > 0)
                     {
                         if (workingColumnData.Count() > 0)
@@ -216,13 +217,16 @@ namespace ExcelProject
                             foreach (var item in workingColumnData)
                             {
                                 // Calulating Percentage
-                                var percentage = mdgv.calculatePercentage(dataGridView3, item); // Getting percentage of each column in selected working column data
+                                var percentage = mdgv.calculatePercentage(dataGridView3, item, searchColumnNameIndexAfterWET); // Getting percentage of each column in selected working column data
+                                total = total + Convert.ToDecimal(percentage);
                                 Percentages per = new Percentages()
                                 {
                                     ColumnValue = item,
                                     Percentage = percentage,
-                                    Query = query
+                                    Query = query,
+                                    Sum = total
                                 };
+
 
                                 percentagesList.Add(per);
                             }
@@ -249,9 +253,12 @@ namespace ExcelProject
             {
                 var selectedVal = cbWorkingColumn.Text;
                 MyDataGridView mdgv = new MyDataGridView();
-                var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView1, selectedVal);  // Getting selected working column index
-                var workingColumnData = mdgv.getColumnData(dataGridView1, searchColumnNameIndexAfterWET); // Getting selected working column data
-                workingColumnData = workingColumnData.Distinct().ToList();
+                //var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView1, selectedVal);  // Getting selected working column index
+                //var workingColumnData = mdgv.getColumnPlusRowData(dataGridView3, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text)); // Getting selected working column data
+                //workingColumnData = workingColumnData.Distinct().ToList();
+
+                var combinePerCetagesList = new Percentages().combinePercentagesList(Percentages.percentagesList);
+                combinePerCetagesList = combinePerCetagesList.Distinct().ToList();
 
                 // Setting up structure// If rows already created
                 DataTable dt = new DataTable();
@@ -268,11 +275,11 @@ namespace ExcelProject
                 }
                 DataRow toInsert = dt.NewRow();
                 //// Setting Rows
-                for (int j = 0; j < workingColumnData.Count; j++)
+                for (int j = 0; j < combinePerCetagesList.Count; j++)
                 {
                     toInsert = dt.NewRow();
 
-                    toInsert[0] = workingColumnData[j];
+                    toInsert[0] = combinePerCetagesList[j].ColumnValue;
                     dt.Rows.InsertAt(toInsert, 0);
                 }
 
@@ -281,7 +288,7 @@ namespace ExcelProject
                 //dt.Rows.InsertAt(toInsert, 0);
                 reportDataGridView.DataSource = dt;
 
-                ////
+                //
                 for (int r = 0; r < Percentages.percentagesList.Count; r++)
                 {
                     var item = Percentages.percentagesList[r]; // Item
@@ -317,8 +324,8 @@ namespace ExcelProject
         public void isRelational()
         {
 
-            try
-            {
+            //try
+            //{
                 // Getting all list boxes from panel
                 Panel childPanel = panelDropdown as Panel;
                 List<MyListBox> lst = new List<MyListBox>();
@@ -360,15 +367,15 @@ namespace ExcelProject
                 reportFormatDT(lst, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
                 reportFormatDT(lst, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
 
-            }
-            catch (Exception ex)
-            {
-                label5.Show();
-                label5.Text = "Error: " + ex.Message;
-                MessageBox.Show(ex.Message);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    label5.Show();
+            //    label5.Text = "Error: " + ex.Message;
+            //    MessageBox.Show(ex.Message);
+            //}
         }
-
+        
         private void Form2_Load(object sender, EventArgs e)
         {
 
@@ -378,9 +385,9 @@ namespace ExcelProject
         {
             if (rbRelational.Checked == true)
             {
-                if (cbWorkingColumn.Text == "-- Select --")
+                if (cbWorkingColumn.Text == "-- Select --" || tbDataChar.Text == null || tbDataChar.Text == "" || Convert.ToInt32(tbDataChar.Text) == 0)
                 {
-                    MessageBox.Show("Kindly select working column");
+                    MessageBox.Show("Working column and Data Charater field must not be empty.");
                     return;
                 }
                 isRelational();
@@ -520,12 +527,57 @@ namespace ExcelProject
             sfd.FileName = "report.xls";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                excel.ToCsV(dataGridView3, "Report", "Current", "Karachi", title, sfd.FileName);
+                excel.ToCsV(dataGridView1, "Report", "Current", "Karachi", title, sfd.FileName);
                 MessageBox.Show("Finish");
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
+        {
+            string filePath = string.Empty;
+            string fileExt = string.Empty;
+            OpenFileDialog file = new OpenFileDialog(); //open dialog to choose file  
+            if (file.ShowDialog() == System.Windows.Forms.DialogResult.OK) //if there is a file choosen by the user  
+            {
+                filePath = file.FileName; //get the path of the file  
+                currentFile = filePath; // Set current File globally
+                currentFileExt = fileExt;
+
+                // Displaying currently running file
+                //currentlyRunningFile = "File Name: " + file.SafeFileName + currentFileExt;
+
+                fileExt = Path.GetExtension(filePath); //get the file extension  
+                if (fileExt.CompareTo(".xls") == 0 || fileExt.CompareTo(".xlsx") == 0)
+                {
+                    try
+                    {
+                        System.Data.DataTable dtExcel = new System.Data.DataTable();
+                        dtExcel = ReadExcel(filePath, fileExt); //read excel file  
+                        dataGridView3.Visible = true;
+                        dataGridView3.DataSource = dtExcel;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please choose .xls or .xlsx file only.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error); //custom messageBox to show error  
+                }
+            }
+        }
+
+        private void tbDataChar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }
