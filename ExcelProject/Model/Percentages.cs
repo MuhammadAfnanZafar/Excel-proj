@@ -15,16 +15,16 @@ namespace ExcelProject.Model
 
         public static List<List<Percentages>> percentagesList = new List<List<Percentages>>();
 
-        public List<Percentages> combinePercentagesList(List<List<Percentages>> percentagesList)
+        public List<string> combinePercentagesList(List<List<Percentages>> percentagesList)
         {
-            List<Percentages> lst = new List<Percentages>();
+            List<string> lst = new List<string>();
             foreach (var item in percentagesList)
             {
                 foreach (var item2 in item)
                 {
                     if (item2.ColumnValue != null)
                     {
-                        lst.Add(item2);
+                        lst.Add(item2.ColumnValue);
                     }
                 }
             }

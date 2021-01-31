@@ -13,6 +13,9 @@ namespace ExcelProject.Model
 {
     class myExcel
     {
+        public string ColumnValue { get; set; }
+        public int Count { get; set; }
+
         public void ToCsV(DataGridView dgv, string name, string age, string address, string title, string filename)
         {   
             string stOutput = "";

@@ -91,6 +91,7 @@
     <Compile Include="Model\MyListBox.cs" />
     <Compile Include="Model\NListBuilder.cs" />
     <Compile Include="Model\Percentages.cs" />
+    <Compile Include="Model\Range.cs" />
     <Compile Include="Model\SaveToExcel.cs" />
     <Compile Include="Model\SingleInstance.cs" />
     <Compile Include="Model\SpireImplementations.cs" />

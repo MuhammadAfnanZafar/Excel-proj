@@ -270,6 +270,9 @@ namespace ExcelProject
                     {
                         var item = Percentages.percentagesList[r];
                         var queryAsColumn = item[0].Query;
+                        queryAsColumn = queryAsColumn.Replace("AND", ",");
+                        queryAsColumn = queryAsColumn.Replace("=", " ");
+                        queryAsColumn = queryAsColumn.Replace("'", "");
                         dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
                     }
                 }
@@ -279,7 +282,7 @@ namespace ExcelProject
                 {
                     toInsert = dt.NewRow();
 
-                    toInsert[0] = combinePerCetagesList[j].ColumnValue;
+                    toInsert[0] = combinePerCetagesList[j];
                     dt.Rows.InsertAt(toInsert, 0);
                 }
 
@@ -306,6 +309,20 @@ namespace ExcelProject
                 }
 
 
+                // Assigning Zero(0) to empty values\
+
+                for (int rows = 0; rows < reportDataGridView.Rows.Count - 1; rows++)
+                {
+                    for (int col = 1; col < reportDataGridView.Rows[rows].Cells.Count; col++)
+                    {
+                        var item = reportDataGridView.Rows[rows].Cells[col].Value.ToString();
+                        if (item == null || String.IsNullOrWhiteSpace(item))
+                        {
+                            reportDataGridView.Rows[rows].Cells[col].Value = 0;
+                        }
+                    }
+                }
+
                 // Save to Excel
                 myExcel excel = new myExcel();
                 string title = reportType + " Report";
@@ -324,8 +341,8 @@ namespace ExcelProject
         public void isRelational()
         {
 
-            //try
-            //{
+            try
+            {
                 // Getting all list boxes from panel
                 Panel childPanel = panelDropdown as Panel;
                 List<MyListBox> lst = new List<MyListBox>();
@@ -364,18 +381,18 @@ namespace ExcelProject
                     }
                 }
                 // Current Excel Data
-                reportFormatDT(lst, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
                 reportFormatDT(lst, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
+                reportFormatDT(lst, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
 
-            //}
-            //catch (Exception ex)
-            //{
-            //    label5.Show();
-            //    label5.Text = "Error: " + ex.Message;
-            //    MessageBox.Show(ex.Message);
-            //}
+            }
+            catch (Exception ex)
+            {
+                label5.Show();
+                label5.Text = "Error: " + ex.Message;
+                MessageBox.Show(ex.Message);
+            }
         }
-        
+
         private void Form2_Load(object sender, EventArgs e)
         {
 
@@ -576,5 +593,194 @@ namespace ExcelProject
                 e.Handled = true;
             }
         }
+
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            try
+            {
+                MyDataGridView mdgv = new MyDataGridView();
+
+
+                // Cloning DatagridView
+                var combinePerCetagesList = new Percentages().combinePercentagesList(Percentages.percentagesList);
+                combinePerCetagesList = combinePerCetagesList.Distinct().ToList();
+
+                // Setting up structure// If rows already created
+                DataTable dt = new DataTable();
+                //Setting Columns
+                dt.Columns.Add(new DataColumn(cbWorkingColumn.Text, typeof(string)));
+                for (int r = 0; r < Percentages.percentagesList.Count; r++)
+                {
+                    var item = Percentages.percentagesList[r];
+                    var queryAsColumn = item[0].Query;
+                    queryAsColumn = queryAsColumn.Replace("AND", ",");
+                    queryAsColumn = queryAsColumn.Replace("=", " ");
+                    queryAsColumn = queryAsColumn.Replace("'", "");
+                    dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
+                }
+                DataRow toInsert = dt.NewRow();
+                //// Setting Rows
+                for (int j = 0; j < combinePerCetagesList.Count; j++)
+                {
+                    toInsert = dt.NewRow();
+
+                    toInsert[0] = combinePerCetagesList[j];
+                    dt.Rows.InsertAt(toInsert, 0);
+                }
+
+
+                //toInsert[0] = "Pervious";
+                //dt.Rows.InsertAt(toInsert, 0);
+                dataGridView6.DataSource = dt;
+
+                //
+                for (int r = 0; r < Percentages.percentagesList.Count; r++)
+                {
+                    var item = Percentages.percentagesList[r]; // Item
+                    for (int c = 0; c < item.Count; c++)
+                    {
+                        var colItem = item[c]; // Item
+                        int searchedRowIndexOfQ1_X = 0;
+                        var getQ1_X_Data = mdgv.getColumnData(dataGridView6, 0);
+                        if (colItem.ColumnValue != null)
+                        {
+                            searchedRowIndexOfQ1_X = getQ1_X_Data.FindIndex(x => x == colItem.ColumnValue);
+                            dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[r + 1].Value = colItem.Percentage;
+                        }
+                    }
+                }
+
+
+                // Assigning Zero(0) to empty values\
+
+                for (int rows = 0; rows < dataGridView6.Rows.Count - 1; rows++)
+                {
+                    for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
+                    {
+                        var item = dataGridView6.Rows[rows].Cells[col].Value.ToString();
+                        if (item == null || String.IsNullOrWhiteSpace(item))
+                        {
+                            dataGridView6.Rows[rows].Cells[col].Value = 0;
+                        }
+                    }
+                }
+
+                // Cloning DatagridView End
+
+
+                // Caluculating and Assigning Count Of Q_X 
+                var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView1, cbWorkingColumn.Text);
+
+                var get_Q1_ColumnData = mdgv.getColumnData(dataGridView1, searchColumnNameIndexAfterWET);
+                var getCurrent_Q1_ColumnData = mdgv.getColumnData(dataGridView4, 0);
+
+                List<myExcel> countList = new List<myExcel>();
+                foreach (var item in getCurrent_Q1_ColumnData)
+                {
+                    myExcel myExcel = new myExcel();
+                    myExcel.ColumnValue = item;
+                    foreach (var Q1_ColumnData in get_Q1_ColumnData)
+                    {
+                        var rowDataList = mdgv.Split(Q1_ColumnData, item.Length);
+                        for (int j = 0; j < rowDataList.Count; j++)
+                        {
+                            if (item == rowDataList[j])
+                            {
+                                myExcel.Count += 1;
+                            }
+                        }
+                    }
+                    countList.Add(myExcel);
+                }
+
+                // Getting range =============
+                var getRangeColumnData = mdgv.getColumnData(dataGridView3, 0);
+                var getRangePercentageColumnData = mdgv.getColumnData(dataGridView3, 1);
+                List<Range> ranges = new List<Range>();
+                for (int i = 0; i < getRangeColumnData.Count; i++)
+                {
+                    Range range = new Range();
+                    var item = getRangeColumnData[i];
+                    var splitRange = item.Split('-');
+                    var min = splitRange[0];
+                    var max = splitRange[1];
+                    var percentage = getRangePercentageColumnData[i].ToString();
+                    range.Min = Convert.ToInt32(min);
+                    range.Max = Convert.ToInt32(max);
+                    range.Percentage = Convert.ToDecimal(percentage);
+
+                    ranges.Add(range);
+                }
+
+                //
+                for (int rows = 0; rows < dataGridView6.Rows.Count - 1; rows++)
+                {
+                    for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
+                    {
+                        var Q_X_Value = dataGridView4.Rows[rows].Cells[0].Value.ToString();
+                        int Q_X_Count = 0;
+                        string currentDgvValue = dataGridView4.Rows[rows].Cells[col].Value.ToString();
+                        string perviousDgvValue = dataGridView5.Rows[rows].Cells[col].Value.ToString();
+
+                        // Calculating difference of current and previous values
+                        double calculateDifference = Convert.ToDouble(currentDgvValue) - Convert.ToDouble(perviousDgvValue);
+
+                        // Checking value of Q_X Count with Q_X_Value
+                        foreach (var item in countList)
+                        {
+                            if (item.ColumnValue == Q_X_Value)
+                            {
+                                Q_X_Count = item.Count;
+                                break;
+                            }
+                        }
+
+                        // Checking range
+                        for (int i = 0; i < ranges.Count; i++)
+                        {
+                            var range = ranges[i];
+                            if (Q_X_Count >= range.Min && Q_X_Count <= range.Max) // checking if Q_X valuel lie with in range
+                            {
+                                if (calculateDifference > 0) // Positive answer
+                                {
+                                    string value = dataGridView6.Rows[rows].Cells[col].Value.ToString();
+                                    decimal sum = Convert.ToDecimal(value) + range.Percentage;
+                                    dataGridView6.Rows[rows].Cells[col].Value = sum;
+                                }
+                                else if (calculateDifference < 0) // Negative answer
+                                {
+                                    var value = dataGridView6.Rows[rows].Cells[col].Value.ToString();
+                                    decimal diff = Convert.ToDecimal(value) - range.Percentage;
+                                    dataGridView6.Rows[rows].Cells[col].Value = diff;
+                                }
+                                else
+                                {
+                                    dataGridView6.Rows[rows].Cells[col].Value = 0;
+                                }
+                                break;
+                            }
+
+                        }
+                    }
+                }
+
+                myExcel excel = new myExcel();
+                string title = "Target Report";
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
+                sfd.FileName = "tagetReport.xls";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    excel.ToCsV(dataGridView6, "Target Report", "", "", title, sfd.FileName);
+                    MessageBox.Show("Finish"); 
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
     }
 }
