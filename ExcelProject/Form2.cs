@@ -323,6 +323,180 @@ namespace ExcelProject
                     }
                 }
 
+                // Sorting datagridView
+                reportDataGridView.Sort(reportDataGridView.Columns[0], ListSortDirection.Ascending);
+
+                // Save to Excel
+                myExcel excel = new myExcel();
+                string title = reportType + " Report";
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
+                sfd.FileName = reportType + ".xls";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    excel.ToCsV(reportDataGridView, reportType + " Report", "", "", title, sfd.FileName);
+                    MessageBox.Show("Finish");
+                }
+            }
+
+        }
+
+
+        void reportFormatDTNonRelationsal(List<MyListBox> lst, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType)
+        {
+
+            if (lst.Count() > 0)
+            {
+
+                dataGridView3.Refresh();
+                dataGridView3.DataSource = null;
+                dataGridView3.Rows.Clear();
+                dataGridView3.Columns.Clear();
+                Percentages.percentagesList = new List<List<Percentages>>();
+
+
+                List<string> AllCombosList = new List<string>();
+                foreach (var item in lst)
+                {
+                    AllCombosList.Add(item.Data[0]);
+                }
+
+                //string query = "";
+                //int u = 0;
+                foreach (var query in AllCombosList)
+                {
+                    List<Percentages> percentagesList = new List<Percentages>();
+                    // Filtration
+                    filteration(query, dataGridView);
+
+                    var selectedVal = cbWorkingColumn.Text;
+                    MyDataGridView mdgv = new MyDataGridView();
+                    var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
+                    var workingColumnData = mdgv.getColumnPlusRowData(dataGridView3, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text)); // Getting selected working column data
+                    workingColumnData = workingColumnData.Distinct().ToList();
+                    if (searchColumnNameIndexAfterWET == 0)
+                    {
+                        MessageBox.Show("Kindly add atleast one column after WET column.");
+                        return;
+                    }
+
+                    decimal total = 0;
+                    if (searchColumnNameIndexAfterWET > 0)
+                    {
+                        if (workingColumnData.Count() > 0)
+                        {
+                            foreach (var item in workingColumnData)
+                            {
+                                // Calulating Percentage
+                                var percentage = mdgv.calculatePercentage(dataGridView3, item, searchColumnNameIndexAfterWET); // Getting percentage of each column in selected working column data
+                                total = total + Convert.ToDecimal(percentage);
+                                Percentages per = new Percentages()
+                                {
+                                    ColumnValue = item,
+                                    Percentage = percentage,
+                                    Query = query,
+                                    Sum = total
+                                };
+
+
+                                percentagesList.Add(per);
+                            }
+                        }
+                        else
+                        {
+                            Percentages per = new Percentages()
+                            {
+                                Query = query,
+                            };
+                            percentagesList.Add(per);
+                        }
+                    }
+                    Percentages.percentagesList.Add(percentagesList);
+                }
+
+                //filteration(query);
+                //filteration(query);
+
+            }
+
+            // Export all percentages to datagridView3
+            if (Percentages.percentagesList.Count > 0)
+            {
+                var selectedVal = cbWorkingColumn.Text;
+                MyDataGridView mdgv = new MyDataGridView();
+                //var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView1, selectedVal);  // Getting selected working column index
+                //var workingColumnData = mdgv.getColumnPlusRowData(dataGridView3, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text)); // Getting selected working column data
+                //workingColumnData = workingColumnData.Distinct().ToList();
+
+                var combinePerCetagesList = new Percentages().combinePercentagesList(Percentages.percentagesList);
+                combinePerCetagesList = combinePerCetagesList.Distinct().ToList();
+
+                // Setting up structure// If rows already created
+                DataTable dt = new DataTable();
+                //Setting Columns
+                if (indexInsertData == 0) // Checking if clumn already exists or in short PERVIOUS
+                {
+                    dt.Columns.Add(new DataColumn(selectedVal, typeof(string)));
+                    for (int r = 0; r < Percentages.percentagesList.Count; r++)
+                    {
+                        var item = Percentages.percentagesList[r];
+                        var queryAsColumn = item[0].Query;
+                        queryAsColumn = queryAsColumn.Replace("AND", ",");
+                        queryAsColumn = queryAsColumn.Replace("=", " ");
+                        queryAsColumn = queryAsColumn.Replace("'", "");
+                        dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
+                    }
+                }
+                DataRow toInsert = dt.NewRow();
+                //// Setting Rows
+                for (int j = 0; j < combinePerCetagesList.Count; j++)
+                {
+                    toInsert = dt.NewRow();
+
+                    toInsert[0] = combinePerCetagesList[j];
+                    dt.Rows.InsertAt(toInsert, 0);
+                }
+
+
+                //toInsert[0] = "Pervious";
+                //dt.Rows.InsertAt(toInsert, 0);
+                reportDataGridView.DataSource = dt;
+
+                //
+                for (int r = 0; r < Percentages.percentagesList.Count; r++)
+                {
+                    var item = Percentages.percentagesList[r]; // Item
+                    for (int c = 0; c < item.Count; c++)
+                    {
+                        var colItem = item[c]; // Item
+                        int searchedRowIndexOfQ1_X = 0;
+                        var getQ1_X_Data = mdgv.getColumnData(reportDataGridView, 0);
+                        if (colItem.ColumnValue != null)
+                        {
+                            searchedRowIndexOfQ1_X = getQ1_X_Data.FindIndex(x => x == colItem.ColumnValue);
+                            reportDataGridView.Rows[searchedRowIndexOfQ1_X].Cells[r + 1].Value = colItem.Percentage;
+                        }
+                    }
+                }
+
+
+                // Assigning Zero(0) to empty values\
+
+                for (int rows = 0; rows < reportDataGridView.Rows.Count - 1; rows++)
+                {
+                    for (int col = 1; col < reportDataGridView.Rows[rows].Cells.Count; col++)
+                    {
+                        var item = reportDataGridView.Rows[rows].Cells[col].Value.ToString();
+                        if (item == null || String.IsNullOrWhiteSpace(item))
+                        {
+                            reportDataGridView.Rows[rows].Cells[col].Value = 0;
+                        }
+                    }
+                }
+
+                // Sorting datagridView
+                reportDataGridView.Sort(reportDataGridView.Columns[0], ListSortDirection.Ascending);
+
                 // Save to Excel
                 myExcel excel = new myExcel();
                 string title = reportType + " Report";
@@ -381,8 +555,74 @@ namespace ExcelProject
                     }
                 }
                 // Current Excel Data
-                reportFormatDT(lst, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
                 reportFormatDT(lst, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
+                reportFormatDT(lst, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
+
+            }
+            catch (Exception ex)
+            {
+                label5.Show();
+                label5.Text = "Error: " + ex.Message;
+                MessageBox.Show(ex.Message);
+            }
+        }
+        public void isNonRelational()
+        {
+
+            try
+            {
+                // Getting all list boxes from panel
+                Panel childPanel = panelDropdown as Panel;
+                List<MyListBox> lst = new List<MyListBox>();
+                int i = 2;
+                MyListBox obj = new MyListBox();
+                if (childPanel.Controls.Count > 0)
+                {
+                    foreach (Control c in childPanel.Controls)
+                    {
+                        if (i % 2 == 0) // For label Name
+                        {
+                            obj = new MyListBox();
+                        }
+                        i++;
+
+                        if (c is Label)
+                        {
+                            Control cc = this.Controls.Find(c.Name, true).First();
+                            obj.ColumnName = cc.Text;
+                        }
+                        if (c is ListBox)
+                        {
+                            Control cc = this.Controls.Find(c.Name, true).First();
+                            var tmpListBox = cc as ListBox;
+                            var tmpListBoxItems = tmpListBox.SelectedItems;
+                            if (tmpListBoxItems.Count > 0)
+                            {
+                                //MyListBox obj = new MyListBox();
+                                foreach (var item in tmpListBoxItems)
+                                {
+                                    obj.Data.Add(string.Format("{0}='{1}'", obj.ColumnName, item.ToString()));
+                                }
+                                lst.Add(obj);
+                            }
+                        }
+                    }
+                }
+
+                List<MyListBox> lst2 = new List<MyListBox>();
+                foreach (var item in lst)
+                {
+                    foreach (var item2 in item.Data)
+                    {
+                        MyListBox myListBox = new MyListBox();
+                        myListBox.ColumnName = item.ColumnName;
+                        myListBox.Data.Add(item2);
+                        lst2.Add(myListBox);
+                    }
+                }
+                // Current Excel Data
+                reportFormatDTNonRelationsal(lst2, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
+                reportFormatDTNonRelationsal(lst2, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
 
             }
             catch (Exception ex)
@@ -411,7 +651,12 @@ namespace ExcelProject
             }
             else if (rbNonRelational.Checked == true)
             {
-
+                if (cbWorkingColumn.Text == "-- Select --" || tbDataChar.Text == null || tbDataChar.Text == "" || Convert.ToInt32(tbDataChar.Text) == 0)
+                {
+                    MessageBox.Show("Working column and Data Charater field must not be empty.");
+                    return;
+                }
+                isNonRelational();
             }
             else
             {
@@ -601,6 +846,10 @@ namespace ExcelProject
                 MyDataGridView mdgv = new MyDataGridView();
 
 
+                // Sorting datagridView
+                dataGridView4.Sort(dataGridView4.Columns[0], ListSortDirection.Ascending);
+                dataGridView5.Sort(dataGridView5.Columns[0], ListSortDirection.Ascending);
+
                 // Cloning DatagridView
                 var combinePerCetagesList = new Percentages().combinePercentagesList(Percentages.percentagesList);
                 combinePerCetagesList = combinePerCetagesList.Distinct().ToList();
@@ -735,31 +984,51 @@ namespace ExcelProject
                             }
                         }
 
-                        // Checking range
-                        for (int i = 0; i < ranges.Count; i++)
-                        {
-                            var range = ranges[i];
-                            if (Q_X_Count >= range.Min && Q_X_Count <= range.Max) // checking if Q_X valuel lie with in range
-                            {
-                                if (calculateDifference > 0) // Positive answer
-                                {
-                                    string value = dataGridView6.Rows[rows].Cells[col].Value.ToString();
-                                    decimal sum = Convert.ToDecimal(value) + range.Percentage;
-                                    dataGridView6.Rows[rows].Cells[col].Value = sum;
-                                }
-                                else if (calculateDifference < 0) // Negative answer
-                                {
-                                    var value = dataGridView6.Rows[rows].Cells[col].Value.ToString();
-                                    decimal diff = Convert.ToDecimal(value) - range.Percentage;
-                                    dataGridView6.Rows[rows].Cells[col].Value = diff;
-                                }
-                                else
-                                {
-                                    dataGridView6.Rows[rows].Cells[col].Value = 0;
-                                }
-                                break;
-                            }
+                        // finding Q1_X index
+                        var getQ1_X_Data = mdgv.getColumnData(dataGridView6, 0);
+                        var searchedRowIndexOfQ1_X = getQ1_X_Data.FindIndex(x => x == Q_X_Value);
+                        //reportDataGridView.Rows[searchedRowIndexOfQ1_X].Cells[r + 1].Value = colItem.Percentage;
 
+                        if (searchedRowIndexOfQ1_X >= 0)
+                        {
+
+                            // Checking range
+                            for (int i = 0; i < ranges.Count; i++)
+                            {
+                                var range = ranges[i];
+                                if (Q_X_Count >= range.Min && Q_X_Count <= range.Max) // checking if Q_X valuel lie with in range
+                                {
+                                    // Do Nothing 
+                                    // Target value is same as current
+                                    var convert_calculatedDiff_Positive = calculateDifference.ToString().Trim('-');
+
+                                    if (Convert.ToDouble(range.Percentage) > Convert.ToDouble(convert_calculatedDiff_Positive))
+                                    {
+                                        dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[col].Value = dataGridView4.Rows[rows].Cells[col].Value;
+                                    }
+                                    else if (Convert.ToDouble(range.Percentage) < Convert.ToDouble(convert_calculatedDiff_Positive))
+                                    {
+                                        if (calculateDifference > 0) // Positive answer
+                                        {
+                                            string value = dataGridView6.Rows[rows].Cells[col].Value.ToString();
+                                            decimal sum = Convert.ToDecimal(value) + range.Percentage;
+                                            dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[col].Value = sum;
+                                        }
+                                        else if (calculateDifference < 0) // Negative answer
+                                        {
+                                            var value = dataGridView6.Rows[rows].Cells[col].Value.ToString();
+                                            decimal diff = Convert.ToDecimal(value) - range.Percentage;
+                                            dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[col].Value = diff;
+                                        }
+                                        else
+                                        {
+                                            dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[col].Value = 0;
+                                        }
+                                    }
+                                    break;
+                                }
+
+                            }
                         }
                     }
                 }
@@ -772,7 +1041,7 @@ namespace ExcelProject
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     excel.ToCsV(dataGridView6, "Target Report", "", "", title, sfd.FileName);
-                    MessageBox.Show("Finish"); 
+                    MessageBox.Show("Finish");
                 }
 
             }
