@@ -59,6 +59,9 @@
             this.button3 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.dataGridView6 = new System.Windows.Forms.DataGridView();
+            this.btnUploadNewTargetFile = new System.Windows.Forms.Button();
+            this.btnChangePercentages = new System.Windows.Forms.Button();
+            this.btnUploadOladTargetFile = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
@@ -387,11 +390,47 @@
             this.dataGridView6.Size = new System.Drawing.Size(266, 278);
             this.dataGridView6.TabIndex = 35;
             // 
+            // btnUploadNewTargetFile
+            // 
+            this.btnUploadNewTargetFile.Location = new System.Drawing.Point(442, 351);
+            this.btnUploadNewTargetFile.Margin = new System.Windows.Forms.Padding(4);
+            this.btnUploadNewTargetFile.Name = "btnUploadNewTargetFile";
+            this.btnUploadNewTargetFile.Size = new System.Drawing.Size(184, 28);
+            this.btnUploadNewTargetFile.TabIndex = 37;
+            this.btnUploadNewTargetFile.Text = "Upload New Target File";
+            this.btnUploadNewTargetFile.UseVisualStyleBackColor = true;
+            this.btnUploadNewTargetFile.Click += new System.EventHandler(this.btnUploadNewTargetFile_Click);
+            // 
+            // btnChangePercentages
+            // 
+            this.btnChangePercentages.Location = new System.Drawing.Point(826, 351);
+            this.btnChangePercentages.Margin = new System.Windows.Forms.Padding(4);
+            this.btnChangePercentages.Name = "btnChangePercentages";
+            this.btnChangePercentages.Size = new System.Drawing.Size(192, 28);
+            this.btnChangePercentages.TabIndex = 38;
+            this.btnChangePercentages.Text = "Change Percentages";
+            this.btnChangePercentages.UseVisualStyleBackColor = true;
+            this.btnChangePercentages.Click += new System.EventHandler(this.btnChangePercentages_Click);
+            // 
+            // btnUploadOladTargetFile
+            // 
+            this.btnUploadOladTargetFile.Location = new System.Drawing.Point(634, 351);
+            this.btnUploadOladTargetFile.Margin = new System.Windows.Forms.Padding(4);
+            this.btnUploadOladTargetFile.Name = "btnUploadOladTargetFile";
+            this.btnUploadOladTargetFile.Size = new System.Drawing.Size(184, 28);
+            this.btnUploadOladTargetFile.TabIndex = 39;
+            this.btnUploadOladTargetFile.Text = "Upload Old Target File";
+            this.btnUploadOladTargetFile.UseVisualStyleBackColor = true;
+            this.btnUploadOladTargetFile.Click += new System.EventHandler(this.btnUploadOladTargetFile_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1448, 705);
+            this.Controls.Add(this.btnChangePercentages);
+            this.Controls.Add(this.btnUploadOladTargetFile);
+            this.Controls.Add(this.btnUploadNewTargetFile);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.dataGridView6);
             this.Controls.Add(this.button3);
@@ -471,5 +510,8 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.DataGridView dataGridView6;
+        private System.Windows.Forms.Button btnUploadNewTargetFile;
+        private System.Windows.Forms.Button btnChangePercentages;
+        private System.Windows.Forms.Button btnUploadOladTargetFile;
     }
 }

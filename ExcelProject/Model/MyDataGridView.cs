@@ -35,6 +35,31 @@ namespace ExcelProject.Model
 
             return lst;
         }
+
+        public List<string> getAllColumnNames(DataGridView dataGridView1, int colIndex)
+        {
+            List<string> lst = new List<string>();
+
+            int colCount = dataGridView1.Columns.Count;
+            for (int i = colIndex; i < colCount; i++)
+            {
+                //DataGridViewRow selectedRow = dataGridView1.Rows[rowIndex];
+                //var item = selectedRow.Cells[i].Value.ToString();
+                //if (item.ToLower() == "wet")
+                //{
+                //    break;
+                //}
+                //lst.Add(item);
+                string text = dataGridView1.Columns[i].HeaderText;
+                if (text.ToLower() == "wet")
+                {
+                    break;
+                }
+                lst.Add(text);
+            }
+
+            return lst;
+        }
         public List<string> getSingleColumnNames(DataGridView dataGridView1)
         {
             List<string> lstSingleCol = new List<string>();
@@ -313,6 +338,175 @@ namespace ExcelProject.Model
                 MessageBox.Show(ex.Message);
             }
             return dgv_copy;
+        }
+
+        public List<string> getRegenratedQueries(DataGridView dataGridView5)
+        {
+            List<string> quries = new List<string>();
+
+            MyDataGridView mdgv = new MyDataGridView();
+            var getAllColumnName = mdgv.getAllColumnNames(dataGridView5, 0);
+            for (int j = 0; j < getAllColumnName.Count; j++)
+            {
+                var item = getAllColumnName[j];
+                var arr = item.Split(',');
+                var query = "";
+                for (int i = 0; i < arr.Length; i++)
+                {
+                    var a = arr[i].Replace(" ", "=");
+                    a = a.Trim('=');
+                    query += a + " AND ";
+                }
+                Regex regex = new Regex("(\\s+(AND|OR)\\s*)$");
+                query = regex.Replace(query, "");
+                query = query.Trim();
+                quries.Add(query);
+            }
+
+            return quries;
+        }
+        public void assignValuesToMustColumn(ListBox lbMustCol, DataGridView dataGridView3, string Q_X_Value, int rows)
+        {
+            MyDataGridView mdgv = new MyDataGridView();
+            var result = "";
+            var mustColListBoxItems = lbMustCol.SelectedItems;
+            foreach (var item in mustColListBoxItems)
+            {
+                var Q_X_ColumnName = item.ToString();
+                var searchColumnNameIndexAfterWET_Q_X = mdgv.searchColumnNameIndexAfterWET(dataGridView3, Q_X_ColumnName);
+                var getColumnData = mdgv.getColumnData(dataGridView3, searchColumnNameIndexAfterWET_Q_X);
+                var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value.ToString();
+                var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
+                // Exist
+                if (!lst_GetAllCellData.Contains(Q_X_Value))
+                {
+                    lst_GetAllCellData.Add(Q_X_Value);
+                    result = string.Join("", lst_GetAllCellData.ToArray());
+                    dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = result;
+                    return;
+                }
+                result = string.Join("", lst_GetAllCellData.ToArray());
+                dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = result;
+            }
+        }
+        public void increasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget)
+        {
+            MyDataGridView mdgv = new MyDataGridView();
+            var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, getQ1_X_ColumnName);
+            var depColListBoxItems = lbDepCol.SelectedItems;
+            var mustColListBoxItems = lbMustCol.SelectedItems;
+
+
+            bool flag = false;
+            int i = 0;
+            for (int rows = 0; rows < dataGridView3.Rows.Count - 1; rows++)
+            {
+                for (int col = 0; col < dataGridView3.Rows[rows].Cells.Count; col++)
+                {
+                    //if (i == searchColumnNameIndexAfterWET)
+                    //{
+                    bool isDependentColSatisfied = false;
+
+                    // Dependent column validation
+                    List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
+                    foreach (var item in depColListBoxItems)
+                    {
+                        var arr_existOrNot = item.ToString().Split('#');
+                        var value_existorNotExist = arr_existOrNot[1];
+                        var columnName_Q_X_existorNotExist = arr_existOrNot[0];
+                        ;
+                        var searchColumnNameIndexAfterWET_Q_X_existorNotExist = mdgv.searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
+                        var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
+                        var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
+                        if (value_existorNotExist.ToLower() == "exist")
+                        {
+                            // Exist
+                            if (lst_GetAllCellData.Contains(Q_X_Value))
+                            {
+                                lst_CheckAllValidation_ExistNotExist.Add(true);
+                            }
+                            else
+                            {
+                                lst_CheckAllValidation_ExistNotExist.Add(false);
+                            }
+                        }
+                        else
+                        {
+                            //Not exist
+                            if (!lst_GetAllCellData.Contains(Q_X_Value))
+                            {
+                                lst_CheckAllValidation_ExistNotExist.Add(true);
+                            }
+                            else
+                            {
+                                lst_CheckAllValidation_ExistNotExist.Add(false);
+                            }
+                        }
+                    }
+
+                    // Checking Dependent column if all conditions are true witch means "AND"
+                    foreach (var item in lst_CheckAllValidation_ExistNotExist)
+                    {
+                        if (!item)
+                        {
+                            isDependentColSatisfied = false;
+                        }
+                    }
+
+                    if (isDependentColSatisfied) // Validation for dependent column IF ALL Dependent column VALIDATION SATISFIED THEN CHANGE COLUMN
+                    {
+                        var currentVal = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value.ToString();
+
+                        // assign Values To Must Column
+                        assignValuesToMustColumn(lbMustCol, dataGridView3, Q_X_Value, rows);
+
+                        if (currentVal != Q_X_Value) // if Q1 value already same do nothing
+                        {
+                            dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = Q_X_Value;
+                            var percentage = mdgv.calculatePercentage(dataGridView3, Q_X_Value, searchColumnNameIndexAfterWET);
+                            if (double.Parse(Q_X_PercentageValue_NewTarget) <= double.Parse(percentage))
+                            {
+                                flag = true;
+                                break;
+                            }
+                        }
+                        //}
+                        i++;
+                    }
+                    if (flag)
+                    {
+                        break;
+                    }
+                    //i = 0;
+                }
+            }
+
+        }
+
+        public void decreasePercentage()
+        {
+
+        }
+        //=================================================== Form 2 ==================================
+
+        public void changePercentages(List<string> lst, DataGridView dataGridView, DataGridView dataGridView3)
+        {
+            dataGridView3.Refresh();
+            dataGridView3.DataSource = null;
+            dataGridView3.Rows.Clear();
+            dataGridView3.Columns.Clear();
+            Percentages.percentagesList = new List<List<Percentages>>();
+
+            var AllCombosList = lst;
+
+            //string query = "";
+            //int u = 0;
+            foreach (var query in AllCombosList)
+            {
+                List<Percentages> percentagesList = new List<Percentages>();
+                // Filtration
+                new Form2().filteration(query, dataGridView);
+            }
         }
     }
 }

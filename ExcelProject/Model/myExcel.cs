@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Excel;
+﻿using ClosedXML.Excel;
+using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,41 +18,60 @@ namespace ExcelProject.Model
         public int Count { get; set; }
 
         public void ToCsV(DataGridView dgv, string name, string age, string address, string title, string filename)
-        {   
-            string stOutput = "";
-            string stTitle = "";
-            string sHeaders = "";
-            string stName = "";
-            string stAge = "";
-            string stAdrress = "";
-            stTitle = "\r\n" + title + "\r\n\n";
-            stName = "\n" + name + "\r";
-            stAdrress = "\n" + address + "\r";
-            stAge = "\n" + age + "\r";
-            stOutput += title;
-            stOutput += stName;
-            stOutput += stAdrress;
-            stOutput += stAge;
-            for (int j = 0; j < dgv.Columns.Count; j++)
-                sHeaders = sHeaders.ToString() + Convert.ToString(dgv.Columns[j].HeaderText) + "\t";
-            stOutput += sHeaders + "\r\n";
-            // Export data.
-            for (int i = 0; i < dgv.RowCount - 1; i++)
-            {
-                string stLine = "";
-                for (int j = 0; j < dgv.Rows[i].Cells.Count; j++)
-                    stLine = stLine.ToString() + Convert.ToString(dgv.Rows[i].Cells[j].Value) + "\t";
-                stOutput += stLine + "\r\n";
-            }
-            Encoding utf16 = Encoding.GetEncoding(1254);
-            byte[] output = utf16.GetBytes(stOutput);
-            FileStream fs = new FileStream(filename, FileMode.Create);
-            BinaryWriter bw = new BinaryWriter(fs);
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
 
-            bw.Write(output, 0, output.Length); //write the encoded file
-            bw.Flush();
-            bw.Close();
-            fs.Close();
+            //Adding the Columns.
+            foreach (DataGridViewColumn column in dgv.Columns)
+            {
+                dt.Columns.Add(column.HeaderText, column.ValueType);
+            }
+
+            //Adding the Rows.
+            int c = 0;
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                if (dgv.Rows.Count-1 == c)
+                {
+                    break;
+                }
+                c++;
+                dt.Rows.Add();
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    dt.Rows[dt.Rows.Count - 1][cell.ColumnIndex] = cell.Value.ToString();
+                }
+            }
+
+            //Exporting to Excel.
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dt, "Customers");
+
+                //Set the color of Header Row.
+                //A resembles First Column while C resembles Third column.
+                wb.Worksheet(1).Cells("A1:C1").Style.Fill.BackgroundColor = XLColor.DarkGreen;
+                for (int i = 1; i <= dt.Rows.Count; i++)
+                {
+                    //A resembles First Column while C resembles Third column.
+                    //Header row is at Position 1 and hence First row starts from Index 2.
+                    string cellRange = string.Format("A{0}:C{0}", i + 1);
+                    if (i % 2 != 0)
+                    {
+                        wb.Worksheet(1).Cells(cellRange).Style.Fill.BackgroundColor = XLColor.GreenYellow;
+                    }
+                    else
+                    {
+                        wb.Worksheet(1).Cells(cellRange).Style.Fill.BackgroundColor = XLColor.Yellow;
+                    }
+
+                }
+                //Adjust widths of Columns.
+                wb.Worksheet(1).Columns().AdjustToContents();
+
+                //Save the Excel file.
+                wb.SaveAs(filename);
+            }
         }
         private Worksheet FindSheet(Workbook workbook, string sheet_name)
         {

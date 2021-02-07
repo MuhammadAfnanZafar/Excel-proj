@@ -331,7 +331,7 @@ namespace ExcelProject
                 string title = reportType + " Report";
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
-                sfd.FileName = reportType + ".xls";
+                sfd.FileName = reportType + ".xlsx";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     excel.ToCsV(reportDataGridView, reportType + " Report", "", "", title, sfd.FileName);
@@ -502,7 +502,7 @@ namespace ExcelProject
                 string title = reportType + " Report";
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
-                sfd.FileName = reportType + ".xls";
+                sfd.FileName = reportType + ".xlsx";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
                     excel.ToCsV(reportDataGridView, reportType + " Report", "", "", title, sfd.FileName);
@@ -709,7 +709,13 @@ namespace ExcelProject
                         cb.assignHeaderNameAfterWETToComboBox(dataGridView1, cbWorkingColumn, lstCoulumnNames);
 
                         // Assign values to Dependent Column
-                        lb.assignHeaderNameAfterWETToListBox(dataGridView1, lbDepCol, lstCoulumnNames);
+                        var lstDependentCoulumnNames = new List<string>();
+                        for (int j = 0; j < lstCoulumnNames.Count; j++)
+                        {
+                            lstDependentCoulumnNames.Add(lstCoulumnNames[j] + "#Exist");
+                            lstDependentCoulumnNames.Add(lstCoulumnNames[j] + "#NotExist");
+                        }
+                        lb.assignHeaderNameAfterWETToListBox(dataGridView1, lbDepCol, lstDependentCoulumnNames);
 
                         // Assign values to Must Column
                         lb.assignHeaderNameAfterWETToListBox(dataGridView1, lbMustCol, lstCoulumnNames);
@@ -786,7 +792,7 @@ namespace ExcelProject
             string title = "Excel Report";
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
-            sfd.FileName = "report.xls";
+            sfd.FileName = "report.xlsx";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 excel.ToCsV(dataGridView1, "Report", "Current", "Karachi", title, sfd.FileName);
@@ -802,8 +808,7 @@ namespace ExcelProject
             if (file.ShowDialog() == System.Windows.Forms.DialogResult.OK) //if there is a file choosen by the user  
             {
                 filePath = file.FileName; //get the path of the file  
-                currentFile = filePath; // Set current File globally
-                currentFileExt = fileExt;
+                
 
                 // Displaying currently running file
                 //currentlyRunningFile = "File Name: " + file.SafeFileName + currentFileExt;
@@ -841,135 +846,150 @@ namespace ExcelProject
 
         private void button3_Click_1(object sender, EventArgs e)
         {
-            try
+            //try
+            //{
+            MyDataGridView mdgv = new MyDataGridView();
+
+
+            // Sorting datagridView
+            dataGridView4.Sort(dataGridView4.Columns[0], ListSortDirection.Ascending);
+            dataGridView5.Sort(dataGridView5.Columns[0], ListSortDirection.Ascending);
+
+            // Cloning DatagridView
+            //var combinePerCetagesList = new Percentages().combinePercentagesList(Percentages.percentagesList);
+            //combinePerCetagesList = combinePerCetagesList.Distinct().ToList();
+            var getColumnData_Current = mdgv.getColumnData(dataGridView4, 0);
+            var getColumnData_Previous = mdgv.getColumnData(dataGridView5, 0);
+            var Q1_X_List = new List<string>();
+            Q1_X_List = getColumnData_Current;
+            Q1_X_List.AddRange(getColumnData_Previous); // Combine 2 List
+            Q1_X_List = Q1_X_List.Distinct().ToList();
+
+            // Setting up structure// If rows already created
+            DataTable dt = new DataTable();
+            //Setting Columns
+            dt.Columns.Add(new DataColumn(cbWorkingColumn.Text, typeof(string)));
+            for (int r = 0; r < Percentages.percentagesList.Count; r++)
             {
-                MyDataGridView mdgv = new MyDataGridView();
+                var item = Percentages.percentagesList[r];
+                var queryAsColumn = item[0].Query;
+                //Query.quries.Add(queryAsColumn);
+                queryAsColumn = queryAsColumn.Replace("AND", ",");
+                queryAsColumn = queryAsColumn.Replace("=", " ");
+                //queryAsColumn = queryAsColumn.Replace("'", "");
+                dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
+            }
+            DataRow toInsert = dt.NewRow();
+            //// Setting Rows
+            for (int j = 0; j < Q1_X_List.Count; j++)
+            {
+                toInsert = dt.NewRow();
+
+                toInsert[0] = Q1_X_List[j];
+                dt.Rows.InsertAt(toInsert, 0);
+            }
 
 
-                // Sorting datagridView
-                dataGridView4.Sort(dataGridView4.Columns[0], ListSortDirection.Ascending);
-                dataGridView5.Sort(dataGridView5.Columns[0], ListSortDirection.Ascending);
+            //toInsert[0] = "Pervious";
+            //dt.Rows.InsertAt(toInsert, 0);
+            dataGridView6.DataSource = dt;
 
-                // Cloning DatagridView
-                var combinePerCetagesList = new Percentages().combinePercentagesList(Percentages.percentagesList);
-                combinePerCetagesList = combinePerCetagesList.Distinct().ToList();
+            ////
+            //for (int r = 0; r < Percentages.percentagesList.Count; r++)
+            //{
+            //    var item = Percentages.percentagesList[r]; // Item
+            //    for (int c = 0; c < item.Count; c++)
+            //    {
+            //        var colItem = item[c]; // Item
+            //        int searchedRowIndexOfQ1_X = 0;
+            //        var getQ1_X_Data = mdgv.getColumnData(dataGridView6, 0);
+            //        if (colItem.ColumnValue != null)
+            //        {
+            //            searchedRowIndexOfQ1_X = getQ1_X_Data.FindIndex(x => x == colItem.ColumnValue);
+            //            dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[r + 1].Value = colItem.Percentage;
+            //        }
+            //    }
+            //}
 
-                // Setting up structure// If rows already created
-                DataTable dt = new DataTable();
-                //Setting Columns
-                dt.Columns.Add(new DataColumn(cbWorkingColumn.Text, typeof(string)));
-                for (int r = 0; r < Percentages.percentagesList.Count; r++)
+
+            // Assigning Zero(0) to empty values\
+
+            for (int rows = 0; rows < dataGridView6.Rows.Count - 1; rows++)
+            {
+                for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
                 {
-                    var item = Percentages.percentagesList[r];
-                    var queryAsColumn = item[0].Query;
-                    queryAsColumn = queryAsColumn.Replace("AND", ",");
-                    queryAsColumn = queryAsColumn.Replace("=", " ");
-                    queryAsColumn = queryAsColumn.Replace("'", "");
-                    dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
-                }
-                DataRow toInsert = dt.NewRow();
-                //// Setting Rows
-                for (int j = 0; j < combinePerCetagesList.Count; j++)
-                {
-                    toInsert = dt.NewRow();
-
-                    toInsert[0] = combinePerCetagesList[j];
-                    dt.Rows.InsertAt(toInsert, 0);
-                }
-
-
-                //toInsert[0] = "Pervious";
-                //dt.Rows.InsertAt(toInsert, 0);
-                dataGridView6.DataSource = dt;
-
-                //
-                for (int r = 0; r < Percentages.percentagesList.Count; r++)
-                {
-                    var item = Percentages.percentagesList[r]; // Item
-                    for (int c = 0; c < item.Count; c++)
+                    var item = dataGridView6.Rows[rows].Cells[col].Value.ToString();
+                    if (item == null || String.IsNullOrWhiteSpace(item))
                     {
-                        var colItem = item[c]; // Item
-                        int searchedRowIndexOfQ1_X = 0;
-                        var getQ1_X_Data = mdgv.getColumnData(dataGridView6, 0);
-                        if (colItem.ColumnValue != null)
+                        dataGridView6.Rows[rows].Cells[col].Value = 0;
+                    }
+                }
+            }
+
+            // Cloning DatagridView End
+
+
+            // Caluculating and Assigning Count Of Q_X 
+            var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView1, cbWorkingColumn.Text);
+
+            var get_Q1_ColumnData = mdgv.getColumnData(dataGridView1, searchColumnNameIndexAfterWET);
+            var getCurrent_Q1_ColumnData = mdgv.getColumnData(dataGridView6, 0);
+
+            List<myExcel> countList = new List<myExcel>();
+            foreach (var item in getCurrent_Q1_ColumnData)
+            {
+                myExcel myExcel = new myExcel();
+                myExcel.ColumnValue = item;
+                foreach (var Q1_ColumnData in get_Q1_ColumnData)
+                {
+                    var rowDataList = mdgv.Split(Q1_ColumnData, item.Length);
+                    for (int j = 0; j < rowDataList.Count; j++)
+                    {
+                        if (item == rowDataList[j])
                         {
-                            searchedRowIndexOfQ1_X = getQ1_X_Data.FindIndex(x => x == colItem.ColumnValue);
-                            dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[r + 1].Value = colItem.Percentage;
+                            myExcel.Count += 1;
                         }
                     }
                 }
+                countList.Add(myExcel);
+            }
 
+            // Getting range =============
+            var getRangeColumnData = mdgv.getColumnData(dataGridView3, 0);
+            var getRangePercentageColumnData = mdgv.getColumnData(dataGridView3, 1);
+            List<Range> ranges = new List<Range>();
+            for (int i = 0; i < getRangeColumnData.Count; i++)
+            {
+                Range range = new Range();
+                var item = getRangeColumnData[i];
+                var splitRange = item.Split('-');
+                var min = splitRange[0];
+                var max = splitRange[1];
+                var percentage = getRangePercentageColumnData[i].ToString();
+                range.Min = Convert.ToInt32(min);
+                range.Max = Convert.ToInt32(max);
+                range.Percentage = Convert.ToDecimal(percentage);
 
-                // Assigning Zero(0) to empty values\
+                ranges.Add(range);
+            }
 
-                for (int rows = 0; rows < dataGridView6.Rows.Count - 1; rows++)
+            //
+            for (int rows = 0; rows < dataGridView6.Rows.Count - 1; rows++)
+            {
+                for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
                 {
-                    for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
+                    var Q_X_Value = dataGridView6.Rows[rows].Cells[0].Value.ToString();
+                    int Q_X_Count = 0;
+
+                    var getQ1_X_Data_Current = mdgv.getColumnData(dataGridView4, 0);
+                    var searchedRowIndexOfQ1_X_Current = getQ1_X_Data_Current.FindIndex(x => x == Q_X_Value);
+                    var getQ1_X_Data_Previous = mdgv.getColumnData(dataGridView5, 0);
+                    var searchedRowIndexOfQ1_X_Previous = getQ1_X_Data_Previous.FindIndex(x => x == Q_X_Value);
+
+                    if (searchedRowIndexOfQ1_X_Current >= 0 && searchedRowIndexOfQ1_X_Previous >= 0)
                     {
-                        var item = dataGridView6.Rows[rows].Cells[col].Value.ToString();
-                        if (item == null || String.IsNullOrWhiteSpace(item))
-                        {
-                            dataGridView6.Rows[rows].Cells[col].Value = 0;
-                        }
-                    }
-                }
-
-                // Cloning DatagridView End
-
-
-                // Caluculating and Assigning Count Of Q_X 
-                var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView1, cbWorkingColumn.Text);
-
-                var get_Q1_ColumnData = mdgv.getColumnData(dataGridView1, searchColumnNameIndexAfterWET);
-                var getCurrent_Q1_ColumnData = mdgv.getColumnData(dataGridView4, 0);
-
-                List<myExcel> countList = new List<myExcel>();
-                foreach (var item in getCurrent_Q1_ColumnData)
-                {
-                    myExcel myExcel = new myExcel();
-                    myExcel.ColumnValue = item;
-                    foreach (var Q1_ColumnData in get_Q1_ColumnData)
-                    {
-                        var rowDataList = mdgv.Split(Q1_ColumnData, item.Length);
-                        for (int j = 0; j < rowDataList.Count; j++)
-                        {
-                            if (item == rowDataList[j])
-                            {
-                                myExcel.Count += 1;
-                            }
-                        }
-                    }
-                    countList.Add(myExcel);
-                }
-
-                // Getting range =============
-                var getRangeColumnData = mdgv.getColumnData(dataGridView3, 0);
-                var getRangePercentageColumnData = mdgv.getColumnData(dataGridView3, 1);
-                List<Range> ranges = new List<Range>();
-                for (int i = 0; i < getRangeColumnData.Count; i++)
-                {
-                    Range range = new Range();
-                    var item = getRangeColumnData[i];
-                    var splitRange = item.Split('-');
-                    var min = splitRange[0];
-                    var max = splitRange[1];
-                    var percentage = getRangePercentageColumnData[i].ToString();
-                    range.Min = Convert.ToInt32(min);
-                    range.Max = Convert.ToInt32(max);
-                    range.Percentage = Convert.ToDecimal(percentage);
-
-                    ranges.Add(range);
-                }
-
-                //
-                for (int rows = 0; rows < dataGridView6.Rows.Count - 1; rows++)
-                {
-                    for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
-                    {
-                        var Q_X_Value = dataGridView4.Rows[rows].Cells[0].Value.ToString();
-                        int Q_X_Count = 0;
-                        string currentDgvValue = dataGridView4.Rows[rows].Cells[col].Value.ToString();
-                        string perviousDgvValue = dataGridView5.Rows[rows].Cells[col].Value.ToString();
+                        string currentDgvValue = dataGridView4.Rows[searchedRowIndexOfQ1_X_Current].Cells[col].Value.ToString();
+                        string perviousDgvValue = dataGridView5.Rows[searchedRowIndexOfQ1_X_Previous].Cells[col].Value.ToString();
 
                         // Calculating difference of current and previous values
                         double calculateDifference = Convert.ToDouble(currentDgvValue) - Convert.ToDouble(perviousDgvValue);
@@ -1004,19 +1024,19 @@ namespace ExcelProject
 
                                     if (Convert.ToDouble(range.Percentage) > Convert.ToDouble(convert_calculatedDiff_Positive))
                                     {
-                                        dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[col].Value = dataGridView4.Rows[rows].Cells[col].Value;
+                                        dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[col].Value = dataGridView4.Rows[searchedRowIndexOfQ1_X_Current].Cells[col].Value;
                                     }
                                     else if (Convert.ToDouble(range.Percentage) < Convert.ToDouble(convert_calculatedDiff_Positive))
                                     {
                                         if (calculateDifference > 0) // Positive answer
                                         {
-                                            string value = dataGridView6.Rows[rows].Cells[col].Value.ToString();
+                                            string value = dataGridView5.Rows[searchedRowIndexOfQ1_X_Previous].Cells[col].Value.ToString(); // Previous Value
                                             decimal sum = Convert.ToDecimal(value) + range.Percentage;
                                             dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[col].Value = sum;
                                         }
                                         else if (calculateDifference < 0) // Negative answer
                                         {
-                                            var value = dataGridView6.Rows[rows].Cells[col].Value.ToString();
+                                            string value = dataGridView5.Rows[searchedRowIndexOfQ1_X_Previous].Cells[col].Value.ToString(); // Previous Value
                                             decimal diff = Convert.ToDecimal(value) - range.Percentage;
                                             dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[col].Value = diff;
                                         }
@@ -1032,24 +1052,177 @@ namespace ExcelProject
                         }
                     }
                 }
-
-                myExcel excel = new myExcel();
-                string title = "Target Report";
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
-                sfd.FileName = "tagetReport.xls";
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    excel.ToCsV(dataGridView6, "Target Report", "", "", title, sfd.FileName);
-                    MessageBox.Show("Finish");
-                }
-
             }
-            catch (Exception ex)
+
+            myExcel excel = new myExcel();
+            string title = "Target Report";
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+            sfd.FileName = "tagetReport.xlsx";
+            if (sfd.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show(ex.Message);
+                excel.ToCsV(dataGridView6, "Target Report", "", "", title, sfd.FileName);
+                MessageBox.Show("Finish");
+            }
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+        }
+
+        private void btnUploadNewTargetFile_Click(object sender, EventArgs e)
+        {
+
+            string filePath = string.Empty;
+            string fileExt = string.Empty;
+            OpenFileDialog file = new OpenFileDialog(); //open dialog to choose file  
+            if (file.ShowDialog() == System.Windows.Forms.DialogResult.OK) //if there is a file choosen by the user  
+            {
+                filePath = file.FileName; //get the path of the file  
+                
+
+                // Displaying currently running file
+                //currentlyRunningFile = "File Name: " + file.SafeFileName + currentFileExt;
+
+                fileExt = Path.GetExtension(filePath); //get the file extension  
+                if (fileExt.CompareTo(".xls") == 0 || fileExt.CompareTo(".xlsx") == 0)
+                {
+                    try
+                    {
+                        label9.Text = "New Target File";
+                        System.Data.DataTable dtExcel = new System.Data.DataTable();
+                        dtExcel = ReadExcel(filePath, fileExt); //read excel file  
+                        dataGridView5.Visible = true;
+                        dataGridView5.DataSource = dtExcel;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please choose .xls or .xlsx file only.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error); //custom messageBox to show error  
+                }
             }
         }
 
+        void changePercentages(List<string> lst, DataGridView dataGridView, DataGridView dataGridView3)
+        {
+            dataGridView3.Refresh();
+            dataGridView3.DataSource = null;
+            dataGridView3.Rows.Clear();
+            dataGridView3.Columns.Clear();
+            Percentages.percentagesList = new List<List<Percentages>>();
+
+            var AllCombosList = lst;
+
+            //string query = "";
+            //int u = 0;
+            foreach (var query in AllCombosList)
+            {
+                List<Percentages> percentagesList = new List<Percentages>();
+                // Filtration
+                filteration(query, dataGridView);
+
+
+                for (int rows = 0; rows < dataGridView6.Rows.Count - 1; rows++) // Target DataGridView Count
+                {
+                    for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
+                    {
+                        var Q_X_Value = dataGridView6.Rows[rows].Cells[0].Value.ToString();
+                        var Q_X_PercentageValue_OldTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString();
+                        var Q_X_PercentageValue_NewTarget = dataGridView5.Rows[rows].Cells[col].Value.ToString();
+                        MyDataGridView mdgv = new MyDataGridView();
+                        if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) > Convert.ToDouble(Q_X_PercentageValue_OldTarget))
+                        {
+                            var getAllQueries = mdgv.getRegenratedQueries(dataGridView5);
+                            var getQ1_X_ColumnName = getAllQueries[0];
+                            mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget);
+                        }
+                        else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) < Convert.ToDouble(Q_X_PercentageValue_OldTarget))
+                        {
+                            mdgv.decreasePercentage();
+                        }
+                        else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) == Convert.ToDouble(Q_X_PercentageValue_OldTarget))
+                        {
+                            // Do nothing
+                        }
+                    }
+                }
+            }
+        }
+
+        private void btnChangePercentages_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dataGridView1.Rows.Count == 0)
+                {
+                    MessageBox.Show("Kindly upload current file.");
+                    return;
+                }
+
+                if (lbDepCol.SelectedItems.Count <= 0 || lbMustCol.SelectedItems.Count <= 0)
+                {
+                    MessageBox.Show("DEPENDENT and MUST COLUMN must not be empty.");
+                    return;
+                }
+
+                MyDataGridView mdgv = new MyDataGridView();
+                var getAllQueries = mdgv.getRegenratedQueries(dataGridView5);
+                var getQ1_X_Value = getAllQueries[0];
+                getAllQueries.RemoveAt(0);
+                if (getAllQueries.Count() > 0)
+                {
+                    changePercentages(getAllQueries, dataGridView1, dataGridView3);
+                }
+            }
+            catch (Exception ex)
+            {
+                lblError.Show();
+                lblError.Text = "Error: " + ex.Message;
+            }
+        }
+
+        private void btnUploadOladTargetFile_Click(object sender, EventArgs e)
+        {
+
+            string filePath = string.Empty;
+            string fileExt = string.Empty;
+            OpenFileDialog file = new OpenFileDialog(); //open dialog to choose file  
+            if (file.ShowDialog() == System.Windows.Forms.DialogResult.OK) //if there is a file choosen by the user  
+            {
+                filePath = file.FileName; //get the path of the file  
+
+
+                // Displaying currently running file
+                //currentlyRunningFile = "File Name: " + file.SafeFileName + currentFileExt;
+
+                fileExt = Path.GetExtension(filePath); //get the file extension  
+                if (fileExt.CompareTo(".xls") == 0 || fileExt.CompareTo(".xlsx") == 0)
+                {
+                    try
+                    {
+                        System.Data.DataTable dtExcel = new System.Data.DataTable();
+                        dtExcel = ReadExcel(filePath, fileExt); //read excel file  
+                        dataGridView6.Visible = true;
+                        dataGridView6.DataSource = dtExcel;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please choose .xls or .xlsx file only.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error); //custom messageBox to show error  
+                }
+            }
+        }
     }
 }
