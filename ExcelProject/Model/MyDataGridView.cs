@@ -365,6 +365,52 @@ namespace ExcelProject.Model
 
             return quries;
         }
+
+        public void AssignValuesToCurrentFile(DataGridView dataGridView1, DataGridView dataGridView3)
+        {
+            int currentFile_rowIndex = -1;
+            foreach (DataGridViewRow row in dataGridView3.Rows)
+            {
+                int formNoIndex = 1;
+                var formNo = row.Cells[formNoIndex].Value.ToString(); //Form Number Value
+
+                // Get filtered file row data
+                var filteredFileRowData = getSpecificRowData(dataGridView3, row.Index);
+
+                // Search Filtered File Row and Form number must be unique
+                DataGridViewRow currentFile_row = dataGridView1.Rows
+                    .Cast<DataGridViewRow>()
+                    .Where(r => r.Cells[formNoIndex].Value.ToString().Equals(formNo))
+                    .First();
+
+                currentFile_rowIndex = currentFile_row.Index;
+
+                // Replace Row
+                replaceRowData(dataGridView1, filteredFileRowData, currentFile_rowIndex);
+            }
+
+        }
+
+        public void replaceRowData(DataGridView dataGridView, List<string> lst, int rowIndex)
+        {
+            for (int i = 0; i < lst.Count; i++)
+            {
+                var item = lst[i];
+                dataGridView.Rows[rowIndex].Cells[i].Value = item;
+            }
+        }
+
+        public List<string> getSpecificRowData(DataGridView dataGridView, int rows)
+        {
+            List<string> lst = new List<string>();
+            for (int col = 1; col < dataGridView.Rows[rows].Cells.Count; col++)
+            {
+                var val = dataGridView.Rows[rows].Cells[col].Value.ToString();
+                lst.Add(val);
+            }
+            return lst;
+        }
+
         public void assignValuesToMustColumn(ListBox lbMustCol, DataGridView dataGridView3, string Q_X_Value, int rows)
         {
             MyDataGridView mdgv = new MyDataGridView();
@@ -374,10 +420,10 @@ namespace ExcelProject.Model
             {
                 var Q_X_ColumnName = item.ToString();
                 var searchColumnNameIndexAfterWET_Q_X = mdgv.searchColumnNameIndexAfterWET(dataGridView3, Q_X_ColumnName);
-                var getColumnData = mdgv.getColumnData(dataGridView3, searchColumnNameIndexAfterWET_Q_X);
+                //var getColumnData = mdgv.getColumnData(dataGridView3, searchColumnNameIndexAfterWET_Q_X);
                 var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value.ToString();
                 var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
-                // Exist
+                // Not Exist
                 if (!lst_GetAllCellData.Contains(Q_X_Value))
                 {
                     lst_GetAllCellData.Add(Q_X_Value);
@@ -389,7 +435,7 @@ namespace ExcelProject.Model
                 dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = result;
             }
         }
-        public void increasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget)
+        public void increasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1)
         {
             MyDataGridView mdgv = new MyDataGridView();
             var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, getQ1_X_ColumnName);
@@ -405,7 +451,7 @@ namespace ExcelProject.Model
                 {
                     //if (i == searchColumnNameIndexAfterWET)
                     //{
-                    bool isDependentColSatisfied = false;
+                    bool isDependentColSatisfied = true;
 
                     // Dependent column validation
                     List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
@@ -475,11 +521,14 @@ namespace ExcelProject.Model
                     }
                     if (flag)
                     {
+                        // Assign and replace values of current file i.e. (datagridview1)
+                        AssignValuesToCurrentFile(dataGridView1, dataGridView3);
                         break;
                     }
                     //i = 0;
                 }
             }
+
 
         }
 

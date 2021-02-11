@@ -1141,7 +1141,7 @@ namespace ExcelProject
                         {
                             var getAllQueries = mdgv.getRegenratedQueries(dataGridView5);
                             var getQ1_X_ColumnName = getAllQueries[0];
-                            mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget);
+                            mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1);
                         }
                         else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) < Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                         {
@@ -1158,8 +1158,8 @@ namespace ExcelProject
 
         private void btnChangePercentages_Click(object sender, EventArgs e)
         {
-            try
-            {
+            //try
+            //{
                 if (dataGridView1.Rows.Count == 0)
                 {
                     MessageBox.Show("Kindly upload current file.");
@@ -1180,12 +1180,12 @@ namespace ExcelProject
                 {
                     changePercentages(getAllQueries, dataGridView1, dataGridView3);
                 }
-            }
-            catch (Exception ex)
-            {
-                lblError.Show();
-                lblError.Text = "Error: " + ex.Message;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    lblError.Show();
+            //    lblError.Text = "Error: " + ex.Message;
+            //}
         }
 
         private void btnUploadOladTargetFile_Click(object sender, EventArgs e)
