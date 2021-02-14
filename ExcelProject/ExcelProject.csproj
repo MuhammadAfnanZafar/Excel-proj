@@ -95,6 +95,7 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\IncreaseOrDecrease.cs" />
     <Compile Include="Model\MyComboBox.cs" />
     <Compile Include="Model\MyDataGridView.cs" />
     <Compile Include="Model\myExcel.cs" />
