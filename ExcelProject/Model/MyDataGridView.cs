@@ -286,6 +286,11 @@ namespace ExcelProject.Model
                 return 0.ToString();
             }
 
+            if (calulateWETSum <= 0)
+            {
+                return 0.ToString();
+            }
+
             var total = brandSum / calulateWETSum;
             //if (total<=0)
             //{
@@ -464,88 +469,93 @@ namespace ExcelProject.Model
             int i = 0;
             for (int rows = 0; rows < dataGridView3.Rows.Count - 1; rows++)
             {
-                for (int col = 0; col < dataGridView3.Rows[rows].Cells.Count; col++)
-                {
-                    //if (i == searchColumnNameIndexAfterWET)
-                    //{
-                    bool isDependentColSatisfied = true;
+                //for (int col = 0; col < dataGridView3.Rows[rows].Cells.Count; col++)
+                //{
+                //if (i == searchColumnNameIndexAfterWET)
+                //{
+                bool isDependentColSatisfied = true;
 
-                    // Dependent column validation
-                    List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
-                    foreach (var item in depColListBoxItems)
+                // Dependent column validation
+                List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
+                foreach (var item in depColListBoxItems)
+                {
+                    var arr_existOrNot = item.ToString().Split('#');
+                    var value_existorNotExist = arr_existOrNot[1];
+                    var columnName_Q_X_existorNotExist = arr_existOrNot[0];
+                    ;
+                    var searchColumnNameIndexAfterWET_Q_X_existorNotExist = mdgv.searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
+                    var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
+
+
+                    int formNoIndex = 1;
+                    var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
+
+                    var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
+                    if (value_existorNotExist.ToLower() == "exist")
                     {
-                        var arr_existOrNot = item.ToString().Split('#');
-                        var value_existorNotExist = arr_existOrNot[1];
-                        var columnName_Q_X_existorNotExist = arr_existOrNot[0];
-                        ;
-                        var searchColumnNameIndexAfterWET_Q_X_existorNotExist = mdgv.searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
-                        var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
-                        var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
-                        if (value_existorNotExist.ToLower() == "exist")
+                        // Exist
+                        if (lst_GetAllCellData.Contains(Q_X_Value))
                         {
-                            // Exist
-                            if (lst_GetAllCellData.Contains(Q_X_Value))
-                            {
-                                lst_CheckAllValidation_ExistNotExist.Add(true);
-                            }
-                            else
-                            {
-                                lst_CheckAllValidation_ExistNotExist.Add(false);
-                            }
+                            lst_CheckAllValidation_ExistNotExist.Add(true);
                         }
                         else
                         {
-                            //Not exist
-                            if (!lst_GetAllCellData.Contains(Q_X_Value))
-                            {
-                                lst_CheckAllValidation_ExistNotExist.Add(true);
-                            }
-                            else
-                            {
-                                lst_CheckAllValidation_ExistNotExist.Add(false);
-                            }
+                            lst_CheckAllValidation_ExistNotExist.Add(false);
                         }
                     }
-
-                    // Checking Dependent column if all conditions are true witch means "AND"
-                    foreach (var item in lst_CheckAllValidation_ExistNotExist)
+                    else
                     {
-                        if (!item)
+                        //Not exist
+                        if (!lst_GetAllCellData.Contains(Q_X_Value))
                         {
-                            isDependentColSatisfied = false;
+                            lst_CheckAllValidation_ExistNotExist.Add(true);
                         }
-                    }
-
-                    if (isDependentColSatisfied) // Validation for dependent column IF ALL Dependent column VALIDATION SATISFIED THEN CHANGE COLUMN
-                    {
-                        var currentVal = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value.ToString();
-
-                        // assign Values To Must Column
-                        assignValuesToMustColumn(lbMustCol, dataGridView3, Q_X_Value, rows);
-
-                        if (currentVal != Q_X_Value) // if Q1 value already same do nothing
+                        else
                         {
-                            dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = Q_X_Value;
-                            var percentage = mdgv.calculatePercentage(dataGridView3, Q_X_Value, searchColumnNameIndexAfterWET);
-                            if (double.Parse(Q_X_PercentageValue_NewTarget) <= double.Parse(percentage))
-                            {
-                                flag = true;
-                                break;
-                            }
+                            lst_CheckAllValidation_ExistNotExist.Add(false);
                         }
-                        //}
-                        i++;
                     }
-                    if (flag)
-                    {
-                        // Assign and replace values of current file i.e. (datagridview1)
-                        AssignValuesToCurrentFile(dataGridView1, dataGridView3);
-                        break;
-                    }
-                    //i = 0;
                 }
-            }
 
+                // Checking Dependent column if all conditions are true witch means "AND"
+                foreach (var item in lst_CheckAllValidation_ExistNotExist)
+                {
+                    if (!item)
+                    {
+                        isDependentColSatisfied = false;
+                    }
+                }
+
+                if (isDependentColSatisfied) // Validation for dependent column IF ALL Dependent column VALIDATION SATISFIED THEN CHANGE COLUMN
+                {
+                    var currentVal = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value.ToString();
+
+                    // assign Values To Must Column
+                    assignValuesToMustColumn(lbMustCol, dataGridView3, Q_X_Value, rows);
+
+                    if (currentVal != Q_X_Value) // if Q1 value already same do nothing
+                    {
+                        dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = Q_X_Value;
+                        var percentage = mdgv.calculatePercentage(dataGridView3, Q_X_Value, searchColumnNameIndexAfterWET);
+                        if (double.Parse(Q_X_PercentageValue_NewTarget) <= double.Parse(percentage))
+                        {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    //}
+                    i++;
+                }
+                if (flag)
+                {
+                    break;
+                }
+                //i = 0;
+                //}
+            }
+            
+            // Assign and replace values of current file i.e. (datagridview1)
+            //AssignValuesToCurrentFile(dataGridView1, dataGridView3);
 
         }
 

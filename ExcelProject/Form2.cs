@@ -197,59 +197,55 @@ namespace ExcelProject
                     List<Percentages> percentagesList = new List<Percentages>();
                     // Filtration
                     filteration(query, dataGridView);
-
-                    var selectedVal = cbWorkingColumn.Text;
-                    MyDataGridView mdgv = new MyDataGridView();
-                    var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
-                    var workingColumnData = mdgv.getColumnPlusRowData(dataGridView1, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text)); 
-                    var temp = mdgv.getColumnPlusRowData(dataGridView2, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text));
-                    // Getting selected working column data
-                    workingColumnData.AddRange(temp);
-                    workingColumnData = workingColumnData.Distinct().ToList();
-                    if (searchColumnNameIndexAfterWET == 0)
+                    if (dataGridView3.Rows.Count > 1)
                     {
-                        MessageBox.Show("Kindly add atleast one column after WET column.");
-                        return;
-                    }
 
-                    decimal total = 0;
-                    if (searchColumnNameIndexAfterWET > 0)
-                    {
-                        if (workingColumnData.Count() > 0)
+                        var selectedVal = cbWorkingColumn.Text;
+                        MyDataGridView mdgv = new MyDataGridView();
+                        var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
+                        var workingColumnData = mdgv.getColumnPlusRowData(dataGridView1, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text)); // Getting selected working column data
+                        var workingColumnDataPrevious = mdgv.getColumnPlusRowData(dataGridView2, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text));
+                        workingColumnData.AddRange(workingColumnDataPrevious);
+                        workingColumnData = workingColumnData.Distinct().ToList();
+                        if (searchColumnNameIndexAfterWET == 0)
                         {
-                            foreach (var item in workingColumnData)
-                            {
-                                
-                                // Calulating Percentage
-                                var percentage = mdgv.calculatePercentage(dataGridView3, item, searchColumnNameIndexAfterWET); // Getting percentage of each column in selected working column data
-                                if (item == 16.ToString())
-                                {
+                            MessageBox.Show("Kindly add atleast one column after WET column.");
+                            return;
+                        }
 
+                        decimal total = 0;
+                        if (searchColumnNameIndexAfterWET > 0)
+                        {
+                            if (workingColumnData.Count() > 0)
+                            {
+                                foreach (var item in workingColumnData)
+                                {
+                                    // Calulating Percentage
+                                    var percentage = mdgv.calculatePercentage(dataGridView3, item, searchColumnNameIndexAfterWET); // Getting percentage of each column in selected working column data
+                                    total = total + Convert.ToDecimal(percentage);
+                                    Percentages per = new Percentages()
+                                    {
+                                        ColumnValue = item,
+                                        Percentage = percentage,
+                                        Query = query,
+                                        Sum = total
+                                    };
+
+
+                                    percentagesList.Add(per);
                                 }
-                                total = total + Convert.ToDecimal(percentage);
+                            }
+                            else
+                            {
                                 Percentages per = new Percentages()
                                 {
-                                    ColumnValue = item,
-                                    Percentage = percentage,
                                     Query = query,
-                                    Sum = total
                                 };
-
-
                                 percentagesList.Add(per);
                             }
                         }
-                        else
-                        {
-                            Percentages per = new Percentages()
-                            {
-                                Query = query,
-                            };
-                            percentagesList.Add(per);
-                        }
+                        Percentages.percentagesList.Add(percentagesList);
                     }
-                    Percentages.percentagesList.Add(percentagesList);
-
                 }
 
                 //filteration(query);
@@ -339,7 +335,7 @@ namespace ExcelProject
                 myExcel excel = new myExcel();
                 string title = reportType + " Report";
                 SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
+                sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
                 sfd.FileName = reportType + ".xlsx";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -378,49 +374,55 @@ namespace ExcelProject
                     // Filtration
                     filteration(query, dataGridView);
 
-                    var selectedVal = cbWorkingColumn.Text;
-                    MyDataGridView mdgv = new MyDataGridView();
-                    var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
-                    var workingColumnData = mdgv.getColumnPlusRowData(dataGridView3, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text)); // Getting selected working column data
-                    workingColumnData = workingColumnData.Distinct().ToList();
-                    if (searchColumnNameIndexAfterWET == 0)
+                    if (dataGridView3.Rows.Count > 1)
                     {
-                        MessageBox.Show("Kindly add atleast one column after WET column.");
-                        return;
-                    }
+                        var selectedVal = cbWorkingColumn.Text;
+                        MyDataGridView mdgv = new MyDataGridView();
+                        var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
 
-                    decimal total = 0;
-                    if (searchColumnNameIndexAfterWET > 0)
-                    {
-                        if (workingColumnData.Count() > 0)
+                        var workingColumnData = mdgv.getColumnPlusRowData(dataGridView1, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text)); // Getting selected working column data
+                        var workingColumnDataPrevious = mdgv.getColumnPlusRowData(dataGridView2, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text));
+                        workingColumnData.AddRange(workingColumnDataPrevious);
+                        workingColumnData = workingColumnData.Distinct().ToList();
+                        if (searchColumnNameIndexAfterWET == 0)
                         {
-                            foreach (var item in workingColumnData)
+                            MessageBox.Show("Kindly add atleast one column after WET column.");
+                            return;
+                        }
+
+                        decimal total = 0;
+                        if (searchColumnNameIndexAfterWET > 0)
+                        {
+                            if (workingColumnData.Count() > 0)
                             {
-                                // Calulating Percentage
-                                var percentage = mdgv.calculatePercentage(dataGridView3, item, searchColumnNameIndexAfterWET); // Getting percentage of each column in selected working column data
-                                total = total + Convert.ToDecimal(percentage);
+                                foreach (var item in workingColumnData)
+                                {
+                                    // Calulating Percentage
+                                    var percentage = mdgv.calculatePercentage(dataGridView3, item, searchColumnNameIndexAfterWET); // Getting percentage of each column in selected working column data
+                                    total = total + Convert.ToDecimal(percentage);
+                                    Percentages per = new Percentages()
+                                    {
+                                        ColumnValue = item,
+                                        Percentage = percentage,
+                                        Query = query,
+                                        Sum = total
+                                    };
+
+
+                                    percentagesList.Add(per);
+                                }
+                            }
+                            else
+                            {
                                 Percentages per = new Percentages()
                                 {
-                                    ColumnValue = item,
-                                    Percentage = percentage,
                                     Query = query,
-                                    Sum = total
                                 };
-
-
                                 percentagesList.Add(per);
                             }
                         }
-                        else
-                        {
-                            Percentages per = new Percentages()
-                            {
-                                Query = query,
-                            };
-                            percentagesList.Add(per);
-                        }
+                        Percentages.percentagesList.Add(percentagesList);
                     }
-                    Percentages.percentagesList.Add(percentagesList);
                 }
 
                 //filteration(query);
@@ -510,7 +512,7 @@ namespace ExcelProject
                 myExcel excel = new myExcel();
                 string title = reportType + " Report";
                 SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
+                sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
                 sfd.FileName = reportType + ".xlsx";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
@@ -800,7 +802,7 @@ namespace ExcelProject
             myExcel excel = new myExcel();
             string title = "Excel Report";
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Excel Documents (*.xls)|*.xls|(*.xlsx)|*.xlsx";
+            sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
             sfd.FileName = "report.xlsx";
             if (sfd.ShowDialog() == DialogResult.OK)
             {
@@ -1136,39 +1138,40 @@ namespace ExcelProject
 
             //string query = "";
             //int u = 0;
+            int col = 1;
             foreach (var query in AllCombosList)
             {
                 List<Percentages> percentagesList = new List<Percentages>();
                 // Filtration
                 filteration(query, dataGridView);
 
-
-                for (int rows = 0; rows < dataGridView6.Rows.Count - 1; rows++) // Target DataGridView Count
+                int rows = 0;
+                for (; rows < dataGridView6.Rows.Count - 1;)
                 {
-                    for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
+                    var Q_X_Value = dataGridView6.Rows[rows].Cells[0].Value.ToString();
+                    var Q_X_PercentageValue_OldTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString();
+                    var Q_X_PercentageValue_NewTarget = dataGridView5.Rows[rows].Cells[col].Value.ToString();
+                    MyDataGridView mdgv = new MyDataGridView();
+                    if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) > Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
-                        var Q_X_Value = dataGridView6.Rows[rows].Cells[0].Value.ToString();
-                        var Q_X_PercentageValue_OldTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString();
-                        var Q_X_PercentageValue_NewTarget = dataGridView5.Rows[rows].Cells[col].Value.ToString();
-                        MyDataGridView mdgv = new MyDataGridView();
-                        if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) > Convert.ToDouble(Q_X_PercentageValue_OldTarget))
-                        {
-                            var getAllQueries = mdgv.getRegenratedQueries(dataGridView5);
-                            var getQ1_X_ColumnName = getAllQueries[0];
-                            mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1);
-                        }
-                        else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) < Convert.ToDouble(Q_X_PercentageValue_OldTarget))
-                        {
-                            var getAllQueries = mdgv.getRegenratedQueries(dataGridView5);
-                            var getQ1_X_ColumnName = getAllQueries[0];
-                            mdgv.decreasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1);
-                        }
-                        else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) == Convert.ToDouble(Q_X_PercentageValue_OldTarget))
-                        {
-                            // Do nothing
-                        }
+                        var getAllQueries = mdgv.getRegenratedQueries(dataGridView5);
+                        var getQ1_X_ColumnName = getAllQueries[0];
+                        mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1);
                     }
+                    else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) < Convert.ToDouble(Q_X_PercentageValue_OldTarget))
+                    {
+                        var getAllQueries = mdgv.getRegenratedQueries(dataGridView5);
+                        var getQ1_X_ColumnName = getAllQueries[0];
+                        mdgv.decreasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1);
+                    }
+                    else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) == Convert.ToDouble(Q_X_PercentageValue_OldTarget))
+                    {
+                        // Do nothing
+                    }
+                    rows++;
                 }
+                col++;
+                break;
             }
         }
 
@@ -1176,38 +1179,38 @@ namespace ExcelProject
         {
             //try
             //{
-                if (dataGridView1.Rows.Count == 0)
-                {
-                    MessageBox.Show("Kindly upload current file.");
-                    return;
-                }
+            if (dataGridView1.Rows.Count == 0)
+            {
+                MessageBox.Show("Kindly upload current file.");
+                return;
+            }
 
-                if (lbDepCol.SelectedItems.Count <= 0 || lbMustCol.SelectedItems.Count <= 0)
-                {
-                    MessageBox.Show("DEPENDENT and MUST COLUMN must not be empty.");
-                    return;
-                }
+            if (lbDepCol.SelectedItems.Count <= 0 || lbMustCol.SelectedItems.Count <= 0)
+            {
+                MessageBox.Show("DEPENDENT and MUST COLUMN must not be empty.");
+                return;
+            }
 
-                MyDataGridView mdgv = new MyDataGridView();
-                var getAllQueries = mdgv.getRegenratedQueries(dataGridView5);
-                var getQ1_X_Value = getAllQueries[0];
-                getAllQueries.RemoveAt(0);
-                if (getAllQueries.Count() > 0)
-                {
-                    changePercentages(getAllQueries, dataGridView1, dataGridView3);
-                }
+            MyDataGridView mdgv = new MyDataGridView();
+            var getAllQueries = mdgv.getRegenratedQueries(dataGridView5);
+            var getQ1_X_Value = getAllQueries[0];
+            getAllQueries.RemoveAt(0);
+            if (getAllQueries.Count() > 0)
+            {
+                changePercentages(getAllQueries, dataGridView1, dataGridView3);
+            }
 
-                //
-                myExcel excel = new myExcel();
-                string title = "New Current Report";
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
-                sfd.FileName = "newCurrentReport.xlsx";
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    excel.ToCsV(dataGridView1, "Target Report", "", "", title, sfd.FileName);
-                    MessageBox.Show("Finish");
-                }
+            //
+            myExcel excel = new myExcel();
+            string title = "New Current Report";
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+            sfd.FileName = "newCurrentReport.xlsx";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                excel.ToCsV(dataGridView1, "Target Report", "", "", title, sfd.FileName);
+                MessageBox.Show("Finish");
+            }
             //}
             //catch (Exception ex)
             //{
