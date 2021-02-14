@@ -8,6 +8,9 @@ using System.Windows.Forms;
 
 namespace ExcelProject.Model
 {
+    /// <summary>
+    /// datagrid view functions
+    /// </summary>
     class MyDataGridView
     {
         int colIndex = 2;
@@ -278,9 +281,23 @@ namespace ExcelProject.Model
                 //    brandSum += double.Parse(item[item.Count() - 2]);
                 //}
             }
+            if (calulateWETSum <=0)
+            {
+                return 0.ToString();
+            }
 
             var total = brandSum / calulateWETSum;
-            return (total * 100).ToString();
+            //if (total<=0)
+            //{
+            //    return "0";
+            //}
+            var temp =  (total * 100).ToString();
+            if (val == 16.ToString())
+            {
+
+            }
+
+            return temp;
         }
         public List<int> getIndexesAfterWET(DataGridView dgv)
         {
@@ -629,6 +646,74 @@ namespace ExcelProject.Model
             }
 
 
+        }
+
+        public void SetTargetwithValidation(DataGridView target,DataGridView current)
+        {
+            /////// single / multiple
+            for (int i = 1; i < target.Columns.Count; i++)
+            {
+                var targetColumn = getColumnData(target, i);
+                decimal columnSum = 0;
+                foreach (var item in targetColumn)
+                {
+                    columnSum += Convert.ToDecimal(item);
+                }
+                
+                if (columnSum < 100)
+                {
+                    decimal changedValueSum = 0;
+                    decimal notChangedValueSum = 0;
+
+                    var currentColumn = getColumnData(current,i);
+
+                    for (int k = 0; k < currentColumn.Count(); k++)
+                    {
+                        if (currentColumn[k] == targetColumn[k])
+                        {
+                            notChangedValueSum += Convert.ToDecimal(targetColumn[k]);
+                        }
+                        else
+                        {
+                            changedValueSum += Convert.ToDecimal(targetColumn[k]);
+                        }
+                    }
+                    decimal difference = 100 - notChangedValueSum;
+                    decimal division = difference / changedValueSum;
+                    List<string> changedValues = new List<string>();
+                    for (int k = 0; k < currentColumn.Count(); k++)
+                    {
+                        if (currentColumn[k] != targetColumn[k])
+                        {
+                            changedValues.Add((Convert.ToDecimal(targetColumn[k]) * division).ToString());
+                        }
+                        else
+                        {
+                            changedValues.Add(targetColumn[k].ToString());
+                        }
+                    }
+
+                    //foreach (var item in targetColumn)
+                    //{
+
+                    //    changedValues.Add( (Convert.ToDecimal( item )* division).ToString());
+                    //}
+
+                    insertDataInColumn(i, changedValues, target);
+
+                }
+
+
+            }
+        }
+
+        public void insertDataInColumn(int index,List<string> data,DataGridView dataGridView)
+        {
+            for (int i = 0; i < data.Count(); i++)
+            {
+                dataGridView.Rows[i].Cells[index].Value = data[i];
+            }
+            
         }
         //=================================================== Form 2 ==================================
 

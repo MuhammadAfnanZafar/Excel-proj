@@ -201,7 +201,10 @@ namespace ExcelProject
                     var selectedVal = cbWorkingColumn.Text;
                     MyDataGridView mdgv = new MyDataGridView();
                     var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
-                    var workingColumnData = mdgv.getColumnPlusRowData(dataGridView3, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text)); // Getting selected working column data
+                    var workingColumnData = mdgv.getColumnPlusRowData(dataGridView1, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text)); 
+                    var temp = mdgv.getColumnPlusRowData(dataGridView2, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text));
+                    // Getting selected working column data
+                    workingColumnData.AddRange(temp);
                     workingColumnData = workingColumnData.Distinct().ToList();
                     if (searchColumnNameIndexAfterWET == 0)
                     {
@@ -216,8 +219,13 @@ namespace ExcelProject
                         {
                             foreach (var item in workingColumnData)
                             {
+                                
                                 // Calulating Percentage
                                 var percentage = mdgv.calculatePercentage(dataGridView3, item, searchColumnNameIndexAfterWET); // Getting percentage of each column in selected working column data
+                                if (item == 16.ToString())
+                                {
+
+                                }
                                 total = total + Convert.ToDecimal(percentage);
                                 Percentages per = new Percentages()
                                 {
@@ -241,6 +249,7 @@ namespace ExcelProject
                         }
                     }
                     Percentages.percentagesList.Add(percentagesList);
+
                 }
 
                 //filteration(query);
@@ -515,56 +524,56 @@ namespace ExcelProject
         public void isRelational()
         {
 
-            try
+            //try
+            //{
+            // Getting all list boxes from panel
+            Panel childPanel = panelDropdown as Panel;
+            List<MyListBox> lst = new List<MyListBox>();
+            int i = 2;
+            MyListBox obj = new MyListBox();
+            if (childPanel.Controls.Count > 0)
             {
-                // Getting all list boxes from panel
-                Panel childPanel = panelDropdown as Panel;
-                List<MyListBox> lst = new List<MyListBox>();
-                int i = 2;
-                MyListBox obj = new MyListBox();
-                if (childPanel.Controls.Count > 0)
+                foreach (Control c in childPanel.Controls)
                 {
-                    foreach (Control c in childPanel.Controls)
+                    if (i % 2 == 0) // For label Name
                     {
-                        if (i % 2 == 0) // For label Name
-                        {
-                            obj = new MyListBox();
-                        }
-                        i++;
+                        obj = new MyListBox();
+                    }
+                    i++;
 
-                        if (c is Label)
+                    if (c is Label)
+                    {
+                        Control cc = this.Controls.Find(c.Name, true).First();
+                        obj.ColumnName = cc.Text;
+                    }
+                    if (c is ListBox)
+                    {
+                        Control cc = this.Controls.Find(c.Name, true).First();
+                        var tmpListBox = cc as ListBox;
+                        var tmpListBoxItems = tmpListBox.SelectedItems;
+                        if (tmpListBoxItems.Count > 0)
                         {
-                            Control cc = this.Controls.Find(c.Name, true).First();
-                            obj.ColumnName = cc.Text;
-                        }
-                        if (c is ListBox)
-                        {
-                            Control cc = this.Controls.Find(c.Name, true).First();
-                            var tmpListBox = cc as ListBox;
-                            var tmpListBoxItems = tmpListBox.SelectedItems;
-                            if (tmpListBoxItems.Count > 0)
+                            //MyListBox obj = new MyListBox();
+                            foreach (var item in tmpListBoxItems)
                             {
-                                //MyListBox obj = new MyListBox();
-                                foreach (var item in tmpListBoxItems)
-                                {
-                                    obj.Data.Add(string.Format("{0}='{1}'", obj.ColumnName, item.ToString()));
-                                }
-                                lst.Add(obj);
+                                obj.Data.Add(string.Format("{0}='{1}'", obj.ColumnName, item.ToString()));
                             }
+                            lst.Add(obj);
                         }
                     }
                 }
-                // Current Excel Data
-                reportFormatDT(lst, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
-                reportFormatDT(lst, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
+            }
+            // Current Excel Data
+            reportFormatDT(lst, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
+            reportFormatDT(lst, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
 
-            }
-            catch (Exception ex)
-            {
-                label5.Show();
-                label5.Text = "Error: " + ex.Message;
-                MessageBox.Show(ex.Message);
-            }
+            //  }
+            //catch (Exception ex)
+            //{
+            //    label5.Show();
+            //    label5.Text = "Error: " + ex.Message;
+            //    MessageBox.Show(ex.Message);
+            //}
         }
         public void isNonRelational()
         {
@@ -808,7 +817,7 @@ namespace ExcelProject
             if (file.ShowDialog() == System.Windows.Forms.DialogResult.OK) //if there is a file choosen by the user  
             {
                 filePath = file.FileName; //get the path of the file  
-                
+
 
                 // Displaying currently running file
                 //currentlyRunningFile = "File Name: " + file.SafeFileName + currentFileExt;
@@ -1054,6 +1063,11 @@ namespace ExcelProject
                 }
             }
 
+            dataGridView6.Sort(dataGridView6.Columns[0], ListSortDirection.Ascending);
+
+            MyDataGridView myDataGridView = new MyDataGridView();
+            myDataGridView.SetTargetwithValidation(dataGridView6,dataGridView4);
+
             myExcel excel = new myExcel();
             string title = "Target Report";
             SaveFileDialog sfd = new SaveFileDialog();
@@ -1081,7 +1095,7 @@ namespace ExcelProject
             if (file.ShowDialog() == System.Windows.Forms.DialogResult.OK) //if there is a file choosen by the user  
             {
                 filePath = file.FileName; //get the path of the file  
-                
+
 
                 // Displaying currently running file
                 //currentlyRunningFile = "File Name: " + file.SafeFileName + currentFileExt;
@@ -1160,8 +1174,8 @@ namespace ExcelProject
 
         private void btnChangePercentages_Click(object sender, EventArgs e)
         {
-            try
-            {
+            //try
+            //{
                 if (dataGridView1.Rows.Count == 0)
                 {
                     MessageBox.Show("Kindly upload current file.");
@@ -1194,12 +1208,12 @@ namespace ExcelProject
                     excel.ToCsV(dataGridView1, "Target Report", "", "", title, sfd.FileName);
                     MessageBox.Show("Finish");
                 }
-            }
-            catch (Exception ex)
-            {
-                lblError.Show();
-                lblError.Text = "Error: " + ex.Message;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    lblError.Show();
+            //    lblError.Text = "Error: " + ex.Message;
+            //}
         }
 
         private void btnUploadOladTargetFile_Click(object sender, EventArgs e)

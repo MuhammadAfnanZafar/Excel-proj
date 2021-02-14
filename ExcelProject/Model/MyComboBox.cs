@@ -8,6 +8,9 @@ using System.Windows.Forms;
 
 namespace ExcelProject.Model
 {
+    /// <summary>
+    /// /not in used
+    /// </summary>
     class MyComboBox
     {
         ComboBox[] cmb;
