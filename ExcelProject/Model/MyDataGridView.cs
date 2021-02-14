@@ -658,7 +658,7 @@ namespace ExcelProject.Model
 
         }
 
-        public void SetTargetwithValidation(DataGridView target,DataGridView current)
+        public void SetTargetwithValidation(DataGridView target,DataGridView current,string workingColumnName)
         {
             /////// single / multiple
             for (int i = 1; i < target.Columns.Count; i++)
@@ -669,49 +669,98 @@ namespace ExcelProject.Model
                 {
                     columnSum += Convert.ToDecimal(item);
                 }
-                
-                if (columnSum < 100)
+                var workingColumnNature = getColumnNature(workingColumnName);
+                if (workingColumnNature == "s")
                 {
-                    decimal changedValueSum = 0;
-                    decimal notChangedValueSum = 0;
-
-                    var currentColumn = getColumnData(current,i);
-
-                    for (int k = 0; k < currentColumn.Count(); k++)
+                    if (columnSum < 100)
                     {
-                        if (currentColumn[k] == targetColumn[k])
+                        decimal changedValueSum = 0;
+                        decimal notChangedValueSum = 0;
+
+                        var currentColumn = getColumnData(current, i);
+
+                        for (int k = 0; k < currentColumn.Count(); k++)
                         {
-                            notChangedValueSum += Convert.ToDecimal(targetColumn[k]);
+                            if (currentColumn[k] == targetColumn[k])
+                            {
+                                notChangedValueSum += Convert.ToDecimal(targetColumn[k]);
+                            }
+                            else
+                            {
+                                changedValueSum += Convert.ToDecimal(targetColumn[k]);
+                            }
                         }
-                        else
+                        decimal difference = 100 - notChangedValueSum;
+                        decimal division = difference / changedValueSum;
+                        List<string> changedValues = new List<string>();
+                        for (int k = 0; k < currentColumn.Count(); k++)
                         {
-                            changedValueSum += Convert.ToDecimal(targetColumn[k]);
+                            if (currentColumn[k] != targetColumn[k])
+                            {
+                                changedValues.Add((Convert.ToDecimal(targetColumn[k]) * division).ToString());
+                            }
+                            else
+                            {
+                                changedValues.Add(targetColumn[k].ToString());
+                            }
                         }
+
+                        //foreach (var item in targetColumn)
+                        //{
+
+                        //    changedValues.Add( (Convert.ToDecimal( item )* division).ToString());
+                        //}
+
+                        insertDataInColumn(i, changedValues, target);
+
                     }
-                    decimal difference = 100 - notChangedValueSum;
-                    decimal division = difference / changedValueSum;
-                    List<string> changedValues = new List<string>();
-                    for (int k = 0; k < currentColumn.Count(); k++)
-                    {
-                        if (currentColumn[k] != targetColumn[k])
-                        {
-                            changedValues.Add((Convert.ToDecimal(targetColumn[k]) * division).ToString());
-                        }
-                        else
-                        {
-                            changedValues.Add(targetColumn[k].ToString());
-                        }
-                    }
-
-                    //foreach (var item in targetColumn)
-                    //{
-
-                    //    changedValues.Add( (Convert.ToDecimal( item )* division).ToString());
-                    //}
-
-                    insertDataInColumn(i, changedValues, target);
-
                 }
+                else if (workingColumnNature == "m")
+                {
+                    if (columnSum < 100)
+                    {
+                        decimal changedValueSum = 0;
+                        decimal notChangedValueSum = 0;
+
+                        var currentColumn = getColumnData(current, i);
+
+                        for (int k = 0; k < currentColumn.Count(); k++)
+                        {
+                            if (currentColumn[k] == targetColumn[k])
+                            {
+                                notChangedValueSum += Convert.ToDecimal(targetColumn[k]);
+                            }
+                            else
+                            {
+                                changedValueSum += Convert.ToDecimal(targetColumn[k]);
+                            }
+                        }
+                        decimal difference = 100 - notChangedValueSum;
+                        decimal division = difference / changedValueSum;
+                        List<string> changedValues = new List<string>();
+                        for (int k = 0; k < currentColumn.Count(); k++)
+                        {
+                            if (currentColumn[k] != targetColumn[k])
+                            {
+                                changedValues.Add((Convert.ToDecimal(targetColumn[k]) * division).ToString());
+                            }
+                            else
+                            {
+                                changedValues.Add(targetColumn[k].ToString());
+                            }
+                        }
+
+                        //foreach (var item in targetColumn)
+                        //{
+
+                        //    changedValues.Add( (Convert.ToDecimal( item )* division).ToString());
+                        //}
+
+                        insertDataInColumn(i, changedValues, target);
+
+                    }
+                }
+                
 
 
             }
@@ -724,6 +773,13 @@ namespace ExcelProject.Model
                 dataGridView.Rows[i].Cells[index].Value = data[i];
             }
             
+        }
+
+        public string getColumnNature(string columnName)
+        {
+            string[] model = columnName.Split('_');
+            return model[model.Length - 1].ToLower().ToString();
+
         }
         //=================================================== Form 2 ==================================
 
@@ -746,5 +802,6 @@ namespace ExcelProject.Model
                 new Form2().filteration(query, dataGridView);
             }
         }
+
     }
 }

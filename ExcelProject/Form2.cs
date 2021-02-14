@@ -1128,6 +1128,13 @@ namespace ExcelProject
 
         void changePercentages(List<string> lst, DataGridView dataGridView, DataGridView dataGridView3)
         {
+            ///// find out working coilumn is single or multiple save it in variable
+
+            MyDataGridView dgvClass = new MyDataGridView();
+            string workingColumnNature = "";//dgvClass.getColumnNature();
+
+
+
             dataGridView3.Refresh();
             dataGridView3.DataSource = null;
             dataGridView3.Rows.Clear();
@@ -1146,10 +1153,25 @@ namespace ExcelProject
                 filteration(query, dataGridView);
 
                 int rows = 0;
+
+                //// if chcek for single or mulitple
+                ///
+
+                if (workingColumnNature == "s")
+                {
+                    ///// single working
+                }
+                else if(workingColumnNature == "m")
+                {
+                    //// multiple working
+                }
+
+                //// multiple
+                ///
                 for (; rows < dataGridView6.Rows.Count - 1;)
                 {
                     var Q_X_Value = dataGridView6.Rows[rows].Cells[0].Value.ToString();
-                    var Q_X_PercentageValue_OldTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString();
+                    var Q_X_PercentageValue_OldTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString(); /// current file
                     var Q_X_PercentageValue_NewTarget = dataGridView5.Rows[rows].Cells[col].Value.ToString();
                     MyDataGridView mdgv = new MyDataGridView();
                     if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) > Convert.ToDouble(Q_X_PercentageValue_OldTarget))
