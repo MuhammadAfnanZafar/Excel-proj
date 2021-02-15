@@ -577,111 +577,144 @@ namespace ExcelProject.Model
         public void decreasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, string query)
         {
 
-
-            //MyDataGridView mdgv = new MyDataGridView();
-            //var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, getQ1_X_ColumnName);
-            //var depColListBoxItems = lbDepCol.SelectedItems;
-            //var mustColListBoxItems = lbMustCol.SelectedItems;
+            MyDataGridView mdgv = new MyDataGridView();
+            var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, getQ1_X_ColumnName);
 
 
-            //bool flag = false;
-            //int i = 0;
-            //for (int rows = 0; rows < dataGridView3.Rows.Count - 1; rows++)
-            //{
-            //    //for (int col = 0; col < dataGridView3.Rows[rows].Cells.Count; col++)
-            //    //{
-            //    //if (i == searchColumnNameIndexAfterWET)
-            //    //{
-            //    bool isDependentColSatisfied = true;
+            bool flag = false;
+            int i = 0;
+            for (int rows = 0; rows < dataGridView3.Rows.Count - 1; rows++)
+            {
+                var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value.ToString();
+                var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
+                if (lst_GetAllCellData.Contains(Q_X_Value))
+                {
+                    lst_GetAllCellData.RemoveAll(x => x == Q_X_Value);
+                    var result = string.Join("", lst_GetAllCellData.ToArray());
+                    if (result != "")
+                    {
+                        dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = result;
+                    }
+                    else
+                    {
+                        dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = Q_X_Value;
+                    }
+                    var percentage = mdgv.calculatePercentage(dataGridView3, Q_X_Value, searchColumnNameIndexAfterWET);
+                    if (double.Parse(Q_X_PercentageValue_NewTarget) >= double.Parse(percentage))
+                    {
+                        flag = true;
+                    }
+                }
+                if (flag)
+                {
+                    break;
+                }
+            }
+                // ================== OLD CODE ================
+                //MyDataGridView mdgv = new MyDataGridView();
+                //var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, getQ1_X_ColumnName);
+                //var depColListBoxItems = lbDepCol.SelectedItems;
+                //var mustColListBoxItems = lbMustCol.SelectedItems;
 
-            //    // Dependent column validation
-            //    List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
-            //    foreach (var item in depColListBoxItems)
-            //    {
-            //        var arr_existOrNot = item.ToString().Split('#');
-            //        var value_existorNotExist = arr_existOrNot[1];
-            //        var columnName_Q_X_existorNotExist = arr_existOrNot[0];
-            //        ;
-            //        var searchColumnNameIndexAfterWET_Q_X_existorNotExist = mdgv.searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
-            //        var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
+
+                //bool flag = false;
+                //int i = 0;
+                //for (int rows = 0; rows < dataGridView3.Rows.Count - 1; rows++)
+                //{
+                //    //for (int col = 0; col < dataGridView3.Rows[rows].Cells.Count; col++)
+                //    //{
+                //    //if (i == searchColumnNameIndexAfterWET)
+                //    //{
+                //    bool isDependentColSatisfied = true;
+
+                //    // Dependent column validation
+                //    List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
+                //    foreach (var item in depColListBoxItems)
+                //    {
+                //        var arr_existOrNot = item.ToString().Split('#');
+                //        var value_existorNotExist = arr_existOrNot[1];
+                //        var columnName_Q_X_existorNotExist = arr_existOrNot[0];
+                //        ;
+                //        var searchColumnNameIndexAfterWET_Q_X_existorNotExist = mdgv.searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
+                //        var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
 
 
-            //        int formNoIndex = 1;
-            //        var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
+                //        int formNoIndex = 1;
+                //        var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
 
-            //        var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
-            //        if (value_existorNotExist.ToLower() == "exist")
-            //        {
-            //            // Exist
-            //            if (lst_GetAllCellData.Contains(Q_X_Value))
-            //            {
-            //                lst_CheckAllValidation_ExistNotExist.Add(true);
-            //            }
-            //            else
-            //            {
-            //                lst_CheckAllValidation_ExistNotExist.Add(false);
-            //            }
-            //        }
-            //        else
-            //        {
-            //            //Not exist
-            //            if (!lst_GetAllCellData.Contains(Q_X_Value))
-            //            {
-            //                lst_CheckAllValidation_ExistNotExist.Add(true);
-            //            }
-            //            else
-            //            {
-            //                lst_CheckAllValidation_ExistNotExist.Add(false);
-            //            }
-            //        }
-            //    }
+                //        var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
+                //        if (value_existorNotExist.ToLower() == "exist")
+                //        {
+                //            // Exist
+                //            if (lst_GetAllCellData.Contains(Q_X_Value))
+                //            {
+                //                lst_CheckAllValidation_ExistNotExist.Add(true);
+                //            }
+                //            else
+                //            {
+                //                lst_CheckAllValidation_ExistNotExist.Add(false);
+                //            }
+                //        }
+                //        else
+                //        {
+                //            //Not exist
+                //            if (!lst_GetAllCellData.Contains(Q_X_Value))
+                //            {
+                //                lst_CheckAllValidation_ExistNotExist.Add(true);
+                //            }
+                //            else
+                //            {
+                //                lst_CheckAllValidation_ExistNotExist.Add(false);
+                //            }
+                //        }
+                //    }
 
-            //    // Checking Dependent column if all conditions are true witch means "AND"
-            //    foreach (var item in lst_CheckAllValidation_ExistNotExist)
-            //    {
-            //        if (!item)
-            //        {
-            //            isDependentColSatisfied = false;
-            //        }
-            //    }
+                //    // Checking Dependent column if all conditions are true witch means "AND"
+                //    foreach (var item in lst_CheckAllValidation_ExistNotExist)
+                //    {
+                //        if (!item)
+                //        {
+                //            isDependentColSatisfied = false;
+                //        }
+                //    }
 
-            //    if (isDependentColSatisfied) // Validation for dependent column IF ALL Dependent column VALIDATION SATISFIED THEN CHANGE COLUMN
-            //    {
-            //        var currentVal = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value.ToString();
+                //    if (isDependentColSatisfied) // Validation for dependent column IF ALL Dependent column VALIDATION SATISFIED THEN CHANGE COLUMN
+                //    {
+                //        var currentVal = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value.ToString();
 
-            //        // assign Values To Must Column
-            //        assignValuesToMustColumn(lbMustCol, dataGridView3, Q_X_Value, rows);
+                //        // assign Values To Must Column
+                //        assignValuesToMustColumn(lbMustCol, dataGridView3, Q_X_Value, rows);
 
-            //        if (currentVal != Q_X_Value) // if Q1 value already same do nothing
-            //        {
-            //            var findRandomVal = Q_X_Value;
-            //            if (IncreaseOrDecrease.increaseList.Count > 0)
-            //            {
-            //                List<IncreaseOrDecrease> tmpList = new List<IncreaseOrDecrease>();
-            //                tmpList = IncreaseOrDecrease.increaseList.Where(x => x.query == query).ToList();
-            //                Random r = new Random(); 
-            //                int index = r.Next(tmpList.Count);
-            //                findRandomVal = tmpList[index].columnValue;
-            //            }
-            //            dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = findRandomVal;
-            //            var percentage = mdgv.calculatePercentage(dataGridView3, Q_X_Value, searchColumnNameIndexAfterWET);
-            //            if (double.Parse(Q_X_PercentageValue_NewTarget) >= double.Parse(percentage))
-            //            {
-            //                flag = true;
-            //                break;
-            //            }
-            //        }
-            //        //}
-            //        i++;
-            //    }
-            //    if (flag)
-            //    {
-            //        break;
-            //    }
-            //    //i = 0;
+                //        if (currentVal != Q_X_Value) // if Q1 value already same do nothing
+                //        {
+                //            var findRandomVal = Q_X_Value;
+                //            if (IncreaseOrDecrease.increaseList.Count > 0)
+                //            {
+                //                List<IncreaseOrDecrease> tmpList = new List<IncreaseOrDecrease>();
+                //                tmpList = IncreaseOrDecrease.increaseList.Where(x => x.query == query).ToList();
+                //                Random r = new Random(); 
+                //                int index = r.Next(tmpList.Count);
+                //                findRandomVal = tmpList[index].columnValue;
+                //            }
+                //            dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = findRandomVal;
+                //            var percentage = mdgv.calculatePercentage(dataGridView3, Q_X_Value, searchColumnNameIndexAfterWET);
+                //            if (double.Parse(Q_X_PercentageValue_NewTarget) >= double.Parse(percentage))
+                //            {
+                //                flag = true;
+                //                break;
+                //            }
+                //        }
+                //        //}
+                //        i++;
+                //    }
+                //    if (flag)
+                //    {
+                //        break;
+                //    }
+                //    //i = 0;
                 //}
-          //  }
-        }
+                //  }
+            }
 
         public void SetTargetwithValidation(DataGridView target,DataGridView current,string workingColumnName)
         {
