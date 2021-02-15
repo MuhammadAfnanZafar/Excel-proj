@@ -1092,7 +1092,7 @@ namespace ExcelProject
             dataGridView6.Sort(dataGridView6.Columns[0], ListSortDirection.Ascending);
 
             MyDataGridView myDataGridView = new MyDataGridView();
-            myDataGridView.SetTargetwithValidation(dataGridView6,dataGridView4);
+            //myDataGridView.SetTargetwithValidation(dataGridView6,dataGridView4);
 
             myExcel excel = new myExcel();
             string title = "Target Report";
@@ -1183,7 +1183,6 @@ namespace ExcelProject
             foreach (var query in AllCombosList)
             {
                 // Filtration
-                filteration(query, dataGridView);
                 int rows = 0;
                 for (; rows < dataGridView6.Rows.Count - 1;)
                 {

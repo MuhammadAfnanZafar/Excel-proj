@@ -441,21 +441,38 @@ namespace ExcelProject.Model
             foreach (var item in mustColListBoxItems)
             {
                 var Q_X_ColumnName = item.ToString();
+                var checkNatureOfColumnName = getColumnNature(Q_X_ColumnName);
                 var searchColumnNameIndexAfterWET_Q_X = mdgv.searchColumnNameIndexAfterWET(dataGridView3, Q_X_ColumnName);
                 //var getColumnData = mdgv.getColumnData(dataGridView3, searchColumnNameIndexAfterWET_Q_X);
                 var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value.ToString();
                 var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
-                // Not Exist
-                if (!lst_GetAllCellData.Contains(Q_X_Value))
+
+                if (checkNatureOfColumnName.ToLower() == "s")
                 {
-                    lst_GetAllCellData.Add(Q_X_Value);
-                    result = string.Join("", lst_GetAllCellData.ToArray());
-                    dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = result;
+                    // Not Exist
+                    if (get_Q_X_ColumnData != Q_X_Value)
+                    {
+                        dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = Q_X_Value;
+                    }
+                    else // Exist
+                    {
+                        //dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = result;
+                    }
                 }
                 else
                 {
-                    result = string.Join("", lst_GetAllCellData.ToArray());
-                    dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = result;
+                    // Not Exist
+                    if (!lst_GetAllCellData.Contains(Q_X_Value))
+                    {
+                        lst_GetAllCellData.Add(Q_X_Value);
+                        result = string.Join("", lst_GetAllCellData.ToArray());
+                        dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = result;
+                    }
+                    else // Exist
+                    {
+                        result = string.Join("", lst_GetAllCellData.ToArray());
+                        dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = result;
+                    }
                 }
             }
         }
