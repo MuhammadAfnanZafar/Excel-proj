@@ -1092,7 +1092,7 @@ namespace ExcelProject
             dataGridView6.Sort(dataGridView6.Columns[0], ListSortDirection.Ascending);
 
             MyDataGridView myDataGridView = new MyDataGridView();
-            myDataGridView.SetTargetwithValidation(dataGridView6,dataGridView4);
+            myDataGridView.SetTargetwithValidation(dataGridView6,dataGridView4,cbWorkingColumn.Text);
 
             myExcel excel = new myExcel();
             string title = "Target Report";
@@ -1240,14 +1240,14 @@ namespace ExcelProject
                 //// if chcek for single or mulitple
                 ///
 
-                if (workingColumnNature == "s")
-                {
-                    ///// single working
-                }
-                else if(workingColumnNature == "m")
-                {
-                    //// multiple working
-                }
+                //if (workingColumnNature == "s")
+                //{
+                //    ///// single working
+                //}
+                //else if(workingColumnNature == "m")
+                //{
+                //    //// multiple working
+                //}
 
                 //// multiple
                 ///
@@ -1301,8 +1301,23 @@ namespace ExcelProject
             getAllQueries.RemoveAt(0);
             if (getAllQueries.Count() > 0)
             {
-                changePercentages(getAllQueries, dataGridView1, dataGridView3);
+                string workingColumnNature = mdgv.getColumnNature(getQ1_X_Value);
+                if ( workingColumnNature == "s")
+                {
+
+                }
+                else if (workingColumnNature == "m")
+                {
+                    changePercentages(getAllQueries, dataGridView1, dataGridView3);
+                }
+                else
+                {
+                    ///error
+                }
+
+               
             }
+
 
             //
             myExcel excel = new myExcel();
