@@ -1150,7 +1150,7 @@ namespace ExcelProject
             }
         }
 
-        void changePercentages(List<string> lst, DataGridView dataGridView, DataGridView dataGridView3)
+        void changePercentagesMultipleColumn(List<string> lst, DataGridView dataGridView, DataGridView dataGridView3)
         {
             ///// find out working coilumn is single or multiple save it in variable
 
@@ -1308,7 +1308,7 @@ namespace ExcelProject
                 }
                 else if (workingColumnNature == "m")
                 {
-                    changePercentages(getAllQueries, dataGridView1, dataGridView3);
+                    changePercentagesMultipleColumn(getAllQueries, dataGridView1, dataGridView3);
                 }
                 else
                 {
