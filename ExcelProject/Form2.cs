@@ -1303,7 +1303,7 @@ namespace ExcelProject
                 string workingColumnNature = mdgv.getColumnNature(getQ1_X_Value);
                 if ( workingColumnNature == "s")
                 {
-
+                    changePercentageSingleColumn(dataGridView4,dataGridView5);
                 }
                 else if (workingColumnNature == "m")
                 {
@@ -1373,5 +1373,37 @@ namespace ExcelProject
                 }
             }
         }
+
+
+        void changePercentageSingleColumn(DataGridView target, DataGridView currentPercent)
+        {
+            MyDataGridView mdgv = new MyDataGridView();
+            var brands = mdgv.getColumnData(target, 0);
+            for (int i = 1; i < target.Columns.Count; i++)
+            {
+                List<string> increase = new List<string>();
+                List<string> decrease = new List<string>();
+
+                var targetColumns = mdgv.getColumnData(target, i);
+                var currentColumns = mdgv.getColumnData(target, i);
+
+                for (int k = 0; k < targetColumns.Count; k++)
+                {
+                    if (Convert.ToDecimal( targetColumns[k]) > Convert.ToDecimal(currentColumns[k]))
+                    {
+                        increase.Add(brands[k]);
+                    }
+                    else if(Convert.ToDecimal(targetColumns[k]) < Convert.ToDecimal(currentColumns[k]))
+                    {
+                        decrease.Add(brands[k]);       
+                    }
+                }
+
+
+
+            }
+        }
+
+
     }
 }
