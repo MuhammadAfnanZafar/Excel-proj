@@ -80,7 +80,7 @@ namespace ExcelProject
                 MessageBox.Show(ex.ToString());
             }
         }
-        public void filteration(string query, DataGridView dataGridView)
+        public void filterationOnChangePercentage(string query, DataGridView dataGridView)
         {
             try
             {
@@ -180,6 +180,96 @@ namespace ExcelProject
                         //    }
                         //}
                         //toBeDeleted.ForEach(d => dataGridView2.Rows.Remove(d));
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                label5.Show();
+                label5.Text = "Error: " + ex.Message;
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void filteration(string query, DataGridView dataGridView)
+        {
+            try
+            {
+
+                if (query != "")
+                {
+                    Panel childPanel = panelDropdown as Panel;
+                    int i = 0;
+                    if (childPanel.Controls.Count > 0)
+                    {
+
+                        //If the last word is always AND or OR then it's pretty simple, just use a regex
+                        Regex regex = new Regex("(\\s+(AND|OR)\\s*)$");
+                        query = regex.Replace(query, "");
+                        query = query.Trim();
+                        System.Data.DataTable dtExcel = new System.Data.DataTable();
+                        dtExcel = dataGridView.DataSource as System.Data.DataTable;
+
+
+
+                        dataGridView3.Refresh();
+                        dataGridView3.Visible = true;
+                        dataGridView3.DataSource = dtExcel;
+                        (dataGridView3.DataSource as System.Data.DataTable).DefaultView.RowFilter = query;
+
+                        // Reading data from Excel File again for datagridview1
+                        dtExcel = ReadExcel(currentFile, currentFileExt); //read excel file  
+                        dataGridView1.Visible = true;
+                        dataGridView1.DataSource = dtExcel;
+
+                        i = 0;
+                        // Removing previous rows
+                        var toBeDeleted = new List<DataGridViewRow>();
+                        foreach (DataGridViewRow row in dataGridView1.Rows)
+                        {
+                            if (row.Cells[0].Value == null || row.Cells[0].Value == DBNull.Value || String.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
+                            {
+                                break;
+                            }
+                            string value1 = row.Cells[0].Value.ToString();
+                            if (value1 == "")
+                            {
+                                break;
+                            }
+                            if (value1.ToLower() == "p")
+                            {
+                                i++;
+                                //processing data
+                                toBeDeleted.Add(row);
+                            }
+                        }
+                        toBeDeleted.ForEach(d => dataGridView1.Rows.Remove(d));
+
+                        // dataGridView2
+                        System.Data.DataTable dtExcel2 = new System.Data.DataTable();
+                        dtExcel2 = ReadExcel(currentFile, currentFileExt); //read excel file  
+                        dataGridView2.DataSource = dtExcel2;
+                        //// Removing current rows
+                        toBeDeleted = new List<DataGridViewRow>();
+                        foreach (DataGridViewRow row in dataGridView2.Rows)
+                        {
+                            if (row.Cells[0].Value == null || row.Cells[0].Value == DBNull.Value || String.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
+                            {
+                                break;
+                            }
+                            string value1 = row.Cells[0].Value.ToString();
+                            if (value1 == "")
+                            {
+                                break;
+                            }
+                            if (value1.ToLower() == "c")
+                            {
+                                //processing data
+                                toBeDeleted.Add(row);
+                            }
+                        }
+                        toBeDeleted.ForEach(d => dataGridView2.Rows.Remove(d));
 
                     }
                 }
@@ -1131,11 +1221,10 @@ namespace ExcelProject
                 {
                     try
                     {
-                        label9.Text = "New Target File";
                         System.Data.DataTable dtExcel = new System.Data.DataTable();
                         dtExcel = ReadExcel(filePath, fileExt); //read excel file  
-                        dataGridView5.Visible = true;
-                        dataGridView5.DataSource = dtExcel;
+                        dataGridView6.Visible = true;
+                        dataGridView6.DataSource = dtExcel;
 
                     }
                     catch (Exception ex)
@@ -1172,7 +1261,7 @@ namespace ExcelProject
             int col = 1;
 
             MyDataGridView mdgv = new MyDataGridView();
-            var getAllQueries = mdgv.getRegenratedQueries(dataGridView5);
+            var getAllQueries = mdgv.getRegenratedQueries(dataGridView6);
             var getQ1_X_ColumnName = getAllQueries[0];
 
             List<IncreaseOrDecrease> lstIncOrDec = new List<IncreaseOrDecrease>();
@@ -1182,14 +1271,13 @@ namespace ExcelProject
             List<IncreaseOrDecrease> decreaseList = new List<IncreaseOrDecrease>();
             foreach (var query in AllCombosList)
             {
-                // Filtration
                 int rows = 0;
-                for (; rows < dataGridView6.Rows.Count - 1;)
+                for (; rows < dataGridView4.Rows.Count - 1;)
                 {
                     IncreaseOrDecrease increaseOrDecrease = new IncreaseOrDecrease();
-                       var Q_X_Value = dataGridView6.Rows[rows].Cells[0].Value.ToString();
-                    var Q_X_PercentageValue_OldTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString();
-                    var Q_X_PercentageValue_NewTarget = dataGridView5.Rows[rows].Cells[col].Value.ToString();
+                       var Q_X_Value = dataGridView4.Rows[rows].Cells[0].Value.ToString();
+                    var Q_X_PercentageValue_OldTarget = dataGridView4.Rows[rows].Cells[col].Value.ToString();
+                    var Q_X_PercentageValue_NewTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString();
                     if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) > Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
                         increaseOrDecrease = new IncreaseOrDecrease()
@@ -1233,7 +1321,7 @@ namespace ExcelProject
             {
                 List<Percentages> percentagesList = new List<Percentages>();
                 // Filtration
-                filteration(query, dataGridView);
+                filterationOnChangePercentage(query, dataGridView);
                 int rows = 0;
 
                 //// if chcek for single or mulitple
@@ -1250,11 +1338,11 @@ namespace ExcelProject
 
                 //// multiple
                 ///
-                for (; rows < dataGridView6.Rows.Count - 1;)
+                for (; rows < dataGridView4.Rows.Count - 1;)
                 {
-                    var Q_X_Value = dataGridView6.Rows[rows].Cells[0].Value.ToString();
-                    var Q_X_PercentageValue_OldTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString(); /// current file
-                    var Q_X_PercentageValue_NewTarget = dataGridView5.Rows[rows].Cells[col].Value.ToString();
+                    var Q_X_Value = dataGridView4.Rows[rows].Cells[0].Value.ToString();
+                    var Q_X_PercentageValue_OldTarget = dataGridView4.Rows[rows].Cells[col].Value.ToString(); /// current file
+                    var Q_X_PercentageValue_NewTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString();
                     if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) > Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
                         mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1);
@@ -1295,7 +1383,7 @@ namespace ExcelProject
             }
 
             MyDataGridView mdgv = new MyDataGridView();
-            var getAllQueries = mdgv.getRegenratedQueries(dataGridView5);
+            var getAllQueries = mdgv.getRegenratedQueries(dataGridView6);
             var getQ1_X_Value = getAllQueries[0];
             getAllQueries.RemoveAt(0);
             if (getAllQueries.Count() > 0)
@@ -1312,6 +1400,7 @@ namespace ExcelProject
                 else
                 {
                     ///error
+                    changePercentagesMultipleColumn(getAllQueries, dataGridView1, dataGridView3);
                 }
 
                
@@ -1358,8 +1447,8 @@ namespace ExcelProject
                     {
                         System.Data.DataTable dtExcel = new System.Data.DataTable();
                         dtExcel = ReadExcel(filePath, fileExt); //read excel file  
-                        dataGridView6.Visible = true;
-                        dataGridView6.DataSource = dtExcel;
+                        dataGridView4.Visible = true;
+                        dataGridView4.DataSource = dtExcel;
 
                     }
                     catch (Exception ex)
