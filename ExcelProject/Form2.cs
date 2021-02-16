@@ -945,8 +945,8 @@ namespace ExcelProject
                     {
                         System.Data.DataTable dtExcel = new System.Data.DataTable();
                         dtExcel = ReadExcel(filePath, fileExt); //read excel file  
-                        dataGridView3.Visible = true;
-                        dataGridView3.DataSource = dtExcel;
+                        dgvRange.Visible = true;
+                        dgvRange.DataSource = dtExcel;
 
                     }
                     catch (Exception ex)
@@ -1060,43 +1060,12 @@ namespace ExcelProject
             var get_Q1_ColumnData = mdgv.getColumnData(dataGridView1, searchColumnNameIndexAfterWET);
             var getCurrent_Q1_ColumnData = mdgv.getColumnData(dataGridView6, 0);
 
-            List<myExcel> countList = new List<myExcel>();
-            foreach (var item in getCurrent_Q1_ColumnData)
-            {
-                myExcel myExcel = new myExcel();
-                myExcel.ColumnValue = item;
-                foreach (var Q1_ColumnData in get_Q1_ColumnData)
-                {
-                    var rowDataList = mdgv.Split(Q1_ColumnData, item.Length);
-                    for (int j = 0; j < rowDataList.Count; j++)
-                    {
-                        if (item == rowDataList[j])
-                        {
-                            myExcel.Count += 1;
-                        }
-                    }
-                }
-                countList.Add(myExcel);
-            }
+            List<myExcel> countList = mdgv.CalculateCountOf_Q_X_Using_Range(getCurrent_Q1_ColumnData, get_Q1_ColumnData);
 
             // Getting range =============
-            var getRangeColumnData = mdgv.getColumnData(dataGridView3, 0);
-            var getRangePercentageColumnData = mdgv.getColumnData(dataGridView3, 1);
-            List<Range> ranges = new List<Range>();
-            for (int i = 0; i < getRangeColumnData.Count; i++)
-            {
-                Range range = new Range();
-                var item = getRangeColumnData[i];
-                var splitRange = item.Split('-');
-                var min = splitRange[0];
-                var max = splitRange[1];
-                var percentage = getRangePercentageColumnData[i].ToString();
-                range.Min = Convert.ToInt32(min);
-                range.Max = Convert.ToInt32(max);
-                range.Percentage = Convert.ToDecimal(percentage);
-
-                ranges.Add(range);
-            }
+            var getRangeColumnData = mdgv.getColumnData(dgvRange, 0);
+            var getRangePercentageColumnData = mdgv.getColumnData(dgvRange, 1);
+            List<Range> ranges = mdgv.GettingRangesFromRangeFile(getRangeColumnData, getRangePercentageColumnData);
 
             //
             for (int rows = 0; rows < dataGridView6.Rows.Count - 1; rows++)
@@ -1345,11 +1314,11 @@ namespace ExcelProject
                     var Q_X_PercentageValue_NewTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString();
                     if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) > Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
-                        mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1);
+                        mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1, dataGridView6, dgvRange);
                     }
                     else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) < Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
-                        mdgv.decreasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1, query);
+                        mdgv.decreasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1, dataGridView6, dgvRange);
                     }
                     else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) == Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
@@ -1370,6 +1339,7 @@ namespace ExcelProject
         {
             //try
             //{
+
             if (dataGridView1.Rows.Count == 0)
             {
                 MessageBox.Show("Kindly upload current file.");
@@ -1379,6 +1349,12 @@ namespace ExcelProject
             if (lbDepCol.SelectedItems.Count <= 0 || lbMustCol.SelectedItems.Count <= 0)
             {
                 MessageBox.Show("DEPENDENT and MUST COLUMN must not be empty.");
+                return;
+            }
+
+            if (dgvRange.Rows.Count == 0)
+            {
+                MessageBox.Show("Kindly Upload Range File");
                 return;
             }
 
