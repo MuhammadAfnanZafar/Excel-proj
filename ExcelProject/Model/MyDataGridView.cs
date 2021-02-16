@@ -861,7 +861,14 @@ namespace ExcelProject.Model
                             }
                         }
                         decimal difference = 100 - notChangedValueSum;
-                        decimal division = difference / changedValueSum;
+                        decimal division = 0;
+                        //if (changedValueSum > 0)
+                        //{
+                            division = difference / changedValueSum;
+
+                        //}
+                        
+
                         List<string> changedValues = new List<string>();
                         for (int k = 0; k < currentColumn.Count(); k++)
                         {
