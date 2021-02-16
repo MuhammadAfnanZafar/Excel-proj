@@ -1367,7 +1367,7 @@ namespace ExcelProject
                 string workingColumnNature = mdgv.getColumnNature(getQ1_X_Value);
                 if (workingColumnNature == "s")
                 {
-                    changePercentageSingleColumn(dataGridView6, dataGridView4, getAllQueries,lbDepCol,lbMustCol, getQ1_X_Value);
+                    changePercentageSingleColumn(dataGridView6, dataGridView4, getAllQueries, lbDepCol, lbMustCol, getQ1_X_Value);
                 }
                 else if (workingColumnNature == "m")
                 {
@@ -1440,7 +1440,7 @@ namespace ExcelProject
         }
 
 
-        void changePercentageSingleColumn(DataGridView target, DataGridView currentPercent, List<string> queries,ListBox dependentColumns,ListBox mustColumns,string workingColumn)
+        void changePercentageSingleColumn(DataGridView target, DataGridView currentPercent, List<string> queries, ListBox dependentColumns, ListBox mustColumns, string workingColumn)
         {
             dataGridView3.Refresh();
             dataGridView3.DataSource = null;
@@ -1468,87 +1468,100 @@ namespace ExcelProject
                     }
                 }
 
-               // var getQ1_X_ColumnName = queries[0];
+                // var getQ1_X_ColumnName = queries[0];
                 var workingColumnIndex = mdgv.searchColumnNameIndexAfterWET(dataGridView3, workingColumn);
                 var depColListBoxItems = dependentColumns.SelectedItems;
                 var mustColListBoxItems = mustColumns.SelectedItems;
                 //filter data
-                for (int l = 0; l < queries.Count(); l++)
+                //for (int l = 0; l < queries.Count(); l++)
+                //{
+                filterationOnChangePercentage(queries[i - 1], dataGridView1);
+
+                for (int rows = 0; rows < dataGridView3.Rows.Count - 1; rows++)
                 {
-                    filterationOnChangePercentage(queries[l], dataGridView1);
+                    var workingData = dataGridView3.Rows[rows].Cells[workingColumnIndex].Value.ToString();
 
-                    for (int rows = 0; rows < dataGridView3.Rows.Count - 1; rows++)
+                    if (decrease.Contains(workingData))
                     {
-                        var workingData = dataGridView3.Rows[rows].Cells[workingColumnIndex].Value.ToString();
-
-                        if (decrease.Contains(workingData))
+                        if (increase.Count() > 0)
                         {
-                            if (increase.Count()>0)
+                            bool isDependent = true;
+                            foreach (var item in depColListBoxItems)
                             {
-                                bool isDependent = true;
-                                foreach (var item in depColListBoxItems)
+                                var arr_existOrNot = item.ToString().Split('#');
+                                var value_existorNotExist = arr_existOrNot[1];
+                                var columnName_Q_X_existorNotExist = arr_existOrNot[0];
+                                ;
+                                var searchColumnNameIndexAfterWET_Q_X_existorNotExist = mdgv.searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
+                                var dependentColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
+
+
+                                int formNoIndex = 1;
+                                var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
+
+                                var lst_dependentColumnData = mdgv.Split(dependentColumnData, workingData.Length);
+                                if (value_existorNotExist.ToLower() == "exist")
                                 {
-                                    var arr_existOrNot = item.ToString().Split('#');
-                                    var value_existorNotExist = arr_existOrNot[1];
-                                    var columnName_Q_X_existorNotExist = arr_existOrNot[0];
-                                    ;
-                                    var searchColumnNameIndexAfterWET_Q_X_existorNotExist = mdgv.searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
-                                    var dependentColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
-
-
-                                    int formNoIndex = 1;
-                                    var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
-
-                                    var lst_dependentColumnData = mdgv.Split(dependentColumnData, workingData.Length);
-                                    if (value_existorNotExist.ToLower() == "exist")
+                                    // Exist
+                                    if (!lst_dependentColumnData.Contains(workingData))
                                     {
-                                        // Exist
-                                        if (!lst_dependentColumnData.Contains(workingData))
-                                        {
-                                            isDependent = false;
-                                            break;
-                                        }
-                                    }
-                                    else if (value_existorNotExist.ToLower() == "not exist")
-                                    {
-                                        //Not exist
-                                        if (lst_dependentColumnData.Contains(workingData))
-                                        {
-                                            isDependent = false;
-                                            break;
-                                        }
+                                        isDependent = false;
+                                        break;
                                     }
                                 }
-                                if (isDependent)
+                                else if (value_existorNotExist.ToLower() == "not exist")
                                 {
-                                    dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[0];
-                                    mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, workingData, rows);
-
-                                    var increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, workingData, workingColumnIndex);
-
-                                    if (double.Parse(targetColumns[l]) <= double.Parse(increaseDataPercentage))
+                                    //Not exist
+                                    if (lst_dependentColumnData.Contains(workingData))
                                     {
-                                        increase.RemoveAt(0);
+                                        isDependent = false;
+                                        break;
                                     }
-
-                                    if (double.Parse(targetColumns[l]) <= double.Parse(increaseDataPercentage))
-                                    {
-
-                                    }
-                                    
                                 }
+                            }
+                            if (isDependent)
+                            {
+                                dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[0];
+                                mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, workingData, rows);
+
+                                var increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[0], workingColumnIndex);
+                                var decreaseDataPercentage = mdgv.calculatePercentage(dataGridView3, workingData, workingColumnIndex);
+
+                                var decreaseData_Index = brands.IndexOf(workingData);
+                                var increaseData_Index = brands.IndexOf(increase[0]);
+
+                                var arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[0], Convert.ToDouble(targetColumns[increaseData_Index]), dgvRange);
+                                var minPercentageValue_increase = arrMinMax_get_PercentageLimit_Target_increase[0];
+                                var maxPercentageValue_increase = arrMinMax_get_PercentageLimit_Target_increase[1];
+
+                                var arrMinMax_get_PercentageLimit_Target_decrease = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, workingData, Convert.ToDouble(targetColumns[decreaseData_Index]), dgvRange);
+                                var minPercentageValue_decrease = arrMinMax_get_PercentageLimit_Target_decrease[0];
+                                var maxPercentageValue_decrease = arrMinMax_get_PercentageLimit_Target_decrease[1];
+
+
+                                if (double.Parse(increaseDataPercentage) >= minPercentageValue_increase && double.Parse(increaseDataPercentage) <= maxPercentageValue_increase)
+                                {
+                                    increase.RemoveAt(0);
+                                }
+
+                                if (double.Parse(decreaseDataPercentage) >= minPercentageValue_decrease && double.Parse(decreaseDataPercentage) <= maxPercentageValue_decrease)
+                                {
+                                    decrease.Remove(workingData);
+                                }
+
 
 
                             }
-
-
                         }
-
+                        
                     }
 
-                    mdgv.AssignValuesToCurrentFile(dataGridView1, dataGridView3);
 
                 }
+
+                mdgv.AssignValuesToCurrentFile(dataGridView1, dataGridView3);
+
+
             }
         }
 
