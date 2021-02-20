@@ -600,7 +600,10 @@ namespace ExcelProject.Model
                     var currentVal = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value.ToString();
 
                     // assign Values To Must Column
-                    assignValuesToMustColumn(lbMustCol, dataGridView3, Q_X_Value, rows);
+                    if (mustColListBoxItems.Count > 0)
+                    {
+                        assignValuesToMustColumn(lbMustCol, dataGridView3, Q_X_Value, rows);
+                    }
 
                     if (currentVal != Q_X_Value) // if Q1 value already same do nothing
                     {

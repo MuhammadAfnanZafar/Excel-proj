@@ -1346,9 +1346,9 @@ namespace ExcelProject
                 return;
             }
 
-            if (lbDepCol.SelectedItems.Count <= 0 || lbMustCol.SelectedItems.Count <= 0)
+            if (lbDepCol.SelectedItems.Count <= 0)
             {
-                MessageBox.Show("DEPENDENT and MUST COLUMN must not be empty.");
+                MessageBox.Show("DEPENDENT must not be empty.");
                 return;
             }
 
@@ -1522,7 +1522,10 @@ namespace ExcelProject
                             if (isDependent)
                             {
                                 dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[0];
-                                mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, workingData, rows);
+                                if (mustColListBoxItems.Count > 0)
+                                {
+                                    mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, workingData, rows);
+                                }
 
                                 var increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[0], workingColumnIndex);
                                 var decreaseDataPercentage = mdgv.calculatePercentage(dataGridView3, workingData, workingColumnIndex);
@@ -1553,7 +1556,7 @@ namespace ExcelProject
 
                             }
                         }
-                        
+
                     }
 
 
