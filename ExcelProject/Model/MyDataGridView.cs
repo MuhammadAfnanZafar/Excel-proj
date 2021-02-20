@@ -796,6 +796,7 @@ namespace ExcelProject.Model
                     else
                     {
                         lst_CheckAllValidation_ExistNotExist.Add(false);
+                        return false;
                     }
                 }
                 else
@@ -808,21 +809,22 @@ namespace ExcelProject.Model
                     else
                     {
                         lst_CheckAllValidation_ExistNotExist.Add(false);
+                        return false;
                     }
                 }
             }
 
             // Checking Dependent column if all conditions are true witch means "AND"
-            foreach (var item in lst_CheckAllValidation_ExistNotExist)
-            {
-                if (!item)
-                {
-                    isDependentColSatisfied = false;
-                    break;
-                }
-            }
+            //foreach (var item in lst_CheckAllValidation_ExistNotExist)
+            //{
+            //    if (!item)
+            //    {
+            //        isDependentColSatisfied = false;
+            //        break;
+            //    }
+            //}
 
-            return isDependentColSatisfied;
+            return true;
         }
 
         public bool isDependentCol_Satisfy_OR(DataGridView dataGridView3, ListBox lbDepCol, string Q_X_Value, int rows)
