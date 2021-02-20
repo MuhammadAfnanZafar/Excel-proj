@@ -1208,7 +1208,7 @@ namespace ExcelProject
             }
         }
 
-        void changePercentagesMultipleColumn(List<string> lst, DataGridView dataGridView, DataGridView dataGridView3)
+        void changePercentagesMultipleColumn(List<string> lst, DataGridView dataGridView, DataGridView dataGridView3, ComboBox cbNatureOfDeptCol)
         {
             ///// find out working coilumn is single or multiple save it in variable
 
@@ -1314,11 +1314,11 @@ namespace ExcelProject
                     var Q_X_PercentageValue_NewTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString();
                     if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) > Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
-                        mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1, dataGridView6, dgvRange);
+                        mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1, dataGridView6, dgvRange, cbNatureOfDeptCol);
                     }
                     else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) < Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
-                        mdgv.decreasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1, dataGridView6, dgvRange);
+                        mdgv.decreasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1, dataGridView6, dgvRange, cbNatureOfDeptCol);
                     }
                     else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) == Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
@@ -1346,9 +1346,9 @@ namespace ExcelProject
                 return;
             }
 
-            if (lbDepCol.SelectedItems.Count <= 0)
+            if (lbDepCol.SelectedItems.Count <= 0 || cbNatureOfDeptCol.Text == null || cbNatureOfDeptCol.Text == "")
             {
-                MessageBox.Show("DEPENDENT must not be empty.");
+                MessageBox.Show("DEPENDENT and NATURE OF DEPENDENT COLUMN must not be empty.");
                 return;
             }
 
@@ -1367,16 +1367,16 @@ namespace ExcelProject
                 string workingColumnNature = mdgv.getColumnNature(getQ1_X_Value);
                 if (workingColumnNature == "s")
                 {
-                    changePercentageSingleColumn(dataGridView6, dataGridView4, getAllQueries, lbDepCol, lbMustCol, getQ1_X_Value);
+                    changePercentageSingleColumn(dataGridView6, dataGridView4, getAllQueries, lbDepCol, lbMustCol, getQ1_X_Value, cbNatureOfDeptCol);
                 }
                 else if (workingColumnNature == "m")
                 {
-                    changePercentagesMultipleColumn(getAllQueries, dataGridView1, dataGridView3);
+                    changePercentagesMultipleColumn(getAllQueries, dataGridView1, dataGridView3, cbNatureOfDeptCol);
                 }
                 else
                 {
                     ///error
-                    changePercentagesMultipleColumn(getAllQueries, dataGridView1, dataGridView3);
+                    changePercentagesMultipleColumn(getAllQueries, dataGridView1, dataGridView3, cbNatureOfDeptCol);
                 }
 
 
@@ -1440,7 +1440,7 @@ namespace ExcelProject
         }
 
 
-        void changePercentageSingleColumn(DataGridView target, DataGridView currentPercent, List<string> queries, ListBox dependentColumns, ListBox mustColumns, string workingColumn)
+        void changePercentageSingleColumn(DataGridView target, DataGridView currentPercent, List<string> queries, ListBox dependentColumns, ListBox mustColumns, string workingColumn, ComboBox cbNatureOfDeptCol)
         {
             dataGridView3.Refresh();
             dataGridView3.DataSource = null;
@@ -1485,39 +1485,19 @@ namespace ExcelProject
                     {
                         if (increase.Count() > 0)
                         {
-                            bool isDependent = true;
-                            foreach (var item in depColListBoxItems)
+                            bool isDependent = false;
+                            if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "AND")
                             {
-                                var arr_existOrNot = item.ToString().Split('#');
-                                var value_existorNotExist = arr_existOrNot[1];
-                                var columnName_Q_X_existorNotExist = arr_existOrNot[0];
-                                ;
-                                var searchColumnNameIndexAfterWET_Q_X_existorNotExist = mdgv.searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
-                                var dependentColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
-
-
-                                int formNoIndex = 1;
-                                var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
-
-                                var lst_dependentColumnData = mdgv.Split(dependentColumnData, workingData.Length);
-                                if (value_existorNotExist.ToLower() == "exist")
-                                {
-                                    // Exist
-                                    if (!lst_dependentColumnData.Contains(workingData))
-                                    {
-                                        isDependent = false;
-                                        break;
-                                    }
-                                }
-                                else if (value_existorNotExist.ToLower() == "not exist")
-                                {
-                                    //Not exist
-                                    if (lst_dependentColumnData.Contains(workingData))
-                                    {
-                                        isDependent = false;
-                                        break;
-                                    }
-                                }
+                                isDependent = mdgv.isDependentCol_Satisfy_AND(dataGridView3, lbDepCol, increase[0], rows);
+                            }
+                            else if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "OR")
+                            {
+                                isDependent = mdgv.isDependentCol_Satisfy_OR(dataGridView3, lbDepCol, increase[0], rows);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Nature of dependent column not valid.");
+                                return;
                             }
                             if (isDependent)
                             {

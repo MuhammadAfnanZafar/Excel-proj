@@ -519,7 +519,7 @@ namespace ExcelProject.Model
                 }
             }
         }
-        public void increasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange)
+        public void increasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange, ComboBox cbNatureOfDeptCol)
         {
             MyDataGridView mdgv = new MyDataGridView();
             var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, getQ1_X_ColumnName);
@@ -542,57 +542,19 @@ namespace ExcelProject.Model
                 //{
                 //if (i == searchColumnNameIndexAfterWET)
                 //{
-                bool isDependentColSatisfied = true;
-
-                // Dependent column validation
-                List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
-                foreach (var item in depColListBoxItems)
+                bool isDependentColSatisfied = false;
+                if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "AND")
                 {
-                    var arr_existOrNot = item.ToString().Split('#');
-                    var value_existorNotExist = arr_existOrNot[1];
-                    var columnName_Q_X_existorNotExist = arr_existOrNot[0];
-                    ;
-                    var searchColumnNameIndexAfterWET_Q_X_existorNotExist = mdgv.searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
-                    var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
-
-
-                    int formNoIndex = 1;
-                    var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
-
-                    var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
-                    if (value_existorNotExist.ToLower() == "exist")
-                    {
-                        // Exist
-                        if (lst_GetAllCellData.Contains(Q_X_Value))
-                        {
-                            lst_CheckAllValidation_ExistNotExist.Add(true);
-                        }
-                        else
-                        {
-                            lst_CheckAllValidation_ExistNotExist.Add(false);
-                        }
-                    }
-                    else
-                    {
-                        //Not exist
-                        if (!lst_GetAllCellData.Contains(Q_X_Value))
-                        {
-                            lst_CheckAllValidation_ExistNotExist.Add(true);
-                        }
-                        else
-                        {
-                            lst_CheckAllValidation_ExistNotExist.Add(false);
-                        }
-                    }
+                    isDependentColSatisfied = isDependentCol_Satisfy_AND(dataGridView3, lbDepCol, Q_X_Value, rows);
                 }
-
-                // Checking Dependent column if all conditions are true witch means "AND"
-                foreach (var item in lst_CheckAllValidation_ExistNotExist)
+                else if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "OR")
                 {
-                    if (!item)
-                    {
-                        isDependentColSatisfied = false;
-                    }
+                    isDependentColSatisfied = isDependentCol_Satisfy_OR(dataGridView3, lbDepCol, Q_X_Value, rows);
+                }
+                else
+                {
+                    MessageBox.Show("Nature of dependent column not valid.");
+                    return;
                 }
 
                 if (isDependentColSatisfied) // Validation for dependent column IF ALL Dependent column VALIDATION SATISFIED THEN CHANGE COLUMN
@@ -631,14 +593,14 @@ namespace ExcelProject.Model
             }
         }
 
-        public void decreasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange)
+        public void decreasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange, ComboBox cbNatureOfDeptCol)
         {
 
-               MyDataGridView mdgv = new MyDataGridView();
+            MyDataGridView mdgv = new MyDataGridView();
             var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, getQ1_X_ColumnName);
 
             //Getting Minimum and maximum values
-             var arrMinMax_get_PercentageLimit_Target = calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, searchColumnNameIndexAfterWET, Q_X_Value, Convert.ToDouble(Q_X_PercentageValue_NewTarget), dgvRange);
+            var arrMinMax_get_PercentageLimit_Target = calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, searchColumnNameIndexAfterWET, Q_X_Value, Convert.ToDouble(Q_X_PercentageValue_NewTarget), dgvRange);
             var minPercentageValue = arrMinMax_get_PercentageLimit_Target[0];
             var maxPercentageValue = arrMinMax_get_PercentageLimit_Target[1];
 
@@ -804,6 +766,115 @@ namespace ExcelProject.Model
             return arrMinMax;
         }
 
+        public bool isDependentCol_Satisfy_AND(DataGridView dataGridView3, ListBox lbDepCol, string Q_X_Value, int rows)
+        {
+            bool isDependentColSatisfied = true;
+            var depColListBoxItems = lbDepCol.SelectedItems;
+            // Dependent column validation
+            List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
+            foreach (var item in depColListBoxItems)
+            {
+                var arr_existOrNot = item.ToString().Split('#');
+                var value_existorNotExist = arr_existOrNot[1];
+                var columnName_Q_X_existorNotExist = arr_existOrNot[0];
+                ;
+                var searchColumnNameIndexAfterWET_Q_X_existorNotExist = searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
+                var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
+
+
+                int formNoIndex = 1;
+                var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
+
+                var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
+                if (value_existorNotExist.ToLower() == "exist")
+                {
+                    // Exist
+                    if (lst_GetAllCellData.Contains(Q_X_Value))
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(true);
+                    }
+                    else
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(false);
+                    }
+                }
+                else
+                {
+                    //Not exist
+                    if (!lst_GetAllCellData.Contains(Q_X_Value))
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(true);
+                    }
+                    else
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(false);
+                    }
+                }
+            }
+
+            // Checking Dependent column if all conditions are true witch means "AND"
+            foreach (var item in lst_CheckAllValidation_ExistNotExist)
+            {
+                if (!item)
+                {
+                    isDependentColSatisfied = false;
+                    break;
+                }
+            }
+
+            return isDependentColSatisfied;
+        }
+
+        public bool isDependentCol_Satisfy_OR(DataGridView dataGridView3, ListBox lbDepCol, string Q_X_Value, int rows)
+        {
+            var depColListBoxItems = lbDepCol.SelectedItems;
+            // Dependent column validation
+            List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
+            foreach (var item in depColListBoxItems)
+            {
+                var arr_existOrNot = item.ToString().Split('#');
+                var value_existorNotExist = arr_existOrNot[1];
+                var columnName_Q_X_existorNotExist = arr_existOrNot[0];
+                ;
+                var searchColumnNameIndexAfterWET_Q_X_existorNotExist = searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
+                var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
+
+
+                int formNoIndex = 1;
+                var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
+
+                var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
+                if (value_existorNotExist.ToLower() == "exist")
+                {
+                    // Exist
+                    if (lst_GetAllCellData.Contains(Q_X_Value))
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(true);
+                        return true; // Or Condition Satified 
+                    }
+                    else
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(false);
+                    }
+                }
+                else
+                {
+                    //Not exist
+                    if (!lst_GetAllCellData.Contains(Q_X_Value))
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(true);
+                        return true; // Or Condition Satified 
+                    }
+                    else
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(false);
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public int get_Q_X_Value_Count(List<myExcel> countList, string Q_X_Value)
         {
             int Q_X_Count = 0;
@@ -867,10 +938,10 @@ namespace ExcelProject.Model
                         decimal division = 0;
                         //if (changedValueSum > 0)
                         //{
-                            division = difference / changedValueSum;
+                        division = difference / changedValueSum;
 
                         //}
-                        
+
 
                         List<string> changedValues = new List<string>();
                         for (int k = 0; k < currentColumn.Count(); k++)

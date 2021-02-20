@@ -469,6 +469,7 @@
             // 
             // cbNatureOfDeptCol
             // 
+            this.cbNatureOfDeptCol.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbNatureOfDeptCol.FormattingEnabled = true;
             this.cbNatureOfDeptCol.Items.AddRange(new object[] {
             "AND",
