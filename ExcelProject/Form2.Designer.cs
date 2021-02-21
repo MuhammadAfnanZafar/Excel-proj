@@ -66,6 +66,8 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.cbNatureOfDeptCol = new System.Windows.Forms.ComboBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.tbTargetPerFormulaValue = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
@@ -89,7 +91,7 @@
             // lblFileName
             // 
             this.lblFileName.AutoSize = true;
-            this.lblFileName.Location = new System.Drawing.Point(15, 144);
+            this.lblFileName.Location = new System.Drawing.Point(14, 160);
             this.lblFileName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblFileName.Name = "lblFileName";
             this.lblFileName.Size = new System.Drawing.Size(71, 17);
@@ -109,7 +111,7 @@
             // panelDropdown
             // 
             this.panelDropdown.AutoScroll = true;
-            this.panelDropdown.Location = new System.Drawing.Point(16, 171);
+            this.panelDropdown.Location = new System.Drawing.Point(15, 187);
             this.panelDropdown.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelDropdown.Name = "panelDropdown";
             this.panelDropdown.Size = new System.Drawing.Size(1217, 185);
@@ -137,13 +139,13 @@
             // 
             // cbWorkingColumn
             // 
+            this.cbWorkingColumn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbWorkingColumn.FormattingEnabled = true;
             this.cbWorkingColumn.Location = new System.Drawing.Point(18, 107);
             this.cbWorkingColumn.Margin = new System.Windows.Forms.Padding(4);
             this.cbWorkingColumn.Name = "cbWorkingColumn";
             this.cbWorkingColumn.Size = new System.Drawing.Size(160, 24);
             this.cbWorkingColumn.TabIndex = 9;
-            this.cbWorkingColumn.Text = "-- Select --";
             // 
             // label3
             // 
@@ -159,7 +161,7 @@
             // 
             this.rbRelational.AutoSize = true;
             this.rbRelational.Checked = true;
-            this.rbRelational.Location = new System.Drawing.Point(663, 56);
+            this.rbRelational.Location = new System.Drawing.Point(890, 56);
             this.rbRelational.Margin = new System.Windows.Forms.Padding(4);
             this.rbRelational.Name = "rbRelational";
             this.rbRelational.Size = new System.Drawing.Size(92, 21);
@@ -171,7 +173,7 @@
             // rbNonRelational
             // 
             this.rbNonRelational.AutoSize = true;
-            this.rbNonRelational.Location = new System.Drawing.Point(663, 84);
+            this.rbNonRelational.Location = new System.Drawing.Point(890, 84);
             this.rbNonRelational.Margin = new System.Windows.Forms.Padding(4);
             this.rbNonRelational.Name = "rbNonRelational";
             this.rbNonRelational.Size = new System.Drawing.Size(123, 21);
@@ -193,7 +195,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(17, 361);
+            this.button4.Location = new System.Drawing.Point(16, 377);
             this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(151, 28);
@@ -205,7 +207,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(197, 36);
+            this.label5.Location = new System.Drawing.Point(428, 36);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(129, 17);
@@ -214,7 +216,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(1082, 361);
+            this.button5.Location = new System.Drawing.Point(1081, 377);
             this.button5.Margin = new System.Windows.Forms.Padding(4);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(151, 28);
@@ -226,7 +228,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(422, 38);
+            this.label6.Location = new System.Drawing.Point(649, 38);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(89, 17);
@@ -236,7 +238,7 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(17, 425);
+            this.dataGridView1.Location = new System.Drawing.Point(16, 441);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
@@ -248,7 +250,7 @@
             // 
             this.lbDepCol.FormattingEnabled = true;
             this.lbDepCol.ItemHeight = 16;
-            this.lbDepCol.Location = new System.Drawing.Point(199, 56);
+            this.lbDepCol.Location = new System.Drawing.Point(430, 56);
             this.lbDepCol.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.lbDepCol.Name = "lbDepCol";
             this.lbDepCol.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
@@ -259,7 +261,7 @@
             // 
             this.lbMustCol.FormattingEnabled = true;
             this.lbMustCol.ItemHeight = 16;
-            this.lbMustCol.Location = new System.Drawing.Point(425, 56);
+            this.lbMustCol.Location = new System.Drawing.Point(652, 56);
             this.lbMustCol.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.lbMustCol.Name = "lbMustCol";
             this.lbMustCol.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
@@ -280,7 +282,7 @@
             // dataGridView2
             // 
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(240, 425);
+            this.dataGridView2.Location = new System.Drawing.Point(239, 441);
             this.dataGridView2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersWidth = 51;
@@ -291,7 +293,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(14, 405);
+            this.label1.Location = new System.Drawing.Point(13, 421);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(55, 17);
@@ -301,7 +303,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(237, 405);
+            this.label4.Location = new System.Drawing.Point(236, 421);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(63, 17);
@@ -311,7 +313,7 @@
             // dataGridView3
             // 
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView3.Location = new System.Drawing.Point(462, 425);
+            this.dataGridView3.Location = new System.Drawing.Point(461, 441);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowHeadersWidth = 51;
@@ -322,7 +324,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(460, 405);
+            this.label7.Location = new System.Drawing.Point(459, 421);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(59, 17);
@@ -332,7 +334,7 @@
             // dataGridView4
             // 
             this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView4.Location = new System.Drawing.Point(686, 425);
+            this.dataGridView4.Location = new System.Drawing.Point(685, 441);
             this.dataGridView4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView4.Name = "dataGridView4";
             this.dataGridView4.RowHeadersWidth = 51;
@@ -343,7 +345,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(684, 405);
+            this.label8.Location = new System.Drawing.Point(683, 421);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(102, 17);
@@ -353,7 +355,7 @@
             // dataGridView5
             // 
             this.dataGridView5.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView5.Location = new System.Drawing.Point(958, 425);
+            this.dataGridView5.Location = new System.Drawing.Point(957, 441);
             this.dataGridView5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView5.Name = "dataGridView5";
             this.dataGridView5.RowHeadersWidth = 51;
@@ -364,7 +366,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(956, 405);
+            this.label9.Location = new System.Drawing.Point(955, 421);
             this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(110, 17);
@@ -373,7 +375,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(176, 361);
+            this.button3.Location = new System.Drawing.Point(175, 377);
             this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(151, 28);
@@ -385,7 +387,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(1228, 405);
+            this.label10.Location = new System.Drawing.Point(1227, 421);
             this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(50, 17);
@@ -395,7 +397,7 @@
             // dataGridView6
             // 
             this.dataGridView6.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView6.Location = new System.Drawing.Point(1230, 425);
+            this.dataGridView6.Location = new System.Drawing.Point(1229, 441);
             this.dataGridView6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView6.Name = "dataGridView6";
             this.dataGridView6.RowHeadersWidth = 51;
@@ -405,7 +407,7 @@
             // 
             // btnUploadNewTargetFile
             // 
-            this.btnUploadNewTargetFile.Location = new System.Drawing.Point(444, 361);
+            this.btnUploadNewTargetFile.Location = new System.Drawing.Point(443, 377);
             this.btnUploadNewTargetFile.Margin = new System.Windows.Forms.Padding(4);
             this.btnUploadNewTargetFile.Name = "btnUploadNewTargetFile";
             this.btnUploadNewTargetFile.Size = new System.Drawing.Size(184, 28);
@@ -416,7 +418,7 @@
             // 
             // btnChangePercentages
             // 
-            this.btnChangePercentages.Location = new System.Drawing.Point(828, 361);
+            this.btnChangePercentages.Location = new System.Drawing.Point(827, 377);
             this.btnChangePercentages.Margin = new System.Windows.Forms.Padding(4);
             this.btnChangePercentages.Name = "btnChangePercentages";
             this.btnChangePercentages.Size = new System.Drawing.Size(192, 28);
@@ -427,7 +429,7 @@
             // 
             // btnUploadOladTargetFile
             // 
-            this.btnUploadOladTargetFile.Location = new System.Drawing.Point(636, 361);
+            this.btnUploadOladTargetFile.Location = new System.Drawing.Point(635, 377);
             this.btnUploadOladTargetFile.Margin = new System.Windows.Forms.Padding(4);
             this.btnUploadOladTargetFile.Name = "btnUploadOladTargetFile";
             this.btnUploadOladTargetFile.Size = new System.Drawing.Size(184, 28);
@@ -460,7 +462,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(199, 126);
+            this.label12.Location = new System.Drawing.Point(183, 87);
             this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(192, 17);
@@ -474,16 +476,38 @@
             this.cbNatureOfDeptCol.Items.AddRange(new object[] {
             "AND",
             "OR"});
-            this.cbNatureOfDeptCol.Location = new System.Drawing.Point(200, 144);
+            this.cbNatureOfDeptCol.Location = new System.Drawing.Point(185, 107);
             this.cbNatureOfDeptCol.Name = "cbNatureOfDeptCol";
             this.cbNatureOfDeptCol.Size = new System.Drawing.Size(218, 24);
             this.cbNatureOfDeptCol.TabIndex = 43;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(182, 36);
+            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(222, 17);
+            this.label13.TabIndex = 45;
+            this.label13.Text = "Target Percentage Formula Value";
+            // 
+            // tbTargetPerFormulaValue
+            // 
+            this.tbTargetPerFormulaValue.Location = new System.Drawing.Point(185, 56);
+            this.tbTargetPerFormulaValue.Margin = new System.Windows.Forms.Padding(4);
+            this.tbTargetPerFormulaValue.Name = "tbTargetPerFormulaValue";
+            this.tbTargetPerFormulaValue.Size = new System.Drawing.Size(218, 22);
+            this.tbTargetPerFormulaValue.TabIndex = 44;
+            this.tbTargetPerFormulaValue.Text = "0.5";
+            this.tbTargetPerFormulaValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbTargetPerFormulaValue_KeyPress);
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1743, 730);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.tbTargetPerFormulaValue);
             this.Controls.Add(this.cbNatureOfDeptCol);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
@@ -578,5 +602,7 @@
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.ComboBox cbNatureOfDeptCol;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.TextBox tbTargetPerFormulaValue;
     }
 }

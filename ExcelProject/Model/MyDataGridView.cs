@@ -519,13 +519,13 @@ namespace ExcelProject.Model
                 }
             }
         }
-        public void increasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange, ComboBox cbNatureOfDeptCol)
+        public void increasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange, ComboBox cbNatureOfDeptCol, double TargetPercentage_Formula_Value)
         {
             MyDataGridView mdgv = new MyDataGridView();
             var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, getQ1_X_ColumnName);
 
             //Getting Minimum and maximum values
-            var arrMinMax_get_PercentageLimit_Target = calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, searchColumnNameIndexAfterWET, Q_X_Value, Convert.ToDouble(Q_X_PercentageValue_NewTarget), dgvRange);
+            var arrMinMax_get_PercentageLimit_Target = calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, searchColumnNameIndexAfterWET, Q_X_Value, Convert.ToDouble(Q_X_PercentageValue_NewTarget), dgvRange, TargetPercentage_Formula_Value);
             var minPercentageValue = arrMinMax_get_PercentageLimit_Target[0];
             var maxPercentageValue = arrMinMax_get_PercentageLimit_Target[1];
 
@@ -593,14 +593,14 @@ namespace ExcelProject.Model
             }
         }
 
-        public void decreasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange, ComboBox cbNatureOfDeptCol)
+        public void decreasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange, ComboBox cbNatureOfDeptCol, double TargetPercentage_Formula_Value)
         {
 
             MyDataGridView mdgv = new MyDataGridView();
             var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, getQ1_X_ColumnName);
 
             //Getting Minimum and maximum values
-            var arrMinMax_get_PercentageLimit_Target = calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, searchColumnNameIndexAfterWET, Q_X_Value, Convert.ToDouble(Q_X_PercentageValue_NewTarget), dgvRange);
+            var arrMinMax_get_PercentageLimit_Target = calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, searchColumnNameIndexAfterWET, Q_X_Value, Convert.ToDouble(Q_X_PercentageValue_NewTarget), dgvRange, TargetPercentage_Formula_Value);
             var minPercentageValue = arrMinMax_get_PercentageLimit_Target[0];
             var maxPercentageValue = arrMinMax_get_PercentageLimit_Target[1];
 
@@ -743,7 +743,7 @@ namespace ExcelProject.Model
             //  }
         }
 
-        public double[] calculatePercentageLimit(DataGridView dataGridView3, DataGridView dataGridView1, DataGridView dataGridView6, int searchColumnNameIndexAfterWET, string Q_X_Value, double Q_X_PercentageValue_NewTarget, DataGridView dgvRange)
+        public double[] calculatePercentageLimit(DataGridView dataGridView3, DataGridView dataGridView1, DataGridView dataGridView6, int searchColumnNameIndexAfterWET, string Q_X_Value, double Q_X_PercentageValue_NewTarget, DataGridView dgvRange, double TargetPercentage_Formula_Value)
         {
             var arrMinMax = new double[2];
             var get_Q1_ColumnData = getColumnData(dataGridView1, searchColumnNameIndexAfterWET);
@@ -756,7 +756,7 @@ namespace ExcelProject.Model
 
             var Q_X_Value_Count = get_Q_X_Value_Count(countList, Q_X_Value);
             double limit = get_Q_X_Value_Limit(ranges, Q_X_Value_Count);
-            var result = 0.5 * limit;
+            var result = TargetPercentage_Formula_Value * limit;
             var minValue = (Q_X_PercentageValue_NewTarget - result).ToString();
             var maxValue = (Q_X_PercentageValue_NewTarget + result).ToString();
             minValue = minValue.ToString().Trim('-');
