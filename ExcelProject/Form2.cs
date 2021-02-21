@@ -1100,7 +1100,7 @@ namespace ExcelProject
 
                         // finding Q1_X index
                         var getQ1_X_Data = mdgv.getColumnData(dataGridView6, 0);
-                        var searchedRowIndexOfQ1_X = getQ1_X_Data.FindIndex(x => x == Q_X_Value);
+                            var searchedRowIndexOfQ1_X = getQ1_X_Data.FindIndex(x => x == Q_X_Value);
                         //reportDataGridView.Rows[searchedRowIndexOfQ1_X].Cells[r + 1].Value = colItem.Percentage;
 
                         if (searchedRowIndexOfQ1_X >= 0)
@@ -1149,6 +1149,17 @@ namespace ExcelProject
             }
 
             dataGridView6.Sort(dataGridView6.Columns[0], ListSortDirection.Ascending);
+            myExcel excel1 = new myExcel();
+            string title1 = "Target Report";
+            SaveFileDialog sfd1 = new SaveFileDialog();
+            sfd1.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+            sfd1.FileName = "tagetReport.xlsx";
+            if (sfd1.ShowDialog() == DialogResult.OK)
+            {
+                excel1.ToCsV(dataGridView6, "Target Report1", "", "", title1, sfd1.FileName);
+                MessageBox.Show("Finish");
+            }
+
 
             MyDataGridView myDataGridView = new MyDataGridView();
             myDataGridView.SetTargetwithValidation(dataGridView6, dataGridView4, cbWorkingColumn.Text);
@@ -1480,13 +1491,13 @@ namespace ExcelProject
                 }
 
                 // var getQ1_X_ColumnName = queries[0];
+                filterationOnChangePercentage(queries[i - 1], dataGridView1);
                 var workingColumnIndex = mdgv.searchColumnNameIndexAfterWET(dataGridView3, workingColumn);
                 var depColListBoxItems = dependentColumns.SelectedItems;
                 var mustColListBoxItems = mustColumns.SelectedItems;
                 //filter data
                 //for (int l = 0; l < queries.Count(); l++)
                 //{
-                filterationOnChangePercentage(queries[i - 1], dataGridView1);
 
                 for (int rows = 0; rows < dataGridView3.Rows.Count - 1; rows++)
                 {
@@ -1540,12 +1551,12 @@ namespace ExcelProject
                                 var maxPercentageValue_decrease = arrMinMax_get_PercentageLimit_Target_decrease[1];
 
 
-                                if (double.Parse(increaseDataPercentage) >= minPercentageValue_increase && double.Parse(increaseDataPercentage) <= maxPercentageValue_increase)
+                                if ((double.Parse(increaseDataPercentage) >= minPercentageValue_increase && double.Parse(increaseDataPercentage) <= maxPercentageValue_increase)|| (double.Parse(increaseDataPercentage) >= maxPercentageValue_increase))
                                 {
                                     increase.RemoveAt(0);
                                 }
 
-                                if (double.Parse(decreaseDataPercentage) >= minPercentageValue_decrease && double.Parse(decreaseDataPercentage) <= maxPercentageValue_decrease)
+                                if ((double.Parse(decreaseDataPercentage) >= minPercentageValue_decrease && double.Parse(decreaseDataPercentage) <= maxPercentageValue_decrease)||(double.Parse(decreaseDataPercentage) < minPercentageValue_decrease))
                                 {
                                     decrease.Remove(workingData);
                                 }
