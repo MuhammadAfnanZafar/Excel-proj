@@ -441,7 +441,7 @@
             // dgvRange
             // 
             this.dgvRange.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvRange.Location = new System.Drawing.Point(1502, 416);
+            this.dgvRange.Location = new System.Drawing.Point(1502, 441);
             this.dgvRange.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dgvRange.Name = "dgvRange";
             this.dgvRange.RowHeadersWidth = 51;
@@ -452,7 +452,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(1499, 395);
+            this.label11.Location = new System.Drawing.Point(1499, 420);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(50, 17);

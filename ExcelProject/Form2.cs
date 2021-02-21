@@ -1352,9 +1352,9 @@ namespace ExcelProject
                 return;
             }
 
-            if (lbDepCol.SelectedItems.Count <= 0 || cbNatureOfDeptCol.Text == null || cbNatureOfDeptCol.Text == "")
+            if (cbNatureOfDeptCol.Text == null || cbNatureOfDeptCol.Text == "")
             {
-                MessageBox.Show("DEPENDENT and NATURE OF DEPENDENT COLUMN must not be empty.");
+                MessageBox.Show("NATURE OF DEPENDENT COLUMN must not be empty.");
                 return;
             }
 
@@ -1497,23 +1497,30 @@ namespace ExcelProject
                         if (increase.Count() > 0)
                         {
                             bool isDependent = false;
-                            if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "AND")
+                            if (depColListBoxItems.Count > 0) // Optionl
                             {
-                                isDependent = mdgv.isDependentCol_Satisfy_AND(dataGridView3, lbDepCol, increase[0], rows);
-                            }
-                            else if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "OR")
-                            {
-                                isDependent = mdgv.isDependentCol_Satisfy_OR(dataGridView3, lbDepCol, increase[0], rows);
+                                if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "AND")
+                                {
+                                    isDependent = mdgv.isDependentCol_Satisfy_AND(dataGridView3, lbDepCol, increase[0], rows);
+                                }
+                                else if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "OR")
+                                {
+                                    isDependent = mdgv.isDependentCol_Satisfy_OR(dataGridView3, lbDepCol, increase[0], rows);
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Nature of dependent column not valid.");
+                                    return;
+                                }
                             }
                             else
                             {
-                                MessageBox.Show("Nature of dependent column not valid.");
-                                return;
+                                isDependent = true;
                             }
-                            if (isDependent)
+                            if (isDependent) 
                             {
                                 dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[0];
-                                if (mustColListBoxItems.Count > 0)
+                                if (mustColListBoxItems.Count > 0) // Optionl
                                 {
                                     mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, workingData, rows);
                                 }

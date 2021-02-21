@@ -543,18 +543,25 @@ namespace ExcelProject.Model
                 //if (i == searchColumnNameIndexAfterWET)
                 //{
                 bool isDependentColSatisfied = false;
-                if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "AND")
+                if (depColListBoxItems.Count > 0) // Optional
                 {
-                    isDependentColSatisfied = isDependentCol_Satisfy_AND(dataGridView3, lbDepCol, Q_X_Value, rows);
-                }
-                else if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "OR")
-                {
-                    isDependentColSatisfied = isDependentCol_Satisfy_OR(dataGridView3, lbDepCol, Q_X_Value, rows);
+                    if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "AND")
+                    {
+                        isDependentColSatisfied = isDependentCol_Satisfy_AND(dataGridView3, lbDepCol, Q_X_Value, rows);
+                    }
+                    else if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "OR")
+                    {
+                        isDependentColSatisfied = isDependentCol_Satisfy_OR(dataGridView3, lbDepCol, Q_X_Value, rows);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Nature of dependent column not valid.");
+                        return;
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Nature of dependent column not valid.");
-                    return;
+                    isDependentColSatisfied = true;
                 }
 
                 if (isDependentColSatisfied) // Validation for dependent column IF ALL Dependent column VALIDATION SATISFIED THEN CHANGE COLUMN
@@ -562,14 +569,37 @@ namespace ExcelProject.Model
                     var currentVal = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value.ToString();
 
                     // assign Values To Must Column
-                    if (mustColListBoxItems.Count > 0)
+                    if (mustColListBoxItems.Count > 0) // Optional
                     {
                         assignValuesToMustColumn(lbMustCol, dataGridView3, Q_X_Value, rows);
                     }
 
                     if (currentVal != Q_X_Value) // if Q1 value already same do nothing
                     {
-                        dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = Q_X_Value;
+
+                        string workingColumnNature = mdgv.getColumnNature(getQ1_X_ColumnName);
+                        if (workingColumnNature == "s")
+                        {
+                            dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = Q_X_Value;
+                        }
+                        else if (workingColumnNature == "m")
+                        {
+                            var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value.ToString();
+                            var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
+                            if (!lst_GetAllCellData.Contains(Q_X_Value))
+                            {
+                                lst_GetAllCellData.Add(Q_X_Value);
+                                   var result = string.Join("", lst_GetAllCellData.ToArray());
+                                if (result != "")
+                                {
+                                    dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = result;
+                                }
+                                else
+                                {
+                                    dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = Q_X_Value;
+                                }
+                            }
+                        }
                         var percentage = mdgv.calculatePercentage(dataGridView3, Q_X_Value, searchColumnNameIndexAfterWET);
                         //if (double.Parse(Q_X_PercentageValue_NewTarget) <= double.Parse(percentage))
                         //{
