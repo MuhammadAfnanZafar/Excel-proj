@@ -1219,7 +1219,7 @@ namespace ExcelProject
             }
         }
 
-        void changePercentagesMultipleColumn(List<string> lst, DataGridView dataGridView, DataGridView dataGridView3)
+        void changePercentagesMultipleColumn(List<string> lst, DataGridView dataGridView, DataGridView dataGridView3, ComboBox cbNatureOfDeptCol, double TargetPercentage_Formula_Value)
         {
             ///// find out working coilumn is single or multiple save it in variable
 
@@ -1325,11 +1325,11 @@ namespace ExcelProject
                     var Q_X_PercentageValue_NewTarget = dataGridView6.Rows[rows].Cells[col].Value.ToString();
                     if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) > Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
-                        mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1, dataGridView6, dgvRange);
+                        mdgv.increasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1, dataGridView6, dgvRange, cbNatureOfDeptCol, TargetPercentage_Formula_Value);
                     }
                     else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) < Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
-                        mdgv.decreasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1, dataGridView6, dgvRange);
+                        mdgv.decreasePercentage(dataGridView3, lbDepCol, lbMustCol, getQ1_X_ColumnName, Q_X_Value, Q_X_PercentageValue_NewTarget, dataGridView1, dataGridView6, dgvRange, cbNatureOfDeptCol, TargetPercentage_Formula_Value);
                     }
                     else if (Convert.ToDouble(Q_X_PercentageValue_NewTarget) == Convert.ToDouble(Q_X_PercentageValue_OldTarget))
                     {
@@ -1350,16 +1350,22 @@ namespace ExcelProject
         {
             //try
             //{
-
+            
             if (dataGridView1.Rows.Count == 0)
             {
                 MessageBox.Show("Kindly upload current file.");
                 return;
             }
 
-            if (lbDepCol.SelectedItems.Count <= 0 || lbMustCol.SelectedItems.Count <= 0)
+            if (tbTargetPerFormulaValue.Text == "" || Convert.ToDouble(tbTargetPerFormulaValue.Text) <= 0)
             {
-                MessageBox.Show("DEPENDENT and MUST COLUMN must not be empty.");
+                MessageBox.Show("Target Percentage Formula Value must not be empty and greater then Zero.");
+                return;
+            }
+
+            if (lbDepCol.SelectedItems.Count <= 0 || cbNatureOfDeptCol.Text == null || cbNatureOfDeptCol.Text == "")
+            {
+                MessageBox.Show("DEPENDENT and NATURE OF DEPENDENT COLUMN must not be empty.");
                 return;
             }
 
@@ -1368,6 +1374,8 @@ namespace ExcelProject
                 MessageBox.Show("Kindly Upload Range File");
                 return;
             }
+
+            double TargetPercentage_Formula_Value = double.Parse(tbTargetPerFormulaValue.Text);
 
             MyDataGridView mdgv = new MyDataGridView();
             var getAllQueries = mdgv.getRegenratedQueries(dataGridView6);
@@ -1378,16 +1386,19 @@ namespace ExcelProject
                 string workingColumnNature = mdgv.getColumnNature(getQ1_X_Value);
                 if (workingColumnNature == "s")
                 {
-                    changePercentageSingleColumn(dataGridView6, dataGridView4, getAllQueries, lbDepCol, lbMustCol, getQ1_X_Value);
+                    changePercentageSingleColumn(dataGridView6, dataGridView4, getAllQueries, lbDepCol, lbMustCol, getQ1_X_Value, cbNatureOfDeptCol, TargetPercentage_Formula_Value);
                 }
                 else if (workingColumnNature == "m")
                 {
-                    changePercentagesMultipleColumn(getAllQueries, dataGridView1, dataGridView3);
+                    changePercentagesMultipleColumn(getAllQueries, dataGridView1, dataGridView3, cbNatureOfDeptCol, TargetPercentage_Formula_Value);
                 }
                 else
                 {
                     ///error
-                  //  changePercentagesMultipleColumn(getAllQueries, dataGridView1, dataGridView3);
+                    //changePercentagesMultipleColumn(getAllQueries, dataGridView1, dataGridView3, cbNatureOfDeptCol, TargetPercentage_Formula_Value);
+                    MessageBox.Show("Error: Input file not in correct format.");
+                    return;
+                        
                 }
 
 
@@ -1451,7 +1462,7 @@ namespace ExcelProject
         }
 
 
-        void changePercentageSingleColumn(DataGridView target, DataGridView currentPercent, List<string> queries, ListBox dependentColumns, ListBox mustColumns, string workingColumn)
+        void changePercentageSingleColumn(DataGridView target, DataGridView currentPercent, List<string> queries, ListBox dependentColumns, ListBox mustColumns, string workingColumn, ComboBox cbNatureOfDeptCol, double TargetPercentage_Formula_Value)
         {
             dataGridView3.Refresh();
             dataGridView3.DataSource = null;
@@ -1496,44 +1507,27 @@ namespace ExcelProject
                     {
                         if (increase.Count() > 0)
                         {
-                            bool isDependent = true;
-                            foreach (var item in depColListBoxItems)
+                            bool isDependent = false;
+                            if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "AND")
                             {
-                                var arr_existOrNot = item.ToString().Split('#');
-                                var value_existorNotExist = arr_existOrNot[1];
-                                var columnName_Q_X_existorNotExist = arr_existOrNot[0];
-                                ;
-                                var searchColumnNameIndexAfterWET_Q_X_existorNotExist = mdgv.searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
-                                var dependentColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
-
-
-                                int formNoIndex = 1;
-                                var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
-
-                                var lst_dependentColumnData = mdgv.Split(dependentColumnData, workingData.Length);
-                                if (value_existorNotExist.ToLower() == "exist")
-                                {
-                                    // Exist
-                                    if (!lst_dependentColumnData.Contains(workingData))
-                                    {
-                                        isDependent = false;
-                                        break;
-                                    }
-                                }
-                                else if (value_existorNotExist.ToLower() == "not exist")
-                                {
-                                    //Not exist
-                                    if (lst_dependentColumnData.Contains(workingData))
-                                    {
-                                        isDependent = false;
-                                        break;
-                                    }
-                                }
+                                isDependent = mdgv.isDependentCol_Satisfy_AND(dataGridView3, lbDepCol, increase[0], rows);
+                            }
+                            else if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "OR")
+                            {
+                                isDependent = mdgv.isDependentCol_Satisfy_OR(dataGridView3, lbDepCol, increase[0], rows);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Nature of dependent column not valid.");
+                                return;
                             }
                             if (isDependent)
                             {
                                 dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[0];
-                                mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, workingData, rows);
+                                if (mustColListBoxItems.Count > 0)
+                                {
+                                    mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, workingData, rows);
+                                }
 
                                 var increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[0], workingColumnIndex);
                                 var decreaseDataPercentage = mdgv.calculatePercentage(dataGridView3, workingData, workingColumnIndex);
@@ -1541,11 +1535,11 @@ namespace ExcelProject
                                 var decreaseData_Index = brands.IndexOf(workingData);
                                 var increaseData_Index = brands.IndexOf(increase[0]);
 
-                                var arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[0], Convert.ToDouble(targetColumns[increaseData_Index]), dgvRange);
+                                var arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[0], Convert.ToDouble(targetColumns[increaseData_Index]), dgvRange, TargetPercentage_Formula_Value);
                                 var minPercentageValue_increase = arrMinMax_get_PercentageLimit_Target_increase[0];
                                 var maxPercentageValue_increase = arrMinMax_get_PercentageLimit_Target_increase[1];
 
-                                var arrMinMax_get_PercentageLimit_Target_decrease = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, workingData, Convert.ToDouble(targetColumns[decreaseData_Index]), dgvRange);
+                                var arrMinMax_get_PercentageLimit_Target_decrease = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, workingData, Convert.ToDouble(targetColumns[decreaseData_Index]), dgvRange, TargetPercentage_Formula_Value);
                                 var minPercentageValue_decrease = arrMinMax_get_PercentageLimit_Target_decrease[0];
                                 var maxPercentageValue_decrease = arrMinMax_get_PercentageLimit_Target_decrease[1];
 
@@ -1564,7 +1558,7 @@ namespace ExcelProject
 
                             }
                         }
-                        
+
                     }
 
 
@@ -1576,6 +1570,11 @@ namespace ExcelProject
             }
         }
 
-
+        private void tbTargetPerFormulaValue_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if ((e.KeyChar < 48 || e.KeyChar > 57) && e.KeyChar != 46
+                                 && e.KeyChar != 8)
+                e.Handled = true;
+        }
     }
 }

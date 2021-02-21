@@ -519,13 +519,13 @@ namespace ExcelProject.Model
                 }
             }
         }
-        public void increasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange)
+        public void increasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange, ComboBox cbNatureOfDeptCol, double TargetPercentage_Formula_Value)
         {
             MyDataGridView mdgv = new MyDataGridView();
             var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, getQ1_X_ColumnName);
 
             //Getting Minimum and maximum values
-            var arrMinMax_get_PercentageLimit_Target = calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, searchColumnNameIndexAfterWET, Q_X_Value, Convert.ToDouble(Q_X_PercentageValue_NewTarget), dgvRange);
+            var arrMinMax_get_PercentageLimit_Target = calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, searchColumnNameIndexAfterWET, Q_X_Value, Convert.ToDouble(Q_X_PercentageValue_NewTarget), dgvRange, TargetPercentage_Formula_Value);
             var minPercentageValue = arrMinMax_get_PercentageLimit_Target[0];
             var maxPercentageValue = arrMinMax_get_PercentageLimit_Target[1];
 
@@ -542,57 +542,19 @@ namespace ExcelProject.Model
                 //{
                 //if (i == searchColumnNameIndexAfterWET)
                 //{
-                bool isDependentColSatisfied = true;
-
-                // Dependent column validation
-                List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
-                foreach (var item in depColListBoxItems)
+                bool isDependentColSatisfied = false;
+                if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "AND")
                 {
-                    var arr_existOrNot = item.ToString().Split('#');
-                    var value_existorNotExist = arr_existOrNot[1];
-                    var columnName_Q_X_existorNotExist = arr_existOrNot[0];
-                    ;
-                    var searchColumnNameIndexAfterWET_Q_X_existorNotExist = mdgv.searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
-                    var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
-
-
-                    int formNoIndex = 1;
-                    var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
-
-                    var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
-                    if (value_existorNotExist.ToLower() == "exist")
-                    {
-                        // Exist
-                        if (lst_GetAllCellData.Contains(Q_X_Value))
-                        {
-                            lst_CheckAllValidation_ExistNotExist.Add(true);
-                        }
-                        else
-                        {
-                            lst_CheckAllValidation_ExistNotExist.Add(false);
-                        }
-                    }
-                    else
-                    {
-                        //Not exist
-                        if (!lst_GetAllCellData.Contains(Q_X_Value))
-                        {
-                            lst_CheckAllValidation_ExistNotExist.Add(true);
-                        }
-                        else
-                        {
-                            lst_CheckAllValidation_ExistNotExist.Add(false);
-                        }
-                    }
+                    isDependentColSatisfied = isDependentCol_Satisfy_AND(dataGridView3, lbDepCol, Q_X_Value, rows);
                 }
-
-                // Checking Dependent column if all conditions are true witch means "AND"
-                foreach (var item in lst_CheckAllValidation_ExistNotExist)
+                else if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "OR")
                 {
-                    if (!item)
-                    {
-                        isDependentColSatisfied = false;
-                    }
+                    isDependentColSatisfied = isDependentCol_Satisfy_OR(dataGridView3, lbDepCol, Q_X_Value, rows);
+                }
+                else
+                {
+                    MessageBox.Show("Nature of dependent column not valid.");
+                    return;
                 }
 
                 if (isDependentColSatisfied) // Validation for dependent column IF ALL Dependent column VALIDATION SATISFIED THEN CHANGE COLUMN
@@ -600,7 +562,10 @@ namespace ExcelProject.Model
                     var currentVal = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value.ToString();
 
                     // assign Values To Must Column
-                    assignValuesToMustColumn(lbMustCol, dataGridView3, Q_X_Value, rows);
+                    if (mustColListBoxItems.Count > 0)
+                    {
+                        assignValuesToMustColumn(lbMustCol, dataGridView3, Q_X_Value, rows);
+                    }
 
                     if (currentVal != Q_X_Value) // if Q1 value already same do nothing
                     {
@@ -628,14 +593,14 @@ namespace ExcelProject.Model
             }
         }
 
-        public void decreasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange)
+        public void decreasePercentage(DataGridView dataGridView3, ListBox lbDepCol, ListBox lbMustCol, string getQ1_X_ColumnName, string Q_X_Value, string Q_X_PercentageValue_NewTarget, DataGridView dataGridView1, DataGridView dataGridView6, DataGridView dgvRange, ComboBox cbNatureOfDeptCol, double TargetPercentage_Formula_Value)
         {
 
-               MyDataGridView mdgv = new MyDataGridView();
+            MyDataGridView mdgv = new MyDataGridView();
             var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, getQ1_X_ColumnName);
 
             //Getting Minimum and maximum values
-             var arrMinMax_get_PercentageLimit_Target = calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, searchColumnNameIndexAfterWET, Q_X_Value, Convert.ToDouble(Q_X_PercentageValue_NewTarget), dgvRange);
+            var arrMinMax_get_PercentageLimit_Target = calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, searchColumnNameIndexAfterWET, Q_X_Value, Convert.ToDouble(Q_X_PercentageValue_NewTarget), dgvRange, TargetPercentage_Formula_Value);
             var minPercentageValue = arrMinMax_get_PercentageLimit_Target[0];
             var maxPercentageValue = arrMinMax_get_PercentageLimit_Target[1];
 
@@ -778,7 +743,7 @@ namespace ExcelProject.Model
             //  }
         }
 
-        public double[] calculatePercentageLimit(DataGridView dataGridView3, DataGridView dataGridView1, DataGridView dataGridView6, int searchColumnNameIndexAfterWET, string Q_X_Value, double Q_X_PercentageValue_NewTarget, DataGridView dgvRange)
+        public double[] calculatePercentageLimit(DataGridView dataGridView3, DataGridView dataGridView1, DataGridView dataGridView6, int searchColumnNameIndexAfterWET, string Q_X_Value, double Q_X_PercentageValue_NewTarget, DataGridView dgvRange, double TargetPercentage_Formula_Value)
         {
             var arrMinMax = new double[2];
             var get_Q1_ColumnData = getColumnData(dataGridView1, searchColumnNameIndexAfterWET);
@@ -791,7 +756,7 @@ namespace ExcelProject.Model
 
             var Q_X_Value_Count = get_Q_X_Value_Count(countList, Q_X_Value);
             double limit = get_Q_X_Value_Limit(ranges, Q_X_Value_Count);
-            var result = 0.5 * limit;
+            var result = TargetPercentage_Formula_Value * limit;
             var minValue = (Q_X_PercentageValue_NewTarget - result).ToString();
             var maxValue = (Q_X_PercentageValue_NewTarget + result).ToString();
             minValue = minValue.ToString().Trim('-');
@@ -799,6 +764,117 @@ namespace ExcelProject.Model
             arrMinMax[0] = Convert.ToDouble(minValue);
             arrMinMax[1] = Convert.ToDouble(maxValue);
             return arrMinMax;
+        }
+
+        public bool isDependentCol_Satisfy_AND(DataGridView dataGridView3, ListBox lbDepCol, string Q_X_Value, int rows)
+        {
+            bool isDependentColSatisfied = true;
+            var depColListBoxItems = lbDepCol.SelectedItems;
+            // Dependent column validation
+            List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
+            foreach (var item in depColListBoxItems)
+            {
+                var arr_existOrNot = item.ToString().Split('#');
+                var value_existorNotExist = arr_existOrNot[1];
+                var columnName_Q_X_existorNotExist = arr_existOrNot[0];
+                ;
+                var searchColumnNameIndexAfterWET_Q_X_existorNotExist = searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
+                var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
+
+
+                int formNoIndex = 1;
+                var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
+
+                var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
+                if (value_existorNotExist.ToLower() == "exist")
+                {
+                    // Exist
+                    if (lst_GetAllCellData.Contains(Q_X_Value))
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(true);
+                    }
+                    else
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(false);
+                        return false;
+                    }
+                }
+                else
+                {
+                    //Not exist
+                    if (!lst_GetAllCellData.Contains(Q_X_Value))
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(true);
+                    }
+                    else
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(false);
+                        return false;
+                    }
+                }
+            }
+
+            // Checking Dependent column if all conditions are true witch means "AND"
+            //foreach (var item in lst_CheckAllValidation_ExistNotExist)
+            //{
+            //    if (!item)
+            //    {
+            //        isDependentColSatisfied = false;
+            //        break;
+            //    }
+            //}
+
+            return true;
+        }
+
+        public bool isDependentCol_Satisfy_OR(DataGridView dataGridView3, ListBox lbDepCol, string Q_X_Value, int rows)
+        {
+            var depColListBoxItems = lbDepCol.SelectedItems;
+            // Dependent column validation
+            List<bool> lst_CheckAllValidation_ExistNotExist = new List<bool>();
+            foreach (var item in depColListBoxItems)
+            {
+                var arr_existOrNot = item.ToString().Split('#');
+                var value_existorNotExist = arr_existOrNot[1];
+                var columnName_Q_X_existorNotExist = arr_existOrNot[0];
+                ;
+                var searchColumnNameIndexAfterWET_Q_X_existorNotExist = searchColumnNameIndexAfterWET(dataGridView3, columnName_Q_X_existorNotExist);
+                var get_Q_X_ColumnData = dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X_existorNotExist].Value.ToString();
+
+
+                int formNoIndex = 1;
+                var formNo = dataGridView3.Rows[rows].Cells[formNoIndex].Value.ToString(); //Form Number Value
+
+                var lst_GetAllCellData = Split(get_Q_X_ColumnData, Q_X_Value.Length);
+                if (value_existorNotExist.ToLower() == "exist")
+                {
+                    // Exist
+                    if (lst_GetAllCellData.Contains(Q_X_Value))
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(true);
+                        return true; // Or Condition Satified 
+                    }
+                    else
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(false);
+                    }
+                }
+                else
+                {
+                    //Not exist
+                    if (!lst_GetAllCellData.Contains(Q_X_Value))
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(true);
+                        return true; // Or Condition Satified 
+                    }
+                    else
+                    {
+                        lst_CheckAllValidation_ExistNotExist.Add(false);
+                    }
+                }
+            }
+
+            return false;
         }
 
         public int get_Q_X_Value_Count(List<myExcel> countList, string Q_X_Value)
@@ -864,10 +940,10 @@ namespace ExcelProject.Model
                         decimal division = 0;
                         //if (changedValueSum > 0)
                         //{
-                            division = difference / changedValueSum;
+                        division = difference / changedValueSum;
 
                         //}
-                        
+
 
                         List<string> changedValues = new List<string>();
                         for (int k = 0; k < currentColumn.Count(); k++)
