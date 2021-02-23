@@ -1148,17 +1148,17 @@ namespace ExcelProject
                 }
             }
 
-            dataGridView6.Sort(dataGridView6.Columns[0], ListSortDirection.Ascending);
-            myExcel excel1 = new myExcel();
-            string title1 = "Target Report";
-            SaveFileDialog sfd1 = new SaveFileDialog();
-            sfd1.Filter = "Excel Documents (*.xlsx)|*.xlsx";
-            sfd1.FileName = "tagetReport.xlsx";
-            if (sfd1.ShowDialog() == DialogResult.OK)
-            {
-                excel1.ToCsV(dataGridView6, "Target Report1", "", "", title1, sfd1.FileName);
-                MessageBox.Show("Finish");
-            }
+            //dataGridView6.Sort(dataGridView6.Columns[0], ListSortDirection.Ascending);
+            //myExcel excel1 = new myExcel();
+            //string title1 = "Target Report";
+            //SaveFileDialog sfd1 = new SaveFileDialog();
+            //sfd1.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+            //sfd1.FileName = "tagetReport.xlsx";
+            //if (sfd1.ShowDialog() == DialogResult.OK)
+            //{
+            //    excel1.ToCsV(dataGridView6, "Target Report1", "", "", title1, sfd1.FileName);
+            //    MessageBox.Show("Finish");
+            //}
 
 
             MyDataGridView myDataGridView = new MyDataGridView();
