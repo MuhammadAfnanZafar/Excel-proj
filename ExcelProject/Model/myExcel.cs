@@ -15,7 +15,10 @@ namespace ExcelProject.Model
     class myExcel
     {
         public string ColumnValue { get; set; }
+        public string ColumnNameOrQuery { get; set; }
         public int Count { get; set; }
+        public static List<myExcel> CountList = new List<myExcel>();
+
 
         public void ToCsV(DataGridView dgv, string name, string age, string address, string title, string filename)
         {
