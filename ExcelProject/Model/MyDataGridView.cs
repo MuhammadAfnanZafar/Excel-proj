@@ -38,7 +38,6 @@ namespace ExcelProject.Model
 
             return lst;
         }
-
         public List<string> getAllColumnNames(DataGridView dataGridView1, int colIndex)
         {
             List<string> lst = new List<string>();
@@ -123,7 +122,6 @@ namespace ExcelProject.Model
 
             return lst;
         }
-
         public int searchColumnNameIndexAfterWET(DataGridView dataGridView1, string columnName)
         {
             List<string> lst = new List<string>();
@@ -361,7 +359,6 @@ namespace ExcelProject.Model
             }
             return dgv_copy;
         }
-
         public List<string> getRegenratedQueries(DataGridView dataGridView5)
         {
             List<string> quries = new List<string>();
@@ -387,7 +384,6 @@ namespace ExcelProject.Model
 
             return quries;
         }
-
         public void AssignValuesToCurrentFile(DataGridView dataGridView1, DataGridView dataGridView3)
         {
             int currentFile_rowIndex = -1;
@@ -412,7 +408,6 @@ namespace ExcelProject.Model
             }
 
         }
-
         public void replaceRowData(DataGridView dataGridView, List<string> lst, int rowIndex)
         {
             for (int i = 0; i < lst.Count; i++)
@@ -421,7 +416,6 @@ namespace ExcelProject.Model
                 dataGridView.Rows[rowIndex].Cells[i + 1].Value = item;
             }
         }
-
         public List<string> getSpecificRowData(DataGridView dataGridView, int rows)
         {
             List<string> lst = new List<string>();
@@ -432,7 +426,6 @@ namespace ExcelProject.Model
             }
             return lst;
         }
-
         public List<myExcel> CalculateCountOf_Q_X_Using_Range(List<string> getCurrent_Q1_ColumnData, List<string> get_Q1_ColumnData)
         {
             List<myExcel> countList = new List<myExcel>();
@@ -455,8 +448,6 @@ namespace ExcelProject.Model
             }
             return countList;
         }
-
-
         public List<Range> GettingRangesFromRangeFile(List<string> getRangeColumnData, List<string> getRangePercentageColumnData)
         {
             List<Range> ranges = new List<Range>();
@@ -795,7 +786,6 @@ namespace ExcelProject.Model
             arrMinMax[1] = Convert.ToDouble(maxValue);
             return arrMinMax;
         }
-
         public bool isDependentCol_Satisfy_AND(DataGridView dataGridView3, ListBox lbDepCol, string Q_X_Value, int rows)
         {
             bool isDependentColSatisfied = true;
@@ -856,7 +846,6 @@ namespace ExcelProject.Model
 
             return true;
         }
-
         public bool isDependentCol_Satisfy_OR(DataGridView dataGridView3, ListBox lbDepCol, string Q_X_Value, int rows)
         {
             var depColListBoxItems = lbDepCol.SelectedItems;

@@ -24,8 +24,6 @@ namespace ExcelProject
         string currentFile = "";
         string currentFileExt = "";
         string currentFileName = "";
-
-
         public System.Data.DataTable ReadExcel(string fileName, string fileExt)
         {
             string conn = string.Empty;
@@ -191,7 +189,6 @@ namespace ExcelProject
                 MessageBox.Show(ex.Message);
             }
         }
-
         public void filteration(string query, DataGridView dataGridView)
         {
             try
@@ -281,8 +278,6 @@ namespace ExcelProject
                 MessageBox.Show(ex.Message);
             }
         }
-
-
         void reportFormatDT(List<MyListBox> lst, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType)
         {
 
@@ -459,8 +454,6 @@ namespace ExcelProject
             }
 
         }
-
-
         void reportFormatDTNonRelationsal(List<MyListBox> lst, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType)
         {
 
@@ -908,8 +901,6 @@ namespace ExcelProject
                 }
             }
         }
-
-
         private void button5_Click(object sender, EventArgs e)
         {
             //WriteExcel();
@@ -990,6 +981,7 @@ namespace ExcelProject
             Q1_X_List.AddRange(getColumnData_Previous); // Combine 2 List
             Q1_X_List = Q1_X_List.Distinct().ToList();
 
+            
             // Setting up structure// If rows already created
             DataTable dt = new DataTable();
             //Setting Columns
@@ -1060,6 +1052,7 @@ namespace ExcelProject
             var get_Q1_ColumnData = mdgv.getColumnData(dataGridView1, searchColumnNameIndexAfterWET);
             var getCurrent_Q1_ColumnData = mdgv.getColumnData(dataGridView6, 0);
 
+            /// finding count of all brands ie 01
             List<myExcel> countList = mdgv.CalculateCountOf_Q_X_Using_Range(getCurrent_Q1_ColumnData, get_Q1_ColumnData);
 
             // Getting range =============
@@ -1067,7 +1060,7 @@ namespace ExcelProject
             var getRangePercentageColumnData = mdgv.getColumnData(dgvRange, 1);
             List<Range> ranges = mdgv.GettingRangesFromRangeFile(getRangeColumnData, getRangePercentageColumnData);
 
-            //
+            // 
             for (int rows = 0; rows < dataGridView6.Rows.Count - 1; rows++)
             {
                 for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
@@ -1075,7 +1068,7 @@ namespace ExcelProject
                     var Q_X_Value = dataGridView6.Rows[rows].Cells[0].Value.ToString();
                     int Q_X_Count = 0;
 
-                    var getQ1_X_Data_Current = mdgv.getColumnData(dataGridView4, 0);
+                    var getQ1_X_Data_Current = mdgv.getColumnData(dataGridView4, 0); 
                     var searchedRowIndexOfQ1_X_Current = getQ1_X_Data_Current.FindIndex(x => x == Q_X_Value);
                     var getQ1_X_Data_Previous = mdgv.getColumnData(dataGridView5, 0);
                     var searchedRowIndexOfQ1_X_Previous = getQ1_X_Data_Previous.FindIndex(x => x == Q_X_Value);
@@ -1112,12 +1105,13 @@ namespace ExcelProject
                                 var range = ranges[i];
                                 if (Q_X_Count >= range.Min && Q_X_Count <= range.Max) // checking if Q_X valuel lie with in range
                                 {
-                                    // Do Nothing 
-                                    // Target value is same as current
+                                    
                                     var convert_calculatedDiff_Positive = calculateDifference.ToString().Trim('-');
 
                                     if (Convert.ToDouble(range.Percentage) > Convert.ToDouble(convert_calculatedDiff_Positive))
                                     {
+                                        // Do Nothing 
+                                        // Target value is same as current
                                         dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[col].Value = dataGridView4.Rows[searchedRowIndexOfQ1_X_Current].Cells[col].Value;
                                     }
                                     else if (Convert.ToDouble(range.Percentage) < Convert.ToDouble(convert_calculatedDiff_Positive))
@@ -1132,7 +1126,7 @@ namespace ExcelProject
                                         {
                                             string value = dataGridView5.Rows[searchedRowIndexOfQ1_X_Previous].Cells[col].Value.ToString(); // Previous Value
                                             decimal diff = Convert.ToDecimal(value) - range.Percentage;
-                                            dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[col].Value = diff;
+                                            dataGridView6.Rows[searchedRowIndexOfQ1_X].Cells[col].Value = diff.ToString().Trim('-');
                                         }
                                         else
                                         {
@@ -1460,8 +1454,6 @@ namespace ExcelProject
                 }
             }
         }
-
-
         void changePercentageSingleColumn(DataGridView target, DataGridView currentPercent, List<string> queries, ListBox dependentColumns, ListBox mustColumns, string workingColumn, ComboBox cbNatureOfDeptCol, double TargetPercentage_Formula_Value)
         {
             dataGridView3.Refresh();
@@ -1490,14 +1482,11 @@ namespace ExcelProject
                     }
                 }
 
-                // var getQ1_X_ColumnName = queries[0];
                 filterationOnChangePercentage(queries[i - 1], dataGridView1);
                 var workingColumnIndex = mdgv.searchColumnNameIndexAfterWET(dataGridView3, workingColumn);
                 var depColListBoxItems = dependentColumns.SelectedItems;
                 var mustColListBoxItems = mustColumns.SelectedItems;
-                //filter data
-                //for (int l = 0; l < queries.Count(); l++)
-                //{
+          
 
                 for (int rows = 0; rows < dataGridView3.Rows.Count - 1; rows++)
                 {
@@ -1560,23 +1549,13 @@ namespace ExcelProject
                                 {
                                     decrease.Remove(workingData);
                                 }
-
-
-
                             }
                         }
-
                     }
-
-
                 }
-
                 mdgv.AssignValuesToCurrentFile(dataGridView1, dataGridView3);
-
-
             }
         }
-
         private void tbTargetPerFormulaValue_KeyPress(object sender, KeyPressEventArgs e)
         {
             if ((e.KeyChar < 48 || e.KeyChar > 57) && e.KeyChar != 46
