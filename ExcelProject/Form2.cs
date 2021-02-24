@@ -309,6 +309,14 @@ namespace ExcelProject
                     if (dataGridView3.Rows.Count > 1)
                     {
 
+                        if (reportType.ToUpper() == "CURRENT")
+                        {
+                            myExcel objCountList = new myExcel();
+                            objCountList.Count = dataGridView3.Rows.Count - 1;
+                            objCountList.ColumnNameOrQuery = query;
+                            myExcel.CountList.Add(objCountList);
+                        }
+
                         var selectedVal = cbWorkingColumn.Text;
                         MyDataGridView mdgv = new MyDataGridView();
                         var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
@@ -483,6 +491,14 @@ namespace ExcelProject
 
                     if (dataGridView3.Rows.Count > 1)
                     {
+                        if (reportType.ToUpper() == "CURRENT")
+                        {
+                            myExcel objCountList = new myExcel();
+                            objCountList.Count = dataGridView3.Rows.Count - 1;
+                            objCountList.ColumnNameOrQuery = query;
+                            myExcel.CountList.Add(objCountList);
+                        }
+
                         var selectedVal = cbWorkingColumn.Text;
                         MyDataGridView mdgv = new MyDataGridView();
                         var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView3, selectedVal);  // Getting selected working column index
@@ -1047,13 +1063,14 @@ namespace ExcelProject
 
 
             // Caluculating and Assigning Count Of Q_X 
-            var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView1, cbWorkingColumn.Text);
+            //var searchColumnNameIndexAfterWET = mdgv.searchColumnNameIndexAfterWET(dataGridView1, cbWorkingColumn.Text);
 
-            var get_Q1_ColumnData = mdgv.getColumnData(dataGridView1, searchColumnNameIndexAfterWET);
-            var getCurrent_Q1_ColumnData = mdgv.getColumnData(dataGridView6, 0);
+            //var get_Q1_ColumnData = mdgv.getColumnData(dataGridView1, searchColumnNameIndexAfterWET);
+            //var getCurrent_Q1_ColumnData = mdgv.getColumnData(dataGridView6, 0);
 
-            /// finding count of all brands ie 01
-            List<myExcel> countList = mdgv.CalculateCountOf_Q_X_Using_Range(getCurrent_Q1_ColumnData, get_Q1_ColumnData);
+            //List<myExcel> countList = mdgv.CalculateCountOf_Q_X_Using_Range(getCurrent_Q1_ColumnData, get_Q1_ColumnData);
+
+            List<myExcel> countList = myExcel.CountList;
 
             // Getting range =============
             var getRangeColumnData = mdgv.getColumnData(dgvRange, 0);
@@ -1066,7 +1083,7 @@ namespace ExcelProject
                 for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
                 {
                     var Q_X_Value = dataGridView6.Rows[rows].Cells[0].Value.ToString();
-                    int Q_X_Count = 0;
+                    int Q_X_Count = countList[col - 1].Count;
 
                     var getQ1_X_Data_Current = mdgv.getColumnData(dataGridView4, 0); 
                     var searchedRowIndexOfQ1_X_Current = getQ1_X_Data_Current.FindIndex(x => x == Q_X_Value);
@@ -1082,14 +1099,14 @@ namespace ExcelProject
                         double calculateDifference = Convert.ToDouble(currentDgvValue) - Convert.ToDouble(perviousDgvValue);
 
                         // Checking value of Q_X Count with Q_X_Value
-                        foreach (var item in countList)
-                        {
-                            if (item.ColumnValue == Q_X_Value)
-                            {
-                                Q_X_Count = item.Count;
-                                break;
-                            }
-                        }
+                        //foreach (var item in countList)
+                        //{
+                        //    if (item.ColumnValue == Q_X_Value)
+                        //    {
+                        //        Q_X_Count = item.Count;
+                        //        break;
+                        //    }
+                        //}
 
                         // finding Q1_X index
                         var getQ1_X_Data = mdgv.getColumnData(dataGridView6, 0);
@@ -1143,16 +1160,17 @@ namespace ExcelProject
             }
 
             dataGridView6.Sort(dataGridView6.Columns[0], ListSortDirection.Ascending);
-            myExcel excel1 = new myExcel();
-            string title1 = "Target Report";
-            SaveFileDialog sfd1 = new SaveFileDialog();
-            sfd1.Filter = "Excel Documents (*.xlsx)|*.xlsx";
-            sfd1.FileName = "tagetReport.xlsx";
-            if (sfd1.ShowDialog() == DialogResult.OK)
-            {
-                excel1.ToCsV(dataGridView6, "Target Report1", "", "", title1, sfd1.FileName);
-                MessageBox.Show("Finish");
-            }
+
+            //myExcel excel1 = new myExcel();
+            //string title1 = "Target Report";
+            //SaveFileDialog sfd1 = new SaveFileDialog();
+            //sfd1.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+            //sfd1.FileName = "tagetReport.xlsx";
+            //if (sfd1.ShowDialog() == DialogResult.OK)
+            //{
+            //    excel1.ToCsV(dataGridView6, "Target Report1", "", "", title1, sfd1.FileName);
+            //    MessageBox.Show("Finish");
+            //}
 
 
             MyDataGridView myDataGridView = new MyDataGridView();

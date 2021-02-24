@@ -436,12 +436,9 @@ namespace ExcelProject.Model
                 foreach (var Q1_ColumnData in get_Q1_ColumnData)
                 {
                     var rowDataList = Split(Q1_ColumnData, item.Length);
-                    for (int j = 0; j < rowDataList.Count; j++)
+                    if (rowDataList.Contains(item))
                     {
-                        if (item == rowDataList[j])
-                        {
-                            myExcel.Count += 1;
-                        }
+                        myExcel.Count += 1;
                     }
                 }
                 countList.Add(myExcel);
@@ -580,7 +577,7 @@ namespace ExcelProject.Model
                             if (!lst_GetAllCellData.Contains(Q_X_Value))
                             {
                                 lst_GetAllCellData.Add(Q_X_Value);
-                                   var result = string.Join("", lst_GetAllCellData.ToArray());
+                                var result = string.Join("", lst_GetAllCellData.ToArray());
                                 if (result != "")
                                 {
                                     dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = result;
