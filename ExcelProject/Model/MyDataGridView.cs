@@ -295,10 +295,10 @@ namespace ExcelProject.Model
             //    return "0";
             //}
             var temp = (total * 100).ToString();
-            if (val == 16.ToString())
-            {
+            //if (val == 16.ToString())
+            //{
 
-            }
+            //}
 
             return temp;
         }
@@ -934,7 +934,7 @@ namespace ExcelProject.Model
                 var workingColumnNature = getColumnNature(workingColumnName);
                 if (workingColumnNature == "s")
                 {
-                    if (columnSum < 100)
+                    if (columnSum < 100 || columnSum > 100)
                     {
                         decimal changedValueSum = 0;
                         decimal notChangedValueSum = 0;
