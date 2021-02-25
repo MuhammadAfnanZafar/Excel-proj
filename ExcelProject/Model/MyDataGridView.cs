@@ -263,21 +263,18 @@ namespace ExcelProject.Model
                 var item = getRowData[i];
                 var q1_1_value = item[item.Count() - 1]; // getting last value
                 var rowDataList = Split(q1_1_value, val.Length);
-                for (int j = 0; j < rowDataList.Count; j++)
-                {
-                    var item2 = rowDataList[j];
-                    if (item2.ToString() == val) // comparing last value with comboBox value i.e Q1_1
-                    {
-                        brandSum += double.Parse(item[wetIndex]);
-                    }
-                }
-                //var item = getRowData[i];
-                //var q1_1_value = item[item.Count() - 1]; // getting last value
-
-                //if (q1_1_value.ToString() == val) // comparing last value with comboBox value i.e Q1_1
+                //for (int j = 0; j < rowDataList.Count; j++)
                 //{
-                //    brandSum += double.Parse(item[item.Count() - 2]);
+                //    var item2 = rowDataList[j];
+                //    if (item2.ToString() == val) // comparing last value with comboBox value i.e Q1_1
+                //    {
+                //        brandSum += double.Parse(item[wetIndex]);
+                //    }
                 //}
+                if (rowDataList.Contains(val))
+                {
+                    brandSum += double.Parse(item[wetIndex]);
+                }
             }
             if (calulateWETSum <= 0)
             {
