@@ -769,6 +769,14 @@ namespace ExcelProject
 
         private void Form2_Load(object sender, EventArgs e)
         {
+            var dateAndTime = DateTime.Now;
+            var date = dateAndTime.Date.ToString("dd/MM/yyyy");
+            if (date == "10/03/2021")
+            {
+                MessageBox.Show("your trial has expired. Kindly contact developer for further information.");
+                Application.Exit();
+            }
+            button5.Hide();
 
         }
 
