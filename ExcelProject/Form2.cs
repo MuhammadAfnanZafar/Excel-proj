@@ -1239,7 +1239,7 @@ namespace ExcelProject
             string workingColumnNature = "";//dgvClass.getColumnNature();
 
 
-
+    
             dataGridView3.Refresh();
             dataGridView3.DataSource = null;
             dataGridView3.Rows.Clear();
