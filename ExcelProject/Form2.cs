@@ -1244,7 +1244,7 @@ namespace ExcelProject
             ///// find out working coilumn is single or multiple save it in variable
 
             MyDataGridView dgvClass = new MyDataGridView();
-            string workingColumnNature = "";//dgvClass.getColumnNature();
+           // string workingColumnNature = "";//dgvClass.getColumnNature();
 
 
     
