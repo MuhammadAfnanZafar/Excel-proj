@@ -1091,7 +1091,7 @@ namespace ExcelProject
                 for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
                 {
                     var Q_X_Value = dataGridView6.Rows[rows].Cells[0].Value.ToString();
-                    int Q_X_Count = countList[col - 1].Count;
+                    int Q_X_Count = countList[col-1].Count;
 
                     var getQ1_X_Data_Current = mdgv.getColumnData(dataGridView4, 0); 
                     var searchedRowIndexOfQ1_X_Current = getQ1_X_Data_Current.FindIndex(x => x == Q_X_Value);
@@ -1546,7 +1546,10 @@ namespace ExcelProject
                             if (isDependent) 
                             {
                                 dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[0];
+
+                                int filterDataCount = dataGridView3.Rows.Count-1;
                               
+                             
 
                                 var increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[0], workingColumnIndex);
                                 var decreaseDataPercentage = mdgv.calculatePercentage(dataGridView3, workingData, workingColumnIndex);
@@ -1554,11 +1557,11 @@ namespace ExcelProject
                                 var decreaseData_Index = brands.IndexOf(workingData);
                                 var increaseData_Index = brands.IndexOf(increase[0]);
 
-                                var arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[0], Convert.ToDouble(targetColumns[increaseData_Index]), dgvRange, TargetPercentage_Formula_Value);
+                                var arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[0], Convert.ToDouble(targetColumns[increaseData_Index]), dgvRange, TargetPercentage_Formula_Value,filterDataCount);
                                 var minPercentageValue_increase = arrMinMax_get_PercentageLimit_Target_increase[0];
                                 var maxPercentageValue_increase = arrMinMax_get_PercentageLimit_Target_increase[1];
 
-                                var arrMinMax_get_PercentageLimit_Target_decrease = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, workingData, Convert.ToDouble(targetColumns[decreaseData_Index]), dgvRange, TargetPercentage_Formula_Value);
+                                var arrMinMax_get_PercentageLimit_Target_decrease = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, workingData, Convert.ToDouble(targetColumns[decreaseData_Index]), dgvRange, TargetPercentage_Formula_Value, filterDataCount);
                                 var minPercentageValue_decrease = arrMinMax_get_PercentageLimit_Target_decrease[0];
                                 var maxPercentageValue_decrease = arrMinMax_get_PercentageLimit_Target_decrease[1];
 
@@ -1579,7 +1582,7 @@ namespace ExcelProject
                                         dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[k];
                                         var temp_increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[k], workingColumnIndex);
                                         var temp_increaseData_Index = brands.IndexOf(increase[k]);
-                                        var temp_arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[k], Convert.ToDouble(targetColumns[temp_increaseData_Index]), dgvRange, TargetPercentage_Formula_Value);
+                                        var temp_arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[k], Convert.ToDouble(targetColumns[temp_increaseData_Index]), dgvRange, TargetPercentage_Formula_Value, filterDataCount);
                                         var temp_minPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[0];
                                         var temp_maxPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[1];
 
