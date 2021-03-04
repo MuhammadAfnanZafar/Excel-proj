@@ -1546,10 +1546,7 @@ namespace ExcelProject
                             if (isDependent) 
                             {
                                 dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[0];
-                                if (mustColListBoxItems.Count > 0) // Optionl
-                                {
-                                    mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, workingData, rows);
-                                }
+                              
 
                                 var increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[0], workingColumnIndex);
                                 var decreaseDataPercentage = mdgv.calculatePercentage(dataGridView3, workingData, workingColumnIndex);
@@ -1565,16 +1562,51 @@ namespace ExcelProject
                                 var minPercentageValue_decrease = arrMinMax_get_PercentageLimit_Target_decrease[0];
                                 var maxPercentageValue_decrease = arrMinMax_get_PercentageLimit_Target_decrease[1];
 
-
-                                if ((double.Parse(increaseDataPercentage) >= minPercentageValue_increase && double.Parse(increaseDataPercentage) <= maxPercentageValue_increase)|| (double.Parse(increaseDataPercentage) >= maxPercentageValue_increase))
+                                if ((double.Parse(decreaseDataPercentage) < minPercentageValue_decrease))
                                 {
-                                    increase.RemoveAt(0);
+                                    dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = workingData;
+                                    break;
                                 }
-
-                                if ((double.Parse(decreaseDataPercentage) >= minPercentageValue_decrease && double.Parse(decreaseDataPercentage) <= maxPercentageValue_decrease)||(double.Parse(decreaseDataPercentage) < minPercentageValue_decrease))
+                                else if (double.Parse(decreaseDataPercentage) >= minPercentageValue_decrease && double.Parse(decreaseDataPercentage) <= maxPercentageValue_decrease)
                                 {
                                     decrease.Remove(workingData);
                                 }
+
+                                if (double.Parse(increaseDataPercentage) > maxPercentageValue_increase)
+                                {
+                                    for (int k = 1; k < increase.Count; k++)
+                                    {
+                                        dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[k];
+                                        var temp_increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[k], workingColumnIndex);
+                                        var temp_increaseData_Index = brands.IndexOf(increase[k]);
+                                        var temp_arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[k], Convert.ToDouble(targetColumns[temp_increaseData_Index]), dgvRange, TargetPercentage_Formula_Value);
+                                        var temp_minPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[0];
+                                        var temp_maxPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[1];
+
+                                        if ((double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase) || (double.Parse(temp_increaseDataPercentage) < temp_minPercentageValue_increase))
+                                        {
+                                            increase.RemoveAt(k);
+                                            if (mustColListBoxItems.Count > 0) // Optionl
+                                            {
+                                                mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
+                                            }
+                                            break;
+                                        }
+                                       
+
+                                    }
+                                }
+
+                                else if (double.Parse(increaseDataPercentage) >= minPercentageValue_increase && double.Parse(increaseDataPercentage) <= maxPercentageValue_increase)
+                                {
+                                    increase.RemoveAt(0);
+                                    if (mustColListBoxItems.Count > 0) // Optionl
+                                    {
+                                        mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[0], rows);
+                                    }
+                                }
+
+                               
                             }
                         }
                     }
