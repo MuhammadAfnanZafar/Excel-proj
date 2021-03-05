@@ -8,6 +8,7 @@ using System.Data.OleDb;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -24,6 +25,12 @@ namespace ExcelProject
         string currentFile = "";
         string currentFileExt = "";
         string currentFileName = "";
+
+        private string MyDirectory()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
+
         public System.Data.DataTable ReadExcel(string fileName, string fileExt)
         {
             string conn = string.Empty;
@@ -51,6 +58,41 @@ namespace ExcelProject
                 }
             }
             return dtexcel;
+        }
+        void UploadRangeFile()
+        {
+            string filePath = string.Empty;
+            string fileExt = string.Empty;
+            OpenFileDialog file = new OpenFileDialog(); //open dialog to choose file  
+            if (file.ShowDialog() == System.Windows.Forms.DialogResult.OK) //if there is a file choosen by the user  
+            {
+                filePath = file.FileName; //get the path of the file  
+
+
+                // Displaying currently running file
+                //currentlyRunningFile = "File Name: " + file.SafeFileName + currentFileExt;
+
+                fileExt = Path.GetExtension(filePath); //get the file extension  
+                if (fileExt.CompareTo(".xls") == 0 || fileExt.CompareTo(".xlsx") == 0)
+                {
+                    try
+                    {
+                        System.Data.DataTable dtExcel = new System.Data.DataTable();
+                        dtExcel = ReadExcel(filePath, fileExt); //read excel file  
+                        dgvRange.Visible = true;
+                        dgvRange.DataSource = dtExcel;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please choose .xls or .xlsx file only.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error); //custom messageBox to show error  
+                }
+            }
         }
         public void WriteExcel()
         {
@@ -777,7 +819,24 @@ namespace ExcelProject
                 Application.Exit();
             }
             button5.Hide();
+            //string applicationLocation = System.Reflection.Assembly.GetEntryAssembly().Location;
+            //string applicationDirectory = Path.GetDirectoryName(applicationLocation);
+            //applicationDirectory = Application.ExecutablePath;
 
+            var filePath = MyDirectory() + @"\range.xlsx";
+            var fileExt = Path.GetExtension(filePath);
+            try
+            {
+                System.Data.DataTable dtExcel = new System.Data.DataTable();
+                dtExcel = ReadExcel(filePath, fileExt); //read excel file  
+                dgvRange.Visible = true;
+                dgvRange.DataSource = dtExcel;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message.ToString());
+            }
         }
 
         private void Button3_Click(object sender, EventArgs e)
@@ -942,38 +1001,7 @@ namespace ExcelProject
 
         private void button4_Click(object sender, EventArgs e)
         {
-            string filePath = string.Empty;
-            string fileExt = string.Empty;
-            OpenFileDialog file = new OpenFileDialog(); //open dialog to choose file  
-            if (file.ShowDialog() == System.Windows.Forms.DialogResult.OK) //if there is a file choosen by the user  
-            {
-                filePath = file.FileName; //get the path of the file  
-
-
-                // Displaying currently running file
-                //currentlyRunningFile = "File Name: " + file.SafeFileName + currentFileExt;
-
-                fileExt = Path.GetExtension(filePath); //get the file extension  
-                if (fileExt.CompareTo(".xls") == 0 || fileExt.CompareTo(".xlsx") == 0)
-                {
-                    try
-                    {
-                        System.Data.DataTable dtExcel = new System.Data.DataTable();
-                        dtExcel = ReadExcel(filePath, fileExt); //read excel file  
-                        dgvRange.Visible = true;
-                        dgvRange.DataSource = dtExcel;
-
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message.ToString());
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Please choose .xls or .xlsx file only.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error); //custom messageBox to show error  
-                }
-            }
+            UploadRangeFile();
         }
 
         private void tbDataChar_KeyPress(object sender, KeyPressEventArgs e)
