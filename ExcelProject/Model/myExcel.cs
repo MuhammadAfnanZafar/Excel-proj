@@ -76,6 +76,70 @@ namespace ExcelProject.Model
                 wb.SaveAs(filename);
             }
         }
+
+        public void ToCsVCombineDGV(DataGridView dgv, DataGridView dgv2, string filename)
+        {
+            System.Data.DataTable dt = new System.Data.DataTable();
+
+            dt.Rows.Add();
+            dt.Rows[dt.Rows.Count - 1][0] = "Cuurent";
+            //Adding the Columns.
+            foreach (DataGridViewColumn column in dgv.Columns)
+            {
+                dt.Columns.Add(column.HeaderText, column.ValueType);
+            }
+
+            //Adding the Rows.
+            int c = 0;
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                if (dgv.Rows.Count - 1 == c)
+                {
+                    break;
+                }
+                c++;
+                dt.Rows.Add();
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    dt.Rows[dt.Rows.Count - 1][cell.ColumnIndex] = cell.Value.ToString();
+                }
+            }
+
+            dt.Rows.Add();
+            dt.Rows.Add(); 
+            dt.Rows[dt.Rows.Count - 1][0] = "Previous";
+            c = 0;
+            // dgv 2
+            foreach (DataGridViewRow row in dgv2.Rows)
+            {
+                if (dgv2.Rows.Count - 1 == c)
+                {
+                    break;
+                }
+                c++;
+                dt.Rows.Add();
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    dt.Rows[dt.Rows.Count - 1][cell.ColumnIndex] = cell.Value.ToString();
+                }
+            }
+
+            //Exporting to Excel.
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dt, "Sheet1");
+
+                //Set the color of Header Row.
+                //A resembles First Column while C resembles Third column.
+                
+                //Adjust widths of Columns.
+                wb.Worksheet(1).Columns().AdjustToContents();
+
+                //Save the Excel file.
+                wb.SaveAs(filename);
+            }
+        }
+
         private Worksheet FindSheet(Workbook workbook, string sheet_name)
         {
             foreach (Worksheet sheet in workbook.Sheets)

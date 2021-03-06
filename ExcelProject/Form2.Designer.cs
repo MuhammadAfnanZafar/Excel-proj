@@ -33,7 +33,6 @@
             this.lblFileName = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.panelDropdown = new System.Windows.Forms.Panel();
-            this.tbDataChar = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.cbWorkingColumn = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -57,7 +56,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this.dataGridView5 = new System.Windows.Forms.DataGridView();
             this.label9 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.dataGridView6 = new System.Windows.Forms.DataGridView();
             this.btnUploadNewTargetFile = new System.Windows.Forms.Button();
@@ -69,6 +67,7 @@
             this.cbNatureOfDeptCol = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
             this.tbTargetPerFormulaValue = new System.Windows.Forms.TextBox();
+            this.tbDataChar = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
@@ -108,6 +107,7 @@
             this.button2.TabIndex = 2;
             this.button2.Text = "Download Data File";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // panelDropdown
             // 
@@ -117,16 +117,6 @@
             this.panelDropdown.Name = "panelDropdown";
             this.panelDropdown.Size = new System.Drawing.Size(1343, 185);
             this.panelDropdown.TabIndex = 6;
-            // 
-            // tbDataChar
-            // 
-            this.tbDataChar.Location = new System.Drawing.Point(13, 53);
-            this.tbDataChar.Margin = new System.Windows.Forms.Padding(4);
-            this.tbDataChar.Name = "tbDataChar";
-            this.tbDataChar.Size = new System.Drawing.Size(160, 22);
-            this.tbDataChar.TabIndex = 7;
-            this.tbDataChar.Text = "2";
-            this.tbDataChar.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbDataChar_KeyPress);
             // 
             // label2
             // 
@@ -201,7 +191,7 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(151, 28);
             this.button4.TabIndex = 14;
-            this.button4.Text = "Upload Range File";
+            this.button4.Text = "Update Range File";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
@@ -276,9 +266,8 @@
             this.lblError.ForeColor = System.Drawing.Color.Red;
             this.lblError.Location = new System.Drawing.Point(12, 9);
             this.lblError.Name = "lblError";
-            this.lblError.Size = new System.Drawing.Size(50, 18);
+            this.lblError.Size = new System.Drawing.Size(0, 18);
             this.lblError.TabIndex = 24;
-            this.lblError.Text = "Error: ";
             // 
             // dataGridView2
             // 
@@ -373,17 +362,6 @@
             this.label9.Size = new System.Drawing.Size(110, 17);
             this.label9.TabIndex = 33;
             this.label9.Text = "Report Previous";
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(1197, 67);
-            this.button3.Margin = new System.Windows.Forms.Padding(4);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(151, 28);
-            this.button3.TabIndex = 34;
-            this.button3.Text = "Generate Target File";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click_1);
             // 
             // label10
             // 
@@ -503,11 +481,31 @@
             this.tbTargetPerFormulaValue.Text = "0.5";
             this.tbTargetPerFormulaValue.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbTargetPerFormulaValue_KeyPress);
             // 
+            // tbDataChar
+            // 
+            this.tbDataChar.FormattingEnabled = true;
+            this.tbDataChar.Items.AddRange(new object[] {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"});
+            this.tbDataChar.Location = new System.Drawing.Point(10, 52);
+            this.tbDataChar.Name = "tbDataChar";
+            this.tbDataChar.Size = new System.Drawing.Size(178, 24);
+            this.tbDataChar.TabIndex = 46;
+            this.tbDataChar.Text = "2";
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1362, 736);
+            this.Controls.Add(this.tbDataChar);
             this.Controls.Add(this.lbDepCol);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label5);
@@ -523,7 +521,6 @@
             this.Controls.Add(this.btnUploadNewTargetFile);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.dataGridView6);
-            this.Controls.Add(this.button3);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cbWorkingColumn);
             this.Controls.Add(this.label9);
@@ -543,7 +540,6 @@
             this.Controls.Add(this.rbNonRelational);
             this.Controls.Add(this.rbRelational);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.tbDataChar);
             this.Controls.Add(this.panelDropdown);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.lblFileName);
@@ -572,7 +568,6 @@
         private System.Windows.Forms.Label lblFileName;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Panel panelDropdown;
-        private System.Windows.Forms.TextBox tbDataChar;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cbWorkingColumn;
         private System.Windows.Forms.Label label3;
@@ -596,7 +591,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.DataGridView dataGridView5;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.DataGridView dataGridView6;
         private System.Windows.Forms.Button btnUploadNewTargetFile;
@@ -608,5 +602,6 @@
         private System.Windows.Forms.ComboBox cbNatureOfDeptCol;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox tbTargetPerFormulaValue;
+        private System.Windows.Forms.ComboBox tbDataChar;
     }
 }
