@@ -436,7 +436,7 @@ namespace ExcelProject
                         var queryAsColumn = item[0].Query;
                         queryAsColumn = queryAsColumn.Replace("AND", ",");
                         queryAsColumn = queryAsColumn.Replace("=", " ");
-                        queryAsColumn = queryAsColumn.Replace("'", "");
+                        //queryAsColumn = queryAsColumn.Replace("'", "");
                         dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
                     }
                 }
@@ -490,17 +490,17 @@ namespace ExcelProject
                 // Sorting datagridView
                 reportDataGridView.Sort(reportDataGridView.Columns[0], ListSortDirection.Ascending);
 
-                // Save to Excel
-                myExcel excel = new myExcel();
-                string title = reportType + " Report";
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
-                sfd.FileName = reportType + ".xlsx";
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    excel.ToCsV(reportDataGridView, reportType + " Report", "", "", title, sfd.FileName);
+                //// Save to Excel
+                //myExcel excel = new myExcel();
+                //string title = reportType + " Report";
+                //SaveFileDialog sfd = new SaveFileDialog();
+                //sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+                //sfd.FileName = reportType + ".xlsx";
+                //if (sfd.ShowDialog() == DialogResult.OK)
+                //{
+                //    excel.ToCsV(reportDataGridView, reportType + " Report", "", "", title, sfd.FileName);
                     
-                }
+                //}
             }
 
         }
@@ -619,7 +619,7 @@ namespace ExcelProject
                         var queryAsColumn = item[0].Query;
                         queryAsColumn = queryAsColumn.Replace("AND", ",");
                         queryAsColumn = queryAsColumn.Replace("=", " ");
-                        queryAsColumn = queryAsColumn.Replace("'", "");
+                        //queryAsColumn = queryAsColumn.Replace("'", "");
                         dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
                     }
                 }
@@ -673,17 +673,17 @@ namespace ExcelProject
                 // Sorting datagridView
                 reportDataGridView.Sort(reportDataGridView.Columns[0], ListSortDirection.Ascending);
 
-                // Save to Excel
-                myExcel excel = new myExcel();
-                string title = reportType + " Report";
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
-                sfd.FileName = reportType + ".xlsx";
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    excel.ToCsV(reportDataGridView, reportType + " Report", "", "", title, sfd.FileName);
+                //// Save to Excel
+                //myExcel excel = new myExcel();
+                //string title = reportType + " Report";
+                //SaveFileDialog sfd = new SaveFileDialog();
+                //sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+                //sfd.FileName = reportType + ".xlsx";
+                //if (sfd.ShowDialog() == DialogResult.OK)
+                //{
+                //    excel.ToCsV(reportDataGridView, reportType + " Report", "", "", title, sfd.FileName);
                     
-                }
+                //}
             }
 
         }
@@ -853,6 +853,17 @@ namespace ExcelProject
                     }
                     isRelational();
                     generateTargetFile();
+
+                    myExcel excel = new myExcel();
+                    SaveFileDialog sfd = new SaveFileDialog();
+                    sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+                    sfd.FileName = "report.xlsx";
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        excel.ToCsVCombineDGV(dataGridView4, dataGridView5, dataGridView6, sfd.FileName);
+
+                    }
+
                     MessageBox.Show("Finish");
                 }
                 else if (rbNonRelational.Checked == true)
@@ -864,6 +875,15 @@ namespace ExcelProject
                     }
                     isNonRelational();
                     generateTargetFile();
+                    myExcel excel = new myExcel();
+                    SaveFileDialog sfd = new SaveFileDialog();
+                    sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+                    sfd.FileName = "report.xlsx";
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        excel.ToCsVCombineDGV(dataGridView4, dataGridView5, dataGridView6, sfd.FileName);
+
+                    }
                     MessageBox.Show("Finish");
                 }
                 else
@@ -1018,7 +1038,7 @@ namespace ExcelProject
                 sfd.FileName = "demo.xlsx";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    excel.ToCsVCombineDGV(dataGridView4, dataGridView5, sfd.FileName);
+                    excel.ToCsVCombineDGV(dataGridView4, dataGridView5, dataGridView6, sfd.FileName);
 
                 }
             }
@@ -1251,16 +1271,16 @@ namespace ExcelProject
                 MyDataGridView myDataGridView = new MyDataGridView();
                 myDataGridView.SetTargetwithValidation(dataGridView6, dataGridView4, cbWorkingColumn.Text);
 
-                myExcel excel = new myExcel();
-                string title = "Target Report";
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
-                sfd.FileName = "tagetReport.xlsx";
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    excel.ToCsV(dataGridView6, "Target Report", "", "", title, sfd.FileName);
+                //myExcel excel = new myExcel();
+                //string title = "Target Report";
+                //SaveFileDialog sfd = new SaveFileDialog();
+                //sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+                //sfd.FileName = "tagetReport.xlsx";
+                //if (sfd.ShowDialog() == DialogResult.OK)
+                //{
+                //    excel.ToCsV(dataGridView6, "Target Report", "", "", title, sfd.FileName);
                     
-                }
+                //}
 
             }
             catch (Exception ex)

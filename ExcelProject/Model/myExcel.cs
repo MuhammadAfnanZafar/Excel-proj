@@ -77,12 +77,10 @@ namespace ExcelProject.Model
             }
         }
 
-        public void ToCsVCombineDGV(DataGridView dgv, DataGridView dgv2, string filename)
+        public void ToCsVCombineDGV(DataGridView dgv, DataGridView dgv2,  DataGridView dgvTarget, string filename)
         {
             System.Data.DataTable dt = new System.Data.DataTable();
 
-            dt.Rows.Add();
-            dt.Rows[dt.Rows.Count - 1][0] = "Cuurent";
             //Adding the Columns.
             foreach (DataGridViewColumn column in dgv.Columns)
             {
@@ -106,7 +104,7 @@ namespace ExcelProject.Model
             }
 
             dt.Rows.Add();
-            dt.Rows.Add(); 
+            dt.Rows.Add();
             dt.Rows[dt.Rows.Count - 1][0] = "Previous";
             c = 0;
             // dgv 2
@@ -124,10 +122,30 @@ namespace ExcelProject.Model
                 }
             }
 
+
+            dt.Rows.Add();
+            dt.Rows.Add();
+            dt.Rows[dt.Rows.Count - 1][0] = "Target";
+            c = 0;
+            // dgv Target Report
+            foreach (DataGridViewRow row in dgvTarget.Rows)
+            {
+                if (dgvTarget.Rows.Count - 1 == c)
+                {
+                    break;
+                }
+                c++;
+                dt.Rows.Add();
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    dt.Rows[dt.Rows.Count - 1][cell.ColumnIndex] = cell.Value.ToString();
+                }
+            }
+
             //Exporting to Excel.
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(dt, "Sheet1");
+                wb.Worksheets.Add(dt, "ProcessData");
 
                 //Set the color of Header Row.
                 //A resembles First Column while C resembles Third column.
