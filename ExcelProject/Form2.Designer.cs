@@ -31,7 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.button1 = new System.Windows.Forms.Button();
             this.lblFileName = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
             this.panelDropdown = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.cbWorkingColumn = new System.Windows.Forms.ComboBox();
@@ -68,6 +67,7 @@
             this.label13 = new System.Windows.Forms.Label();
             this.tbTargetPerFormulaValue = new System.Windows.Forms.TextBox();
             this.tbDataChar = new System.Windows.Forms.ComboBox();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
@@ -97,17 +97,6 @@
             this.lblFileName.Size = new System.Drawing.Size(71, 17);
             this.lblFileName.TabIndex = 1;
             this.lblFileName.Text = "File Name";
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(1204, 417);
-            this.button2.Margin = new System.Windows.Forms.Padding(4);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(151, 28);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Download Data File";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // panelDropdown
             // 
@@ -207,7 +196,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(1204, 379);
+            this.button5.Location = new System.Drawing.Point(1000, 417);
             this.button5.Margin = new System.Windows.Forms.Padding(4);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(151, 28);
@@ -386,7 +375,7 @@
             // 
             // btnUploadNewTargetFile
             // 
-            this.btnUploadNewTargetFile.Location = new System.Drawing.Point(959, 379);
+            this.btnUploadNewTargetFile.Location = new System.Drawing.Point(1156, 379);
             this.btnUploadNewTargetFile.Margin = new System.Windows.Forms.Padding(4);
             this.btnUploadNewTargetFile.Name = "btnUploadNewTargetFile";
             this.btnUploadNewTargetFile.Size = new System.Drawing.Size(192, 28);
@@ -397,7 +386,7 @@
             // 
             // btnChangePercentages
             // 
-            this.btnChangePercentages.Location = new System.Drawing.Point(959, 417);
+            this.btnChangePercentages.Location = new System.Drawing.Point(1156, 417);
             this.btnChangePercentages.Margin = new System.Windows.Forms.Padding(4);
             this.btnChangePercentages.Name = "btnChangePercentages";
             this.btnChangePercentages.Size = new System.Drawing.Size(192, 28);
@@ -408,7 +397,7 @@
             // 
             // btnUploadOladTargetFile
             // 
-            this.btnUploadOladTargetFile.Location = new System.Drawing.Point(959, 338);
+            this.btnUploadOladTargetFile.Location = new System.Drawing.Point(1156, 338);
             this.btnUploadOladTargetFile.Margin = new System.Windows.Forms.Padding(4);
             this.btnUploadOladTargetFile.Name = "btnUploadOladTargetFile";
             this.btnUploadOladTargetFile.Size = new System.Drawing.Size(192, 28);
@@ -500,11 +489,20 @@
             this.tbDataChar.TabIndex = 46;
             this.tbDataChar.Text = "2";
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(12, 744);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(250, 23);
+            this.progressBar1.TabIndex = 47;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1362, 736);
+            this.ClientSize = new System.Drawing.Size(1721, 779);
+            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.tbDataChar);
             this.Controls.Add(this.lbDepCol);
             this.Controls.Add(this.label13);
@@ -534,14 +532,12 @@
             this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.lblError);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.btnProcessData);
             this.Controls.Add(this.rbNonRelational);
             this.Controls.Add(this.rbRelational);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.panelDropdown);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.lblFileName);
             this.Controls.Add(this.button1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -566,7 +562,6 @@
 
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label lblFileName;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Panel panelDropdown;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cbWorkingColumn;
@@ -603,5 +598,6 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox tbTargetPerFormulaValue;
         private System.Windows.Forms.ComboBox tbDataChar;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }

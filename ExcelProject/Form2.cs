@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -26,11 +27,17 @@ namespace ExcelProject
         string currentFileExt = "";
         string currentFileName = "";
 
+        void resetDatatable(DataGridView dgv)
+        {
+            dgv.DataSource = null;
+            dgv.Rows.Clear();
+            dgv.Columns.Clear();
+            dgv.Refresh();
+        }
         private string MyDirectory()
         {
             return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
-
         public System.Data.DataTable ReadExcel(string fileName, string fileExt)
         {
             string conn = string.Empty;
@@ -320,10 +327,9 @@ namespace ExcelProject
                 MessageBox.Show(ex.Message);
             }
         }
-        void reportFormatDT(List<MyListBox> lst, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType)
+        void reportFormatDT(List<string> AllCombosList, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType)
         {
-
-            if (lst.Count() > 0)
+            if (AllCombosList.Count() > 0)
             {
 
                 dataGridView3.Refresh();
@@ -331,15 +337,6 @@ namespace ExcelProject
                 dataGridView3.Rows.Clear();
                 dataGridView3.Columns.Clear();
                 Percentages.percentagesList = new List<List<Percentages>>();
-
-                // Getting all possible combinations
-                Dictionary<int, List<string>> tags = new Dictionary<int, List<string>>();
-                for (int j = 0; j < lst.Count(); j++)
-                {
-                    tags.Add(j, lst[j].Data);
-                }
-                NListBuilder nListBuilder = new NListBuilder(tags, "AND");
-                var AllCombosList = nListBuilder.AllCombos;
 
                 //string query = "";
                 //int u = 0;
@@ -499,15 +496,15 @@ namespace ExcelProject
                 //if (sfd.ShowDialog() == DialogResult.OK)
                 //{
                 //    excel.ToCsV(reportDataGridView, reportType + " Report", "", "", title, sfd.FileName);
-                    
+
                 //}
             }
 
         }
-        void reportFormatDTNonRelationsal(List<MyListBox> lst, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType)
+        void reportFormatDTNonRelationsal(List<string> AllCombosList, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType)
         {
 
-            if (lst.Count() > 0)
+            if (AllCombosList.Count() > 0)
             {
 
                 dataGridView3.Refresh();
@@ -517,11 +514,6 @@ namespace ExcelProject
                 Percentages.percentagesList = new List<List<Percentages>>();
 
 
-                List<string> AllCombosList = new List<string>();
-                foreach (var item in lst)
-                {
-                    AllCombosList.Add(item.Data[0]);
-                }
 
                 //string query = "";
                 //int u = 0;
@@ -682,70 +674,17 @@ namespace ExcelProject
                 //if (sfd.ShowDialog() == DialogResult.OK)
                 //{
                 //    excel.ToCsV(reportDataGridView, reportType + " Report", "", "", title, sfd.FileName);
-                    
+
                 //}
             }
 
         }
-
-        public void isRelational()
+        public void isRelational(bool isCurrentOnly, List<string> getAllQueries)
         {
-
+            var AllCombosList = new List<string>();
             //try
             //{
-            // Getting all list boxes from panel
-            Panel childPanel = panelDropdown as Panel;
-            List<MyListBox> lst = new List<MyListBox>();
-            int i = 2;
-            MyListBox obj = new MyListBox();
-            if (childPanel.Controls.Count > 0)
-            {
-                foreach (Control c in childPanel.Controls)
-                {
-                    if (i % 2 == 0) // For label Name
-                    {
-                        obj = new MyListBox();
-                    }
-                    i++;
-
-                    if (c is Label)
-                    {
-                        Control cc = this.Controls.Find(c.Name, true).First();
-                        obj.ColumnName = cc.Text;
-                    }
-                    if (c is ListBox)
-                    {
-                        Control cc = this.Controls.Find(c.Name, true).First();
-                        var tmpListBox = cc as ListBox;
-                        var tmpListBoxItems = tmpListBox.SelectedItems;
-                        if (tmpListBoxItems.Count > 0)
-                        {
-                            //MyListBox obj = new MyListBox();
-                            foreach (var item in tmpListBoxItems)
-                            {
-                                obj.Data.Add(string.Format("{0}='{1}'", obj.ColumnName, item.ToString()));
-                            }
-                            lst.Add(obj);
-                        }
-                    }
-                }
-            }
-            // Current Excel Data
-            reportFormatDT(lst, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
-            reportFormatDT(lst, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
-
-            //  }
-            //catch (Exception ex)
-            //{
-            //    label5.Show();
-            //    label5.Text = "Error: " + ex.Message;
-            //    MessageBox.Show(ex.Message);
-            //}
-        }
-        public void isNonRelational()
-        {
-
-            try
+            if (!isCurrentOnly)
             {
                 // Getting all list boxes from panel
                 Panel childPanel = panelDropdown as Panel;
@@ -785,21 +724,118 @@ namespace ExcelProject
                     }
                 }
 
-                List<MyListBox> lst2 = new List<MyListBox>();
-                foreach (var item in lst)
+                //
+
+                // Getting all possible combinations
+                Dictionary<int, List<string>> tags = new Dictionary<int, List<string>>();
+                for (int j = 0; j < lst.Count(); j++)
                 {
-                    foreach (var item2 in item.Data)
+                    tags.Add(j, lst[j].Data);
+                }
+                NListBuilder nListBuilder = new NListBuilder(tags, "AND");
+                AllCombosList = nListBuilder.AllCombos;
+            }
+            else
+            {
+
+                AllCombosList = getAllQueries;
+            }
+            // Current Excel Data
+            reportFormatDT(AllCombosList, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current"); 
+            progressBar1.Value = 50;
+            if (!isCurrentOnly)
+            {
+                reportFormatDT(AllCombosList, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
+            }
+            progressBar1.Value = 70;
+
+            //  }
+            //catch (Exception ex)
+            //{
+            //    label5.Show();
+            //    label5.Text = "Error: " + ex.Message;
+            //    MessageBox.Show(ex.Message);
+            //}
+        }
+        public void isNonRelational(bool isCurrentOnly, List<string> getAllQueries)
+        {
+            var AllCombosList = new List<string>();
+            try
+            {
+                if (!isCurrentOnly)
+                {
+                    // Getting all list boxes from panel
+                    Panel childPanel = panelDropdown as Panel;
+                    List<MyListBox> lst = new List<MyListBox>();
+                    int i = 2;
+                    MyListBox obj = new MyListBox();
+                    if (childPanel.Controls.Count > 0)
                     {
-                        MyListBox myListBox = new MyListBox();
-                        myListBox.ColumnName = item.ColumnName;
-                        myListBox.Data.Add(item2);
-                        lst2.Add(myListBox);
+                        foreach (Control c in childPanel.Controls)
+                        {
+                            if (i % 2 == 0) // For label Name
+                            {
+                                obj = new MyListBox();
+                            }
+                            i++;
+
+                            if (c is Label)
+                            {
+                                Control cc = this.Controls.Find(c.Name, true).First();
+                                obj.ColumnName = cc.Text;
+                            }
+                            if (c is ListBox)
+                            {
+                                Control cc = this.Controls.Find(c.Name, true).First();
+                                var tmpListBox = cc as ListBox;
+                                var tmpListBoxItems = tmpListBox.SelectedItems;
+                                if (tmpListBoxItems.Count > 0)
+                                {
+                                    //MyListBox obj = new MyListBox();
+                                    foreach (var item in tmpListBoxItems)
+                                    {
+                                        obj.Data.Add(string.Format("{0}='{1}'", obj.ColumnName, item.ToString()));
+                                    }
+                                    lst.Add(obj);
+                                }
+                            }
+                        }
+                    }
+
+                    List<MyListBox> lst2 = new List<MyListBox>();
+                    foreach (var item in lst)
+                    {
+                        foreach (var item2 in item.Data)
+                        {
+                            MyListBox myListBox = new MyListBox();
+                            myListBox.ColumnName = item.ColumnName;
+                            myListBox.Data.Add(item2);
+                            lst2.Add(myListBox);
+                        }
+                    }
+
+                    //
+
+                    //List<string> AllCombosList = new List<string>();
+                    foreach (var item in lst2)
+                    {
+                        AllCombosList.Add(item.Data[0]);
                     }
                 }
-                // Current Excel Data
-                reportFormatDTNonRelationsal(lst2, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
-                reportFormatDTNonRelationsal(lst2, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
+                else
+                {
 
+                    AllCombosList = getAllQueries;
+                }
+
+                // Current Excel Data
+                reportFormatDTNonRelationsal(AllCombosList, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
+                progressBar1.Value = 50;
+                if (!isCurrentOnly)
+                {
+                    reportFormatDTNonRelationsal(AllCombosList, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
+                }
+                progressBar1.Value = 70;
             }
             catch (Exception ex)
             {
@@ -808,7 +844,6 @@ namespace ExcelProject
                 MessageBox.Show(ex.Message);
             }
         }
-
         private void Form2_Load(object sender, EventArgs e)
         {
             var dateAndTime = DateTime.Now;
@@ -839,57 +874,63 @@ namespace ExcelProject
             }
         }
 
+        void processData()
+        {
+            if (rbRelational.Checked == true)
+            {
+                if (cbWorkingColumn.Text == "-- Select --" || cbWorkingColumn.Text == "" || tbDataChar.Text == null || tbDataChar.Text == "" || Convert.ToInt32(tbDataChar.Text) <= 0)
+                {
+                    MessageBox.Show("Working column and Data Charater field must not be empty.");
+                    return;
+                }
+                isRelational(false, new List<string>());
+                generateTargetFile();
+                progressBar1.Value = 100;
+
+                myExcel excel = new myExcel();
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+                sfd.FileName = "report.xlsx";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    excel.ToCsVCombineDGV(dataGridView4, dataGridView5, dataGridView6, sfd.FileName);
+
+                }
+
+                MessageBox.Show("Finish");
+            }
+            else if (rbNonRelational.Checked == true)
+            {
+                if (cbWorkingColumn.Text == "-- Select --" || cbWorkingColumn.Text == "" || tbDataChar.Text == null || tbDataChar.Text == "" || Convert.ToInt32(tbDataChar.Text) == 0)
+                {
+                    MessageBox.Show("Working column and Data Charater field must not be empty.");
+                    return;
+                }
+                isNonRelational(false, new List<string>());
+                generateTargetFile();
+                progressBar1.Value = 100;
+                myExcel excel = new myExcel();
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+                sfd.FileName = "report.xlsx";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    excel.ToCsVCombineDGV(dataGridView4, dataGridView5, dataGridView6, sfd.FileName);
+
+                }
+                MessageBox.Show("Finish");
+            }
+            else
+            {
+                MessageBox.Show("Kindly select relational or non relational");
+            }
+        }
+
         private void Button3_Click(object sender, EventArgs e)
         {
             try
             {
-
-                if (rbRelational.Checked == true)
-                {
-                    if (cbWorkingColumn.Text == "-- Select --" || cbWorkingColumn.Text == "" || tbDataChar.Text == null || tbDataChar.Text == "" || Convert.ToInt32(tbDataChar.Text) <= 0)
-                    {
-                        MessageBox.Show("Working column and Data Charater field must not be empty.");
-                        return;
-                    }
-                    isRelational();
-                    generateTargetFile();
-
-                    myExcel excel = new myExcel();
-                    SaveFileDialog sfd = new SaveFileDialog();
-                    sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
-                    sfd.FileName = "report.xlsx";
-                    if (sfd.ShowDialog() == DialogResult.OK)
-                    {
-                        excel.ToCsVCombineDGV(dataGridView4, dataGridView5, dataGridView6, sfd.FileName);
-
-                    }
-
-                    MessageBox.Show("Finish");
-                }
-                else if (rbNonRelational.Checked == true)
-                {
-                    if (cbWorkingColumn.Text == "-- Select --" || cbWorkingColumn.Text == "" || tbDataChar.Text == null || tbDataChar.Text == "" || Convert.ToInt32(tbDataChar.Text) == 0)
-                    {
-                        MessageBox.Show("Working column and Data Charater field must not be empty.");
-                        return;
-                    }
-                    isNonRelational();
-                    generateTargetFile();
-                    myExcel excel = new myExcel();
-                    SaveFileDialog sfd = new SaveFileDialog();
-                    sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
-                    sfd.FileName = "report.xlsx";
-                    if (sfd.ShowDialog() == DialogResult.OK)
-                    {
-                        excel.ToCsVCombineDGV(dataGridView4, dataGridView5, dataGridView6, sfd.FileName);
-
-                    }
-                    MessageBox.Show("Finish");
-                }
-                else
-                {
-
-                }
+                processData();
             }
             catch (Exception ex)
             {
@@ -898,12 +939,20 @@ namespace ExcelProject
             }
             //MessageBox.Show("Are You Sure?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             try
             {
+                progressBar1.Value = 0;
 
+                resetDatatable(dataGridView1);
+                resetDatatable(dataGridView2);
+                resetDatatable(dataGridView3);
+                resetDatatable(dataGridView4);
+                resetDatatable(dataGridView5);
+                resetDatatable(dataGridView6);
+
+                //
                 string filePath = string.Empty;
                 string fileExt = string.Empty;
                 OpenFileDialog file = new OpenFileDialog(); //open dialog to choose file  
@@ -1031,16 +1080,17 @@ namespace ExcelProject
             //WriteExcel();
             try
             {
-                myExcel excel = new myExcel();
-                string title = "Excel Report";
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
-                sfd.FileName = "demo.xlsx";
-                if (sfd.ShowDialog() == DialogResult.OK)
-                {
-                    excel.ToCsVCombineDGV(dataGridView4, dataGridView5, dataGridView6, sfd.FileName);
+                //myExcel excel = new myExcel();
+                //string title = "Excel Report";
+                //SaveFileDialog sfd = new SaveFileDialog();
+                //sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+                //sfd.FileName = "demo.xlsx";
+                //if (sfd.ShowDialog() == DialogResult.OK)
+                //{
+                //    excel.ToCsVCombineDGV(dataGridView4, dataGridView5, dataGridView6, sfd.FileName);
 
-                }
+                //}
+
             }
             catch (Exception ex)
             {
@@ -1067,6 +1117,21 @@ namespace ExcelProject
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
+            }
+        }
+
+        void AssignZerosOnEmptySpaces(DataGridView dgv)
+        {
+            for (int rows = 0; rows < dgv.Rows.Count - 1; rows++)
+            {
+                for (int col = 1; col < dgv.Rows[rows].Cells.Count; col++)
+                {
+                    var item = dgv.Rows[rows].Cells[col].Value.ToString();
+                    if (item == null || String.IsNullOrWhiteSpace(item))
+                    {
+                        dgv.Rows[rows].Cells[col].Value = 0;
+                    }
+                }
             }
         }
 
@@ -1142,17 +1207,7 @@ namespace ExcelProject
 
                 // Assigning Zero(0) to empty values\
 
-                for (int rows = 0; rows < dataGridView6.Rows.Count - 1; rows++)
-                {
-                    for (int col = 1; col < dataGridView6.Rows[rows].Cells.Count; col++)
-                    {
-                        var item = dataGridView6.Rows[rows].Cells[col].Value.ToString();
-                        if (item == null || String.IsNullOrWhiteSpace(item))
-                        {
-                            dataGridView6.Rows[rows].Cells[col].Value = 0;
-                        }
-                    }
-                }
+                AssignZerosOnEmptySpaces(dataGridView6);
 
                 // Cloning DatagridView End
 
@@ -1279,7 +1334,7 @@ namespace ExcelProject
                 //if (sfd.ShowDialog() == DialogResult.OK)
                 //{
                 //    excel.ToCsV(dataGridView6, "Target Report", "", "", title, sfd.FileName);
-                    
+
                 //}
 
             }
@@ -1318,6 +1373,7 @@ namespace ExcelProject
                         dataGridView6.Visible = true;
                         dataGridView6.DataSource = dtExcel;
 
+                        AssignZerosOnEmptySpaces(dataGridView6);
                     }
                     catch (Exception ex)
                     {
@@ -1463,6 +1519,7 @@ namespace ExcelProject
             try
             {
 
+                progressBar1.Value = 0;
                 if (dataGridView1.Rows.Count == 0)
                 {
                     MessageBox.Show("Kindly upload current file.");
@@ -1492,6 +1549,7 @@ namespace ExcelProject
                 MyDataGridView mdgv = new MyDataGridView();
                 var getAllQueries = mdgv.getRegenratedQueries(dataGridView6);
                 var getQ1_X_Value = getAllQueries[0];
+                cbWorkingColumn.Text = getQ1_X_Value;
                 getAllQueries.RemoveAt(0);
                 if (getAllQueries.Count() > 0)
                 {
@@ -1512,6 +1570,7 @@ namespace ExcelProject
                         return;
 
                     }
+                    progressBar1.Value = 40;
 
 
                 }
@@ -1522,12 +1581,43 @@ namespace ExcelProject
                 string title = "New Current Report";
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "Excel Documents (*.xlsx)|*.xlsx";
-                sfd.FileName = "newCurrentReport.xlsx";
+                sfd.FileName = "newCurrentFile.xlsx";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    excel.ToCsV(dataGridView1, "Target Report", "", "", title, sfd.FileName);
-                    
+                    excel.ToCsV(dataGridView1, "New Current File", "", "", title, sfd.FileName);
+
                 }
+
+                // Generating Current file form new Current report
+                if (rbRelational.Checked == true)
+                {
+                    isRelational(true, getAllQueries);
+
+                    myExcel excel2 = new myExcel();
+                    SaveFileDialog sfd2 = new SaveFileDialog();
+                    sfd2.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+                    sfd2.FileName = "newCurrentReport.xlsx";
+                    if (sfd2.ShowDialog() == DialogResult.OK)
+                    {
+                        excel.ToCsV(dataGridView4, "New Current Report", "", "", title, sfd2.FileName);
+
+                    }
+                }
+                else
+                {
+                    isNonRelational(true, getAllQueries);
+
+                    myExcel excel2 = new myExcel();
+                    SaveFileDialog sfd2 = new SaveFileDialog();
+                    sfd2.Filter = "Excel Documents (*.xlsx)|*.xlsx";
+                    sfd2.FileName = "newCurrentReport.xlsx";
+                    if (sfd2.ShowDialog() == DialogResult.OK)
+                    {
+                        excel.ToCsV(dataGridView4, "New Current Report", "", "", title, sfd.FileName);
+
+                    }
+                }
+                progressBar1.Value = 100;
             }
             catch (Exception ex)
             {
