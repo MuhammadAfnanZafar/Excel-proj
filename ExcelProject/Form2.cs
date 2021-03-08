@@ -1614,7 +1614,7 @@ namespace ExcelProject
                                         var temp_minPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[0];
                                         var temp_maxPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[1];
 
-                                        if ((double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase) || (double.Parse(temp_increaseDataPercentage) < temp_minPercentageValue_increase))
+                                        if (double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase)
                                         {
                                             increase.RemoveAt(k);
                                             if (mustColListBoxItems.Count > 0) // Optionl
