@@ -1613,7 +1613,7 @@ namespace ExcelProject
                     sfd2.FileName = "newCurrentReport.xlsx";
                     if (sfd2.ShowDialog() == DialogResult.OK)
                     {
-                        excel.ToCsV(dataGridView4, "New Current Report", "", "", title, sfd.FileName);
+                        excel.ToCsV(dataGridView4, "New Current Report Percentage", "", "", title, sfd2.FileName);
 
                     }
                 }
@@ -1770,7 +1770,7 @@ namespace ExcelProject
                                             var temp_minPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[0];
                                             var temp_maxPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[1];
 
-                                            if ((double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase) || (double.Parse(temp_increaseDataPercentage) < temp_minPercentageValue_increase))
+                                            if (double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase )
                                             {
                                                 increase.RemoveAt(k);
                                                 if (mustColListBoxItems.Count > 0) // Optionl
