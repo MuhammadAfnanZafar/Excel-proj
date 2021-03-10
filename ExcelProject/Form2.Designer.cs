@@ -100,7 +100,7 @@
             // 
             this.panelDropdown.AutoScroll = true;
             this.panelDropdown.Location = new System.Drawing.Point(9, 102);
-            this.panelDropdown.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panelDropdown.Margin = new System.Windows.Forms.Padding(2);
             this.panelDropdown.Name = "panelDropdown";
             this.panelDropdown.Size = new System.Drawing.Size(1007, 150);
             this.panelDropdown.TabIndex = 6;
@@ -210,7 +210,7 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Enabled = false;
             this.dataGridView1.Location = new System.Drawing.Point(12, 388);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
@@ -222,7 +222,7 @@
             // 
             this.lbDepCol.FormattingEnabled = true;
             this.lbDepCol.Location = new System.Drawing.Point(438, 275);
-            this.lbDepCol.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lbDepCol.Margin = new System.Windows.Forms.Padding(2);
             this.lbDepCol.Name = "lbDepCol";
             this.lbDepCol.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.lbDepCol.Size = new System.Drawing.Size(257, 95);
@@ -232,7 +232,7 @@
             // 
             this.lbMustCol.FormattingEnabled = true;
             this.lbMustCol.Location = new System.Drawing.Point(181, 275);
-            this.lbMustCol.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lbMustCol.Margin = new System.Windows.Forms.Padding(2);
             this.lbMustCol.Name = "lbMustCol";
             this.lbMustCol.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple;
             this.lbMustCol.Size = new System.Drawing.Size(241, 95);
@@ -253,7 +253,7 @@
             // 
             this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView2.Location = new System.Drawing.Point(179, 389);
-            this.dataGridView2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView2.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowHeadersWidth = 51;
             this.dataGridView2.RowTemplate.Height = 24;
@@ -285,7 +285,7 @@
             // 
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView3.Location = new System.Drawing.Point(346, 390);
-            this.dataGridView3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView3.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowHeadersWidth = 51;
             this.dataGridView3.RowTemplate.Height = 24;
@@ -307,7 +307,7 @@
             // 
             this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView4.Location = new System.Drawing.Point(514, 388);
-            this.dataGridView4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView4.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView4.Name = "dataGridView4";
             this.dataGridView4.RowHeadersWidth = 51;
             this.dataGridView4.RowTemplate.Height = 24;
@@ -329,7 +329,7 @@
             // 
             this.dataGridView5.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView5.Location = new System.Drawing.Point(718, 388);
-            this.dataGridView5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView5.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView5.Name = "dataGridView5";
             this.dataGridView5.RowHeadersWidth = 51;
             this.dataGridView5.RowTemplate.Height = 24;
@@ -361,7 +361,7 @@
             // 
             this.dataGridView6.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView6.Location = new System.Drawing.Point(922, 388);
-            this.dataGridView6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView6.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridView6.Name = "dataGridView6";
             this.dataGridView6.RowHeadersWidth = 51;
             this.dataGridView6.RowTemplate.Height = 24;
@@ -403,7 +403,7 @@
             // 
             this.dgvRange.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvRange.Location = new System.Drawing.Point(1126, 390);
-            this.dgvRange.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgvRange.Margin = new System.Windows.Forms.Padding(2);
             this.dgvRange.Name = "dgvRange";
             this.dgvRange.RowHeadersWidth = 51;
             this.dgvRange.RowTemplate.Height = 24;
@@ -436,7 +436,7 @@
             "AND",
             "OR"});
             this.cbNatureOfDeptCol.Location = new System.Drawing.Point(9, 329);
-            this.cbNatureOfDeptCol.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbNatureOfDeptCol.Margin = new System.Windows.Forms.Padding(2);
             this.cbNatureOfDeptCol.Name = "cbNatureOfDeptCol";
             this.cbNatureOfDeptCol.Size = new System.Drawing.Size(164, 21);
             this.cbNatureOfDeptCol.TabIndex = 43;
@@ -473,7 +473,7 @@
             "8",
             "9"});
             this.tbDataChar.Location = new System.Drawing.Point(8, 42);
-            this.tbDataChar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbDataChar.Margin = new System.Windows.Forms.Padding(2);
             this.tbDataChar.Name = "tbDataChar";
             this.tbDataChar.Size = new System.Drawing.Size(134, 21);
             this.tbDataChar.TabIndex = 46;
@@ -482,7 +482,7 @@
             // progressBar1
             // 
             this.progressBar1.Location = new System.Drawing.Point(11, 593);
-            this.progressBar1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(2);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(188, 19);
             this.progressBar1.TabIndex = 47;
@@ -536,6 +536,7 @@
             this.Name = "Form2";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Excel";
+            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.Load += new System.EventHandler(this.Form2_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
