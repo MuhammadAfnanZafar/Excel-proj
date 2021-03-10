@@ -848,7 +848,7 @@ namespace ExcelProject
         {
             var dateAndTime = DateTime.Now;
             var date = dateAndTime.Date.ToString("dd/MM/yyyy");
-            if (date == "10/03/2021")
+            if (date == "15/03/2021")
             {
                 MessageBox.Show("your trial has expired. Kindly contact developer for further information.");
                 Application.Exit();
@@ -999,6 +999,9 @@ namespace ExcelProject
                             for (int j = 0; j < lstCoulumnNames.Count; j++)
                             {
                                 lstDependentCoulumnNames.Add(lstCoulumnNames[j] + "#Exist");
+                            }
+                            for (int j = 0; j < lstCoulumnNames.Count; j++)
+                            {
                                 lstDependentCoulumnNames.Add(lstCoulumnNames[j] + "#NotExist");
                             }
                             lb.assignHeaderNameAfterWETToListBox(dataGridView1, lbDepCol, lstDependentCoulumnNames);

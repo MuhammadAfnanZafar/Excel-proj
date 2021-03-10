@@ -72,6 +72,8 @@ namespace ExcelProject.Model
             MyDataGridView mdgv = new MyDataGridView();
             List<string> columnData = mdgv.getColumnData(dataGridView1, colIndex);
             columnData = columnData.Distinct().ToList();
+            columnData = columnData.OrderBy(x => x).ToList();
+            columnData.RemoveAll(string.IsNullOrEmpty);
             foreach (var item in columnData)
             {
                 listBox.Items.Add(item);
