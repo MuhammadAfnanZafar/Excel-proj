@@ -676,9 +676,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:Excel Project"
+        "ProductName" = "8:DRO Ad-hoc Detecting & Removing Outliers"
         "ProductCode" = "8:{00D64A75-0936-42A4-9D15-2DDF0724A27A}"
-        "PackageCode" = "8:{4089AD0F-5C81-4DA4-A90D-6D621696E8C9}"
+        "PackageCode" = "8:{09FFBDAB-1F08-41B7-B46F-E280556666C6}"
         "UpgradeCode" = "8:{58DC019D-A437-4479-A33C-4778F38CDCF7}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -689,9 +689,9 @@
         "Manufacturer" = "8:NA Soft"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:Excel Project Setup"
+        "Title" = "8:DRO Ad-hoc Detecting & Removing Outliers Setup"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:NA Soft"
+        "ARPCONTACT" = "8:DRO Ad-hoc Detecting & Removing Outliers"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
@@ -823,7 +823,7 @@
             "Target" = "8:_F6FE7A25CB6D47B5BF1D31A1F399DFBA"
             "Folder" = "8:_1120FABFD2BF40408CA55AF95380C454"
             "WorkingFolder" = "8:_B19B75FE5EB2491AABBD8B7325B5908A"
-            "Icon" = "8:"
+            "Icon" = "8:_1AA9CECB0207494DA329CB5F28D36420"
             "Feature" = "8:"
             }
         }

@@ -908,6 +908,7 @@ namespace ExcelProject
         }
         private void Form2_Load(object sender, EventArgs e)
         {
+            cbNatureOfDeptCol.Text = "AND";
             var dateAndTime = DateTime.Now;
             var date = dateAndTime.Date.ToString("dd/MM/yyyy");
             if (date == "15/03/2021")
