@@ -146,8 +146,6 @@ namespace ExcelProject
                         System.Data.DataTable dtExcel = new System.Data.DataTable();
                         dtExcel = ReadExcel(currentFile, currentFileExt); //read excel file 
 
-
-
                         dataGridView3.Refresh();
                         dataGridView3.Visible = true;
                         dataGridView3.DataSource = dtExcel;
@@ -229,6 +227,56 @@ namespace ExcelProject
                         //toBeDeleted.ForEach(d => dataGridView2.Rows.Remove(d));
 
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                label5.Show();
+                label5.Text = "Error: " + ex.Message;
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void filterationForLastCurrentFile(string query, DataGridView dataGridView)
+        {
+            try
+            {
+
+                if (query != "")
+                {
+                    int i = 0;
+                    //If the last word is always AND or OR then it's pretty simple, just use a regex
+                    Regex regex = new Regex("(\\s+(AND|OR)\\s*)$");
+                    query = regex.Replace(query, "");
+                    query = query.Trim();
+
+                    dataGridView3.Refresh();
+                    dataGridView3.Visible = true;
+                    dataGridView3.DataSource = dataGridView1.DataSource;
+
+                    //
+                    var toBeDeleted = new List<DataGridViewRow>();
+                    foreach (DataGridViewRow row in dataGridView3.Rows)
+                    {
+                        if (row.Cells[0].Value == null || row.Cells[0].Value == DBNull.Value || String.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
+                        {
+                            break;
+                        }
+                        string value1 = row.Cells[0].Value.ToString();
+                        if (value1 == "")
+                        {
+                            break;
+                        }
+                        if (value1.ToLower() == "p")
+                        {
+                            i++;
+                            //processing data
+                            toBeDeleted.Add(row);
+                        }
+                    }
+                    toBeDeleted.ForEach(d => dataGridView3.Rows.Remove(d));
+                    (dataGridView3.DataSource as System.Data.DataTable).DefaultView.RowFilter = query;
+
                 }
             }
             catch (Exception ex)
@@ -327,7 +375,7 @@ namespace ExcelProject
                 MessageBox.Show(ex.Message);
             }
         }
-        void reportFormatDT(List<string> AllCombosList, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType)
+        void reportFormatDT(List<string> AllCombosList, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType, bool isCurrentOnly)
         {
             if (AllCombosList.Count() > 0)
             {
@@ -344,7 +392,14 @@ namespace ExcelProject
                 {
                     List<Percentages> percentagesList = new List<Percentages>();
                     // Filtration
-                    filteration(query, dataGridView);
+                    if(!isCurrentOnly)
+                    {
+                        filteration(query, dataGridView);
+                    }
+                    else
+                    {
+                        filterationForLastCurrentFile(query, dataGridView);
+                    }
                     if (dataGridView3.Rows.Count > 1)
                     {
 
@@ -501,7 +556,7 @@ namespace ExcelProject
             }
 
         }
-        void reportFormatDTNonRelationsal(List<string> AllCombosList, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType)
+        void reportFormatDTNonRelationsal(List<string> AllCombosList, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType,bool isCurrentOnly)
         {
 
             if (AllCombosList.Count() > 0)
@@ -521,7 +576,14 @@ namespace ExcelProject
                 {
                     List<Percentages> percentagesList = new List<Percentages>();
                     // Filtration
-                    filteration(query, dataGridView);
+                    if (!isCurrentOnly)
+                    {
+                        filteration(query, dataGridView);
+                    }
+                    else
+                    {
+                        filterationForLastCurrentFile(query, dataGridView);
+                    }
 
                     if (dataGridView3.Rows.Count > 1)
                     {
@@ -741,11 +803,11 @@ namespace ExcelProject
                 AllCombosList = getAllQueries;
             }
             // Current Excel Data
-            reportFormatDT(AllCombosList, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current"); 
+            reportFormatDT(AllCombosList, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current", isCurrentOnly);
             progressBar1.Value = 50;
             if (!isCurrentOnly)
             {
-                reportFormatDT(AllCombosList, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
+                reportFormatDT(AllCombosList, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous", isCurrentOnly);
             }
             progressBar1.Value = 70;
 
@@ -829,11 +891,11 @@ namespace ExcelProject
                 }
 
                 // Current Excel Data
-                reportFormatDTNonRelationsal(AllCombosList, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current");
+                reportFormatDTNonRelationsal(AllCombosList, dataGridView3, dataGridView1, dataGridView4, cbWorkingColumn, 0, "Current", isCurrentOnly);
                 progressBar1.Value = 50;
                 if (!isCurrentOnly)
                 {
-                    reportFormatDTNonRelationsal(AllCombosList, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous");
+                    reportFormatDTNonRelationsal(AllCombosList, dataGridView3, dataGridView2, dataGridView5, cbWorkingColumn, 0, "Previous", isCurrentOnly);
                 }
                 progressBar1.Value = 70;
             }
@@ -1773,7 +1835,7 @@ namespace ExcelProject
                                             var temp_minPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[0];
                                             var temp_maxPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[1];
 
-                                            if (double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase )
+                                            if (double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase)
                                             {
                                                 increase.RemoveAt(k);
                                                 if (mustColListBoxItems.Count > 0) // Optionl
