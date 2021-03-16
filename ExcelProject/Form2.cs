@@ -1568,7 +1568,35 @@ namespace ExcelProject
                     MessageBox.Show("Kindly Upload Range File");
                     return;
                 }
-                //dataGridView1.DataSource = ReadExcel(currentFile, currentFileExt);
+                // Re read datagridview1 or excel file
+                int i = 0;
+                dataGridView1.Refresh();
+                dataGridView1.DataSource = null;
+                dataGridView1.Rows.Clear();
+                dataGridView1.Columns.Clear();
+                dataGridView1.DataSource = ReadExcel(currentFile, currentFileExt);
+                var toBeDeleted = new List<DataGridViewRow>();
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    if (row.Cells[0].Value == null || row.Cells[0].Value == DBNull.Value || String.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
+                    {
+                        break;
+                    }
+                    string value1 = row.Cells[0].Value.ToString();
+                    if (value1 == "")
+                    {
+                        break;
+                    }
+                    if (value1.ToLower() == "p")
+                    {
+                        i++;
+                        //processing data
+                        toBeDeleted.Add(row);
+                    }
+                }
+                toBeDeleted.ForEach(d => dataGridView1.Rows.Remove(d));
+
+                // END Re read datagridview1 or excel file
 
                 double TargetPercentage_Formula_Value = double.Parse(tbTargetPerFormulaValue.Text);
 

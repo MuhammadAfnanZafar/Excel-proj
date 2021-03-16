@@ -286,12 +286,12 @@
             // dataGridView3
             // 
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView3.Location = new System.Drawing.Point(19, 730);
+            this.dataGridView3.Location = new System.Drawing.Point(465, 480);
             this.dataGridView3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowHeadersWidth = 51;
             this.dataGridView3.RowTemplate.Height = 24;
-            this.dataGridView3.Size = new System.Drawing.Size(1762, 260);
+            this.dataGridView3.Size = new System.Drawing.Size(214, 246);
             this.dataGridView3.TabIndex = 28;
             this.dataGridView3.Visible = false;
             // 
@@ -509,7 +509,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(1762, 246);
+            this.dataGridView1.Size = new System.Drawing.Size(214, 246);
             this.dataGridView1.TabIndex = 48;
             this.dataGridView1.Visible = false;
             // 
@@ -517,7 +517,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1839, 1055);
+            this.ClientSize = new System.Drawing.Size(1839, 740);
             this.Controls.Add(this.dataGridView3);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.progressBar1);
