@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -319,42 +320,27 @@ namespace ExcelProject.Model
 
             return lst;
         }
-        public DataGridView CopyDataGridView(DataGridView dgv_org)
+        public DataTable CopyDataGridView(DataGridView dgv_org)
         {
-            DataGridView dgv_copy = new DataGridView();
-            try
+            DataTable dt = new DataTable();
+            //Setting Columns
+            for (int c = 0; c < dgv_org.ColumnCount; c++)
             {
-                if (dgv_copy.Columns.Count == 0)
-                {
-                    foreach (DataGridViewColumn dgvc in dgv_org.Columns)
-                    {
-                        dgv_copy.Columns.Add(dgvc.Clone() as DataGridViewColumn);
-                    }
-                }
-
-                DataGridViewRow row = new DataGridViewRow();
-
-                for (int i = 0; i < dgv_org.Rows.Count; i++)
-                {
-                    row = (DataGridViewRow)dgv_org.Rows[i].Clone();
-                    int intColIndex = 0;
-                    foreach (DataGridViewCell cell in dgv_org.Rows[i].Cells)
-                    {
-                        row.Cells[intColIndex].Value = cell.Value;
-                        intColIndex++;
-                    }
-                    dgv_copy.Rows.Add(row);
-                }
-                dgv_copy.AllowUserToAddRows = false;
-                dgv_copy.Refresh();
-
+                var ColumnName = dgv_org.Columns[c].HeaderText;
+                dt.Columns.Add(new DataColumn(ColumnName, typeof(string)));
             }
-            catch (Exception ex)
+            //// Setting Rows
+            foreach (DataGridViewRow row in dgv_org.Rows)
             {
-                //cf.ShowExceptionErrorMsg("Copy DataGridViw", ex);
-                MessageBox.Show(ex.Message);
+                DataRow dRow = dt.NewRow();
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    dRow[cell.ColumnIndex] = cell.Value;
+                }
+                dt.Rows.Add(dRow);
             }
-            return dgv_copy;
+            return dt;
+            
         }
         public List<string> getRegenratedQueries(DataGridView dataGridView5)
         {
@@ -413,6 +399,8 @@ namespace ExcelProject.Model
                 dataGridView.Rows[rowIndex].Cells[i + 1].Value = item;
             }
         }
+
+
         public List<string> getSpecificRowData(DataGridView dataGridView, int rows)
         {
             List<string> lst = new List<string>();
@@ -482,7 +470,7 @@ namespace ExcelProject.Model
                     {
                         dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = Q_X_Value;
                     }
-                    else // Exist
+                    else if (get_Q_X_ColumnData == Q_X_Value)// Exist
                     {
                         //dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = result;
                     }
@@ -496,7 +484,7 @@ namespace ExcelProject.Model
                         result = string.Join("", lst_GetAllCellData.ToArray());
                         dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = result;
                     }
-                    else // Exist
+                    else if (lst_GetAllCellData.Contains(Q_X_Value))// Exist
                     {
                         result = string.Join("", lst_GetAllCellData.ToArray());
                         dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET_Q_X].Value = result;
@@ -639,9 +627,9 @@ namespace ExcelProject.Model
                         dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = Q_X_Value;
                     }
                     var percentage = mdgv.calculatePercentage(dataGridView3, Q_X_Value, searchColumnNameIndexAfterWET);
-                    if (double.Parse(percentage)<minPercentageValue)
+                    if (double.Parse(percentage) < minPercentageValue)
                     {
-                        dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = Q_X_Value;
+                        dataGridView3.Rows[rows].Cells[searchColumnNameIndexAfterWET].Value = result+Q_X_Value;
                     }
                     if (double.Parse(percentage) >= minPercentageValue && double.Parse(percentage) <= maxPercentageValue)
                     {

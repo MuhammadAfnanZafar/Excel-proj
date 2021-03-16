@@ -143,45 +143,17 @@ namespace ExcelProject
                         Regex regex = new Regex("(\\s+(AND|OR)\\s*)$");
                         query = regex.Replace(query, "");
                         query = query.Trim();
-                        System.Data.DataTable dtExcel = new System.Data.DataTable();
-                        dtExcel = ReadExcel(currentFile, currentFileExt); //read excel file 
+                        //System.Data.DataTable dtExcel = new System.Data.DataTable();
+                        //dtExcel = ReadExcel(currentFile, currentFileExt); //read excel file 
 
                         dataGridView3.Refresh();
                         dataGridView3.Visible = true;
-                        dataGridView3.DataSource = dtExcel;
+                        //dataGridView3.DataSource = dtExcel;
+                        dataGridView3.DataSource = new MyDataGridView().CopyDataGridView(dataGridView1);
 
                         //
-                        var toBeDeleted = new List<DataGridViewRow>();
-                        foreach (DataGridViewRow row in dataGridView3.Rows)
-                        {
-                            if (row.Cells[0].Value == null || row.Cells[0].Value == DBNull.Value || String.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
-                            {
-                                break;
-                            }
-                            string value1 = row.Cells[0].Value.ToString();
-                            if (value1 == "")
-                            {
-                                break;
-                            }
-                            if (value1.ToLower() == "p")
-                            {
-                                i++;
-                                //processing data
-                                toBeDeleted.Add(row);
-                            }
-                        }
-                        toBeDeleted.ForEach(d => dataGridView3.Rows.Remove(d));
-                        (dataGridView3.DataSource as System.Data.DataTable).DefaultView.RowFilter = query;
-
-                        // Reading data from Excel File again for datagridview1
-                        //dtExcel = ReadExcel(currentFile, currentFileExt); //read excel file  
-                        //dataGridView1.Visible = true;
-                        //dataGridView1.DataSource = dtExcel;
-
-                        //i = 0;
-                        //// Removing previous rows
                         //var toBeDeleted = new List<DataGridViewRow>();
-                        //foreach (DataGridViewRow row in dataGridView1.Rows)
+                        //foreach (DataGridViewRow row in dataGridView3.Rows)
                         //{
                         //    if (row.Cells[0].Value == null || row.Cells[0].Value == DBNull.Value || String.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
                         //    {
@@ -199,32 +171,8 @@ namespace ExcelProject
                         //        toBeDeleted.Add(row);
                         //    }
                         //}
-                        //toBeDeleted.ForEach(d => dataGridView1.Rows.Remove(d));
-
-                        //// dataGridView2
-                        //System.Data.DataTable dtExcel2 = new System.Data.DataTable();
-                        //dtExcel2 = ReadExcel(currentFile, currentFileExt); //read excel file  
-                        //dataGridView2.DataSource = dtExcel2;
-                        ////// Removing current rows
-                        //toBeDeleted = new List<DataGridViewRow>();
-                        //foreach (DataGridViewRow row in dataGridView2.Rows)
-                        //{
-                        //    if (row.Cells[0].Value == null || row.Cells[0].Value == DBNull.Value || String.IsNullOrWhiteSpace(row.Cells[0].Value.ToString()))
-                        //    {
-                        //        break;
-                        //    }
-                        //    string value1 = row.Cells[0].Value.ToString();
-                        //    if (value1 == "")
-                        //    {
-                        //        break;
-                        //    }
-                        //    if (value1.ToLower() == "c")
-                        //    {
-                        //        //processing data
-                        //        toBeDeleted.Add(row);
-                        //    }
-                        //}
-                        //toBeDeleted.ForEach(d => dataGridView2.Rows.Remove(d));
+                        //toBeDeleted.ForEach(d => dataGridView3.Rows.Remove(d));
+                        (dataGridView3.DataSource as System.Data.DataTable).DefaultView.RowFilter = query;
 
                     }
                 }
@@ -250,9 +198,12 @@ namespace ExcelProject
                     query = regex.Replace(query, "");
                     query = query.Trim();
 
-                    dataGridView3.Refresh();
+                    //dataGridView3.Refresh();
+                    //dataGridView3.Visible = true;
+                    //dataGridView3.DataSource = dataGridView1.DataSource;
                     dataGridView3.Visible = true;
-                    dataGridView3.DataSource = dataGridView1.DataSource;
+                    //dataGridView3.DataSource = dtExcel;
+                    dataGridView3.DataSource = new MyDataGridView().CopyDataGridView(dataGridView1);
 
                     //
                     var toBeDeleted = new List<DataGridViewRow>();
@@ -418,6 +369,7 @@ namespace ExcelProject
                         var workingColumnDataPrevious = mdgv.getColumnPlusRowData(dataGridView2, searchColumnNameIndexAfterWET, Convert.ToInt32(tbDataChar.Text));
                         workingColumnData.AddRange(workingColumnDataPrevious);
                         workingColumnData = workingColumnData.Distinct().ToList();
+                        workingColumnData.Sort();
                         if (searchColumnNameIndexAfterWET == 0)
                         {
                             MessageBox.Show("Kindly add atleast one column after WET column.");
@@ -911,7 +863,7 @@ namespace ExcelProject
             cbNatureOfDeptCol.Text = "AND";
             var dateAndTime = DateTime.Now;
             var date = dateAndTime.Date.ToString("dd/MM/yyyy");
-            if (date == "15/03/2021")
+            if (date == "30/03/2021")
             {
                 MessageBox.Show("your trial has expired. Kindly contact developer for further information.");
                 Application.Exit();
@@ -993,6 +945,7 @@ namespace ExcelProject
         {
             try
             {
+                lblError.Text = "";
                 processData();
             }
             catch (Exception ex)
@@ -1006,6 +959,7 @@ namespace ExcelProject
         {
             try
             {
+                lblError.Text = "";
                 progressBar1.Value = 0;
 
                 resetDatatable(dataGridView1);
@@ -1014,6 +968,9 @@ namespace ExcelProject
                 resetDatatable(dataGridView4);
                 resetDatatable(dataGridView5);
                 resetDatatable(dataGridView6);
+
+                lbMustCol.Items.Clear();
+                lbDepCol.Items.Clear();
 
                 //
                 string filePath = string.Empty;
@@ -1041,7 +998,6 @@ namespace ExcelProject
                             dataGridView1.Visible = true;
 
                             dataGridView1.DataSource = dtExcel;
-
 
                             //Creating Combo Boxes
                             MyDataGridView mdv = new MyDataGridView();
@@ -1122,6 +1078,7 @@ namespace ExcelProject
 
                             // Setting Q1_1 combobox
                             //cb.setQ1_1ComboBox(dataGridView1, comboBoxQ1_1);
+                            
                         }
                         catch (Exception ex)
                         {
@@ -1168,6 +1125,7 @@ namespace ExcelProject
         {
             try
             {
+                lblError.Text = "";
                 UploadRangeFile();
             }
 
@@ -1418,6 +1376,7 @@ namespace ExcelProject
         private void btnUploadNewTargetFile_Click(object sender, EventArgs e)
         {
 
+            lblError.Text = "";
             string filePath = string.Empty;
             string fileExt = string.Empty;
             OpenFileDialog file = new OpenFileDialog(); //open dialog to choose file  
@@ -1455,7 +1414,7 @@ namespace ExcelProject
 
         void changePercentagesMultipleColumn(List<string> lst, DataGridView dataGridView, DataGridView dataGridView3, ComboBox cbNatureOfDeptCol, double TargetPercentage_Formula_Value)
         {
-            ///// find out working coilumn is single or multiple save it in variable
+            ///// find out working column is single or multiple save it in variable
 
             MyDataGridView dgvClass = new MyDataGridView();
             // string workingColumnNature = "";//dgvClass.getColumnNature();
@@ -1538,20 +1497,20 @@ namespace ExcelProject
                 filterationOnChangePercentage(query, dataGridView);
                 int rows = 0;
 
-                //// if chcek for single or mulitple
-                ///
+                // if chcek for single or mulitple
+                
 
                 //if (workingColumnNature == "s")
                 //{
                 //    ///// single working
                 //}
-                //else if(workingColumnNature == "m")
+                //else if (workingColumnNature == "m")
                 //{
                 //    //// multiple working
                 //}
 
-                //// multiple
-                ///
+                // multiple
+                
                 for (; rows < dataGridView4.Rows.Count - 1;)
                 {
                     var Q_X_Value = dataGridView4.Rows[rows].Cells[0].Value.ToString();
@@ -1584,7 +1543,7 @@ namespace ExcelProject
         {
             try
             {
-
+                lblError.Text = "";
                 progressBar1.Value = 0;
                 if (dataGridView1.Rows.Count == 0)
                 {
@@ -1609,6 +1568,7 @@ namespace ExcelProject
                     MessageBox.Show("Kindly Upload Range File");
                     return;
                 }
+                //dataGridView1.DataSource = ReadExcel(currentFile, currentFileExt);
 
                 double TargetPercentage_Formula_Value = double.Parse(tbTargetPerFormulaValue.Text);
 
@@ -1695,6 +1655,7 @@ namespace ExcelProject
         private void btnUploadOladTargetFile_Click(object sender, EventArgs e)
         {
 
+            lblError.Text = "";
             string filePath = string.Empty;
             string fileExt = string.Empty;
             OpenFileDialog file = new OpenFileDialog(); //open dialog to choose file  
