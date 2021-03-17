@@ -309,12 +309,12 @@
             // dataGridView4
             // 
             this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView4.Location = new System.Drawing.Point(685, 478);
+            this.dataGridView4.Location = new System.Drawing.Point(685, 479);
             this.dataGridView4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView4.Name = "dataGridView4";
             this.dataGridView4.RowHeadersWidth = 51;
             this.dataGridView4.RowTemplate.Height = 24;
-            this.dataGridView4.Size = new System.Drawing.Size(267, 245);
+            this.dataGridView4.Size = new System.Drawing.Size(266, 247);
             this.dataGridView4.TabIndex = 30;
             this.dataGridView4.Visible = false;
             // 
@@ -366,12 +366,12 @@
             // dataGridView6
             // 
             this.dataGridView6.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView6.Location = new System.Drawing.Point(1229, 478);
+            this.dataGridView6.Location = new System.Drawing.Point(1230, 481);
             this.dataGridView6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView6.Name = "dataGridView6";
             this.dataGridView6.RowHeadersWidth = 51;
             this.dataGridView6.RowTemplate.Height = 24;
-            this.dataGridView6.Size = new System.Drawing.Size(267, 245);
+            this.dataGridView6.Size = new System.Drawing.Size(265, 245);
             this.dataGridView6.TabIndex = 35;
             this.dataGridView6.Visible = false;
             // 
@@ -518,6 +518,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1839, 740);
+            this.Controls.Add(this.dataGridView6);
+            this.Controls.Add(this.dataGridView4);
             this.Controls.Add(this.dataGridView3);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.progressBar1);
@@ -537,13 +539,11 @@
             this.Controls.Add(this.btnUploadOladTargetFile);
             this.Controls.Add(this.btnUploadNewTargetFile);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.dataGridView6);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cbWorkingColumn);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.dataGridView5);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.dataGridView4);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);

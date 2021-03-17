@@ -1568,6 +1568,22 @@ namespace ExcelProject
                     MessageBox.Show("Kindly Upload Range File");
                     return;
                 }
+                if (dataGridView4.Rows.Count == 0)
+                {
+                    MessageBox.Show("Kindly Upload Current File");
+                    return;
+                }
+                if (dataGridView6.Rows.Count == 0)
+                {
+                    MessageBox.Show("Kindly Upload Target File");
+                    return;
+                }
+                // Temporary save current file
+                var temp_currentPercentageReport = new MyDataGridView().CopyDataGridView(dataGridView4);
+                DataRow recRow = temp_currentPercentageReport.Rows[temp_currentPercentageReport.Rows.Count - 1];
+                recRow.Delete();
+                temp_currentPercentageReport.AcceptChanges();
+
                 // Re read datagridview1 or excel file
                 int i = 0;
                 dataGridView1.Refresh();
@@ -1671,6 +1687,9 @@ namespace ExcelProject
 
                     }
                 }
+
+                // Reassign value to current datagridview from temp DataTable
+                dataGridView4.DataSource = temp_currentPercentageReport;
                 progressBar1.Value = 100;
             }
             catch (Exception ex)

@@ -24,6 +24,9 @@ namespace ExcelProject.Model
         {
             System.Data.DataTable dt = new System.Data.DataTable();
 
+            // removing Empty rows
+            //clearGrid(dgv);
+
             //Adding the Columns.
             foreach (DataGridViewColumn column in dgv.Columns)
             {
@@ -157,7 +160,27 @@ namespace ExcelProject.Model
                 wb.SaveAs(filename);
             }
         }
+        private void clearGrid(DataGridView view)
+        {
+            bool Empty = true;
 
+            for (int i = 0; i < view.Rows.Count; i++)
+            {
+                Empty = true;
+                for (int j = 0; j < view.Columns.Count; j++)
+                {
+                    if (view.Rows[i].Cells[j].Value != null && view.Rows[i].Cells[j].Value.ToString() != "")
+                    {
+                        Empty = false;
+                        break;
+                    }
+                }
+                if (Empty)
+                {
+                    view.Rows.RemoveAt(i);
+                }
+            }
+        }
         private Worksheet FindSheet(Workbook workbook, string sheet_name)
         {
             foreach (Worksheet sheet in workbook.Sheets)
