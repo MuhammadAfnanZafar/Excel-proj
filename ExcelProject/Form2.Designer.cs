@@ -42,7 +42,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.lbDepCol = new System.Windows.Forms.ListBox();
             this.lbMustCol = new System.Windows.Forms.ListBox();
             this.lblError = new System.Windows.Forms.Label();
@@ -68,18 +67,20 @@
             this.tbTargetPerFormulaValue = new System.Windows.Forms.TextBox();
             this.tbDataChar = new System.Windows.Forms.ComboBox();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRange)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(752, 16);
+            this.button1.Location = new System.Drawing.Point(1000, 20);
+            this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(113, 23);
             this.button1.TabIndex = 0;
@@ -118,7 +119,8 @@
             // 
             this.cbWorkingColumn.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbWorkingColumn.FormattingEnabled = true;
-            this.cbWorkingColumn.Location = new System.Drawing.Point(189, 45);
+            this.cbWorkingColumn.Location = new System.Drawing.Point(195, 52);
+            this.cbWorkingColumn.Margin = new System.Windows.Forms.Padding(4);
             this.cbWorkingColumn.Name = "cbWorkingColumn";
             this.cbWorkingColumn.Size = new System.Drawing.Size(121, 21);
             this.cbWorkingColumn.TabIndex = 9;
@@ -136,7 +138,8 @@
             // 
             this.rbRelational.AutoSize = true;
             this.rbRelational.Checked = true;
-            this.rbRelational.Location = new System.Drawing.Point(360, 45);
+            this.rbRelational.Location = new System.Drawing.Point(376, 57);
+            this.rbRelational.Margin = new System.Windows.Forms.Padding(4);
             this.rbRelational.Name = "rbRelational";
             this.rbRelational.Size = new System.Drawing.Size(72, 17);
             this.rbRelational.TabIndex = 11;
@@ -147,7 +150,8 @@
             // rbNonRelational
             // 
             this.rbNonRelational.AutoSize = true;
-            this.rbNonRelational.Location = new System.Drawing.Point(438, 45);
+            this.rbNonRelational.Location = new System.Drawing.Point(480, 57);
+            this.rbNonRelational.Margin = new System.Windows.Forms.Padding(4);
             this.rbNonRelational.Name = "rbNonRelational";
             this.rbNonRelational.Size = new System.Drawing.Size(95, 17);
             this.rbNonRelational.TabIndex = 12;
@@ -157,7 +161,8 @@
             // 
             // btnProcessData
             // 
-            this.btnProcessData.Location = new System.Drawing.Point(750, 69);
+            this.btnProcessData.Location = new System.Drawing.Point(1000, 85);
+            this.btnProcessData.Margin = new System.Windows.Forms.Padding(4);
             this.btnProcessData.Name = "btnProcessData";
             this.btnProcessData.Size = new System.Drawing.Size(115, 23);
             this.btnProcessData.TabIndex = 13;
@@ -167,7 +172,8 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(752, 41);
+            this.button4.Location = new System.Drawing.Point(1000, 49);
+            this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(113, 23);
             this.button4.TabIndex = 14;
@@ -187,7 +193,8 @@
             // button5
             // 
             this.button5.Enabled = false;
-            this.button5.Location = new System.Drawing.Point(502, 454);
+            this.button5.Location = new System.Drawing.Point(1219, 395);
+            this.button5.Margin = new System.Windows.Forms.Padding(4);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(113, 23);
             this.button5.TabIndex = 18;
@@ -204,19 +211,6 @@
             this.label6.Size = new System.Drawing.Size(68, 13);
             this.label6.TabIndex = 19;
             this.label6.Text = "Must Column";
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Enabled = false;
-            this.dataGridView1.Location = new System.Drawing.Point(6, 454);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowHeadersWidth = 51;
-            this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(16, 12);
-            this.dataGridView1.TabIndex = 21;
-            this.dataGridView1.Visible = false;
             // 
             // lbDepCol
             // 
@@ -284,12 +278,12 @@
             // dataGridView3
             // 
             this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView3.Location = new System.Drawing.Point(150, 454);
-            this.dataGridView3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView3.Location = new System.Drawing.Point(465, 480);
+            this.dataGridView3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.RowHeadersWidth = 51;
             this.dataGridView3.RowTemplate.Height = 24;
-            this.dataGridView3.Size = new System.Drawing.Size(17, 10);
+            this.dataGridView3.Size = new System.Drawing.Size(214, 246);
             this.dataGridView3.TabIndex = 28;
             this.dataGridView3.Visible = false;
             // 
@@ -306,12 +300,12 @@
             // dataGridView4
             // 
             this.dataGridView4.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView4.Location = new System.Drawing.Point(229, 454);
-            this.dataGridView4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView4.Location = new System.Drawing.Point(685, 479);
+            this.dataGridView4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView4.Name = "dataGridView4";
             this.dataGridView4.RowHeadersWidth = 51;
             this.dataGridView4.RowTemplate.Height = 24;
-            this.dataGridView4.Size = new System.Drawing.Size(13, 12);
+            this.dataGridView4.Size = new System.Drawing.Size(266, 247);
             this.dataGridView4.TabIndex = 30;
             this.dataGridView4.Visible = false;
             // 
@@ -360,18 +354,19 @@
             // dataGridView6
             // 
             this.dataGridView6.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView6.Location = new System.Drawing.Point(400, 456);
-            this.dataGridView6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dataGridView6.Location = new System.Drawing.Point(1230, 481);
+            this.dataGridView6.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.dataGridView6.Name = "dataGridView6";
             this.dataGridView6.RowHeadersWidth = 51;
             this.dataGridView6.RowTemplate.Height = 24;
-            this.dataGridView6.Size = new System.Drawing.Size(22, 25);
+            this.dataGridView6.Size = new System.Drawing.Size(265, 245);
             this.dataGridView6.TabIndex = 35;
             this.dataGridView6.Visible = false;
             // 
             // btnUploadNewTargetFile
             // 
-            this.btnUploadNewTargetFile.Location = new System.Drawing.Point(721, 314);
+            this.btnUploadNewTargetFile.Location = new System.Drawing.Point(1007, 386);
+            this.btnUploadNewTargetFile.Margin = new System.Windows.Forms.Padding(4);
             this.btnUploadNewTargetFile.Name = "btnUploadNewTargetFile";
             this.btnUploadNewTargetFile.Size = new System.Drawing.Size(144, 23);
             this.btnUploadNewTargetFile.TabIndex = 37;
@@ -381,7 +376,8 @@
             // 
             // btnChangePercentages
             // 
-            this.btnChangePercentages.Location = new System.Drawing.Point(721, 345);
+            this.btnChangePercentages.Location = new System.Drawing.Point(1007, 425);
+            this.btnChangePercentages.Margin = new System.Windows.Forms.Padding(4);
             this.btnChangePercentages.Name = "btnChangePercentages";
             this.btnChangePercentages.Size = new System.Drawing.Size(144, 23);
             this.btnChangePercentages.TabIndex = 38;
@@ -391,7 +387,8 @@
             // 
             // btnUploadOladTargetFile
             // 
-            this.btnUploadOladTargetFile.Location = new System.Drawing.Point(721, 281);
+            this.btnUploadOladTargetFile.Location = new System.Drawing.Point(1007, 346);
+            this.btnUploadOladTargetFile.Margin = new System.Windows.Forms.Padding(4);
             this.btnUploadOladTargetFile.Name = "btnUploadOladTargetFile";
             this.btnUploadOladTargetFile.Size = new System.Drawing.Size(144, 23);
             this.btnUploadOladTargetFile.TabIndex = 39;
@@ -453,7 +450,8 @@
             // 
             // tbTargetPerFormulaValue
             // 
-            this.tbTargetPerFormulaValue.Location = new System.Drawing.Point(9, 284);
+            this.tbTargetPerFormulaValue.Location = new System.Drawing.Point(12, 346);
+            this.tbTargetPerFormulaValue.Margin = new System.Windows.Forms.Padding(4);
             this.tbTargetPerFormulaValue.Name = "tbTargetPerFormulaValue";
             this.tbTargetPerFormulaValue.Size = new System.Drawing.Size(166, 20);
             this.tbTargetPerFormulaValue.TabIndex = 44;
@@ -489,11 +487,27 @@
             this.progressBar1.TabIndex = 47;
             this.progressBar1.Visible = false;
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(19, 480);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowHeadersWidth = 51;
+            this.dataGridView1.RowTemplate.Height = 24;
+            this.dataGridView1.Size = new System.Drawing.Size(214, 246);
+            this.dataGridView1.TabIndex = 48;
+            this.dataGridView1.Visible = false;
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(871, 396);
+            this.ClientSize = new System.Drawing.Size(1839, 740);
+            this.Controls.Add(this.dataGridView6);
+            this.Controls.Add(this.dataGridView4);
+            this.Controls.Add(this.dataGridView3);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.tbDataChar);
@@ -511,20 +525,16 @@
             this.Controls.Add(this.btnUploadOladTargetFile);
             this.Controls.Add(this.btnUploadNewTargetFile);
             this.Controls.Add(this.label10);
-            this.Controls.Add(this.dataGridView6);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cbWorkingColumn);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.dataGridView5);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.dataGridView4);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.dataGridView3);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.lblError);
-            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.btnProcessData);
             this.Controls.Add(this.rbNonRelational);
@@ -534,18 +544,18 @@
             this.Controls.Add(this.lblFileName);
             this.Controls.Add(this.button1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form2";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "DRO Ad-hoc Detecting & Removing Outliers";
             this.Load += new System.EventHandler(this.Form2_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvRange)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -566,7 +576,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.ListBox lbDepCol;
         private System.Windows.Forms.ListBox lbMustCol;
         private System.Windows.Forms.Label lblError;
@@ -592,5 +601,6 @@
         private System.Windows.Forms.TextBox tbTargetPerFormulaValue;
         private System.Windows.Forms.ComboBox tbDataChar;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.DataGridView dataGridView1;
     }
 }
