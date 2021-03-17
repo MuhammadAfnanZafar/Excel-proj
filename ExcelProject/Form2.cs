@@ -991,6 +991,11 @@ namespace ExcelProject
 
         private void Button3_Click(object sender, EventArgs e)
         {
+            if (dgvRange.Rows.Count<=0)
+            {
+                MessageBox.Show("Please Upload Range File");
+                return;
+            }
             try
             {
                 processData();
@@ -1609,6 +1614,7 @@ namespace ExcelProject
                     MessageBox.Show("Kindly Upload Range File");
                     return;
                 }
+              
 
                 double TargetPercentage_Formula_Value = double.Parse(tbTargetPerFormulaValue.Text);
 
@@ -1879,6 +1885,11 @@ namespace ExcelProject
         }
 
         private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label13_Click(object sender, EventArgs e)
         {
 
         }
