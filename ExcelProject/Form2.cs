@@ -1851,11 +1851,11 @@ namespace ExcelProject
 
                                             if (double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase)
                                             {
-                                                increase.RemoveAt(k);
                                                 if (mustColListBoxItems.Count > 0) // Optionl
                                                 {
                                                     mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
                                                 }
+                                                increase.RemoveAt(k);
                                                 break;
                                             }
                                         }
@@ -1863,11 +1863,11 @@ namespace ExcelProject
 
                                     else if (double.Parse(increaseDataPercentage) >= minPercentageValue_increase && double.Parse(increaseDataPercentage) <= maxPercentageValue_increase)
                                     {
-                                        increase.RemoveAt(0);
                                         if (mustColListBoxItems.Count > 0) // Optionl
                                         {
                                             mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[0], rows);
                                         }
+                                        increase.RemoveAt(0);
                                     }
 
 
