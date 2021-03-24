@@ -1858,9 +1858,16 @@ namespace ExcelProject
                                                 increase.RemoveAt(k);
                                                 break;
                                             }
+                                            else if(double.Parse(temp_increaseDataPercentage) < temp_minPercentageValue_increase)
+                                            {
+                                                if (mustColListBoxItems.Count > 0) // Optionl
+                                                {
+                                                    mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
+                                                }
+                                                break;
+                                            }
                                         }
                                     }
-
                                     else if (double.Parse(increaseDataPercentage) >= minPercentageValue_increase && double.Parse(increaseDataPercentage) <= maxPercentageValue_increase)
                                     {
                                         if (mustColListBoxItems.Count > 0) // Optionl
@@ -1868,6 +1875,10 @@ namespace ExcelProject
                                             mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[0], rows);
                                         }
                                         increase.RemoveAt(0);
+                                    }
+                                    else if (double.Parse(increaseDataPercentage) < minPercentageValue_increase)
+                                    {
+                                        mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[0], rows);
                                     }
 
 
