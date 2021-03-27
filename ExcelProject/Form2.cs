@@ -343,7 +343,7 @@ namespace ExcelProject
                 {
                     List<Percentages> percentagesList = new List<Percentages>();
                     // Filtration
-                    if(!isCurrentOnly)
+                    if (!isCurrentOnly)
                     {
                         filteration(query, dataGridView);
                     }
@@ -508,7 +508,7 @@ namespace ExcelProject
             }
 
         }
-        void reportFormatDTNonRelationsal(List<string> AllCombosList, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType,bool isCurrentOnly)
+        void reportFormatDTNonRelationsal(List<string> AllCombosList, DataGridView dataGridView3, DataGridView dataGridView, DataGridView reportDataGridView, ComboBox cbWorkingColumn, int indexInsertData, string reportType, bool isCurrentOnly)
         {
 
             if (AllCombosList.Count() > 0)
@@ -899,7 +899,14 @@ namespace ExcelProject
                     return;
                 }
                 isRelational(false, new List<string>());
-                generateTargetFile();
+                if (dataGridView2.Rows.Count != 1)
+                {
+                    generateTargetFile();
+                }
+                else
+                {
+                    MessageBox.Show("Error: Can't generate target and previous report because uploaded data file don't contain any Previous data.");
+                }
                 progressBar1.Value = 100;
 
                 myExcel excel = new myExcel();
@@ -1078,7 +1085,7 @@ namespace ExcelProject
 
                             // Setting Q1_1 combobox
                             //cb.setQ1_1ComboBox(dataGridView1, comboBoxQ1_1);
-                            
+
                         }
                         catch (Exception ex)
                         {
@@ -1170,7 +1177,6 @@ namespace ExcelProject
                 // Sorting datagridView
                 dataGridView4.Sort(dataGridView4.Columns[0], ListSortDirection.Ascending);
                 dataGridView5.Sort(dataGridView5.Columns[0], ListSortDirection.Ascending);
-
                 // Cloning DatagridView
                 //var combinePerCetagesList = new Percentages().combinePercentagesList(Percentages.percentagesList);
                 //combinePerCetagesList = combinePerCetagesList.Distinct().ToList();
@@ -1498,7 +1504,7 @@ namespace ExcelProject
                 int rows = 0;
 
                 // if chcek for single or mulitple
-                
+
 
                 //if (workingColumnNature == "s")
                 //{
@@ -1510,7 +1516,7 @@ namespace ExcelProject
                 //}
 
                 // multiple
-                
+
                 for (; rows < dataGridView4.Rows.Count - 1;)
                 {
                     var Q_X_Value = dataGridView4.Rows[rows].Cells[0].Value.ToString();
