@@ -950,6 +950,11 @@ namespace ExcelProject
 
         private void Button3_Click(object sender, EventArgs e)
         {
+            if (dgvRange.Rows.Count<=0)
+            {
+                MessageBox.Show("Please Upload Range File");
+                return;
+            }
             try
             {
                 lblError.Text = "";
@@ -1852,7 +1857,15 @@ namespace ExcelProject
 
                                             if (double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase)
                                             {
+                                                if (mustColListBoxItems.Count > 0) // Optionl
+                                                {
+                                                    mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
+                                                }
                                                 increase.RemoveAt(k);
+                                                break;
+                                            }
+                                            else if(double.Parse(temp_increaseDataPercentage) < temp_minPercentageValue_increase)
+                                            {
                                                 if (mustColListBoxItems.Count > 0) // Optionl
                                                 {
                                                     mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
@@ -1861,14 +1874,17 @@ namespace ExcelProject
                                             }
                                         }
                                     }
-
                                     else if (double.Parse(increaseDataPercentage) >= minPercentageValue_increase && double.Parse(increaseDataPercentage) <= maxPercentageValue_increase)
                                     {
-                                        increase.RemoveAt(0);
                                         if (mustColListBoxItems.Count > 0) // Optionl
                                         {
                                             mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[0], rows);
                                         }
+                                        increase.RemoveAt(0);
+                                    }
+                                    else if (double.Parse(increaseDataPercentage) < minPercentageValue_increase)
+                                    {
+                                        mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[0], rows);
                                     }
 
 
@@ -1893,6 +1909,11 @@ namespace ExcelProject
         }
 
         private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Label13_Click(object sender, EventArgs e)
         {
 
         }
