@@ -899,7 +899,7 @@ namespace ExcelProject
                     return;
                 }
                 isRelational(false, new List<string>());
-                if (dataGridView2.Rows.Count != 1)
+                if (dataGridView2.Rows.Count > 1)
                 {
                     generateTargetFile();
                 }
