@@ -1430,8 +1430,6 @@ namespace ExcelProject
             MyDataGridView dgvClass = new MyDataGridView();
             // string workingColumnNature = "";//dgvClass.getColumnNature();
 
-
-
             dataGridView3.Refresh();
             dataGridView3.DataSource = null;
             dataGridView3.Rows.Clear();
