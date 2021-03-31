@@ -861,9 +861,11 @@ namespace ExcelProject
         private void Form2_Load(object sender, EventArgs e)
         {
             cbNatureOfDeptCol.Text = "AND";
+            DateTime expDate = new DateTime(2021,04,01);
+
             var dateAndTime = DateTime.Now;
-            var date = dateAndTime.Date.ToString("dd/MM/yyyy");
-            if (date == "30/03/2021")
+            //var date = dateAndTime.Date.ToString("dd/MM/yyyy");
+            if (dateAndTime > expDate)
             {
                 MessageBox.Show("your trial has expired. Kindly contact developer for further information.");
                 Application.Exit();
@@ -1790,41 +1792,56 @@ namespace ExcelProject
                             if (increase.Count() > 0)
                             {
                                 bool isDependent = false;
-                                if (depColListBoxItems.Count > 0) // Optionl
-                                {
-                                    if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "AND")
+                                int increaseIndex = 0;
+                               
+                                x:
+                                    if (depColListBoxItems.Count > 0) // Optionl
                                     {
-                                        isDependent = mdgv.isDependentCol_Satisfy_AND(dataGridView3, lbDepCol, increase[0], rows);
-                                    }
-                                    else if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "OR")
-                                    {
-                                        isDependent = mdgv.isDependentCol_Satisfy_OR(dataGridView3, lbDepCol, increase[0], rows);
+                                        for (int mustCheckIndex = increaseIndex; mustCheckIndex < increase.Count(); mustCheckIndex++)
+                                        {
+                                            if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "AND")
+                                            {
+                                                isDependent = mdgv.isDependentCol_Satisfy_AND(dataGridView3, lbDepCol, increase[mustCheckIndex], rows);
+                                            }
+                                            else if (cbNatureOfDeptCol.Text.Trim().ToUpper().ToUpper() == "OR")
+                                            {
+                                                isDependent = mdgv.isDependentCol_Satisfy_OR(dataGridView3, lbDepCol, increase[mustCheckIndex], rows);
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show("Nature of dependent column not valid.");
+                                                return;
+                                            }
+                                            if (isDependent)
+                                            {
+                                                increaseIndex = mustCheckIndex;
+                                                break;
+                                            }
+                                        }
+                                        
                                     }
                                     else
                                     {
-                                        MessageBox.Show("Nature of dependent column not valid.");
-                                        return;
+                                        isDependent = true;
+                                       
                                     }
-                                }
-                                else
-                                {
-                                    isDependent = true;
-                                }
+                                
+                               
                                 if (isDependent)
                                 {
-                                    dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[0];
+                                    dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[increaseIndex];
 
                                     int filterDataCount = dataGridView3.Rows.Count - 1;
 
 
 
-                                    var increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[0], workingColumnIndex);
+                                    var increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[increaseIndex], workingColumnIndex);
                                     var decreaseDataPercentage = mdgv.calculatePercentage(dataGridView3, workingData, workingColumnIndex);
 
                                     var decreaseData_Index = brands.IndexOf(workingData);
-                                    var increaseData_Index = brands.IndexOf(increase[0]);
+                                    var increaseData_Index = brands.IndexOf(increase[increaseIndex]);
 
-                                    var arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[0], Convert.ToDouble(targetColumns[increaseData_Index]), dgvRange, TargetPercentage_Formula_Value, filterDataCount);
+                                    var arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[increaseIndex], Convert.ToDouble(targetColumns[increaseData_Index]), dgvRange, TargetPercentage_Formula_Value, filterDataCount);
                                     var minPercentageValue_increase = arrMinMax_get_PercentageLimit_Target_increase[0];
                                     var maxPercentageValue_increase = arrMinMax_get_PercentageLimit_Target_increase[1];
 
@@ -1844,45 +1861,51 @@ namespace ExcelProject
 
                                     if (double.Parse(increaseDataPercentage) > maxPercentageValue_increase)
                                     {
-                                        for (int k = 1; k < increase.Count; k++)
+                                        if (increaseIndex+1 < increase.Count())
                                         {
-                                            dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[k];
-                                            var temp_increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[k], workingColumnIndex);
-                                            var temp_increaseData_Index = brands.IndexOf(increase[k]);
-                                            var temp_arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[k], Convert.ToDouble(targetColumns[temp_increaseData_Index]), dgvRange, TargetPercentage_Formula_Value, filterDataCount);
-                                            var temp_minPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[0];
-                                            var temp_maxPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[1];
-
-                                            if (double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase)
-                                            {
-                                                if (mustColListBoxItems.Count > 0) // Optionl
-                                                {
-                                                    mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
-                                                }
-                                                increase.RemoveAt(k);
-                                                break;
-                                            }
-                                            else if(double.Parse(temp_increaseDataPercentage) < temp_minPercentageValue_increase)
-                                            {
-                                                if (mustColListBoxItems.Count > 0) // Optionl
-                                                {
-                                                    mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
-                                                }
-                                                break;
-                                            }
+                                            increaseIndex++;
+                                            goto x;
                                         }
+                                        dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = workingData;
+                                        //for (int k = 1; k < increase.Count; k++)
+                                        //{
+                                        //    dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[k];
+                                        //    var temp_increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[k], workingColumnIndex);
+                                        //    var temp_increaseData_Index = brands.IndexOf(increase[k]);
+                                        //    var temp_arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[k], Convert.ToDouble(targetColumns[temp_increaseData_Index]), dgvRange, TargetPercentage_Formula_Value, filterDataCount);
+                                        //    var temp_minPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[0];
+                                        //    var temp_maxPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[1];
+
+                                        //    if (double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase)
+                                        //    {
+                                        //        if (mustColListBoxItems.Count > 0) // Optionl
+                                        //        {
+                                        //            mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
+                                        //        }
+                                        //        increase.RemoveAt(k);
+                                        //        break;
+                                        //    }
+                                        //    else if(double.Parse(temp_increaseDataPercentage) < temp_minPercentageValue_increase)
+                                        //    {
+                                        //        if (mustColListBoxItems.Count > 0) // Optionl
+                                        //        {
+                                        //            mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
+                                        //        }
+                                        //        break;
+                                        //    }
+                                        //}
                                     }
                                     else if (double.Parse(increaseDataPercentage) >= minPercentageValue_increase && double.Parse(increaseDataPercentage) <= maxPercentageValue_increase)
                                     {
                                         if (mustColListBoxItems.Count > 0) // Optionl
                                         {
-                                            mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[0], rows);
+                                            mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[increaseIndex], rows);
                                         }
-                                        increase.RemoveAt(0);
+                                        increase.RemoveAt(increaseIndex);
                                     }
                                     else if (double.Parse(increaseDataPercentage) < minPercentageValue_increase)
                                     {
-                                        mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[0], rows);
+                                        mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[increaseIndex], rows);
                                     }
 
 

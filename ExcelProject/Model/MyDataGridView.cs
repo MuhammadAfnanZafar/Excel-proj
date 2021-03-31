@@ -950,11 +950,11 @@ namespace ExcelProject.Model
                         }
                         decimal difference = 100 - notChangedValueSum;
                         decimal division = 0;
-                        //if (changedValueSum > 0)
-                        //{
-                        division = difference / changedValueSum;
+                        if (changedValueSum > 0)
+                        {
+                           division = difference / changedValueSum;
+                        }
 
-                        //}
 
 
                         List<string> changedValues = new List<string>();
