@@ -1852,7 +1852,7 @@ namespace ExcelProject
                                     if ((double.Parse(decreaseDataPercentage) < minPercentageValue_decrease))
                                     {
                                         dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = workingData;
-                                        break;
+                                        //break;
                                     }
                                     else if (double.Parse(decreaseDataPercentage) >= minPercentageValue_decrease && double.Parse(decreaseDataPercentage) <= maxPercentageValue_decrease)
                                     {
