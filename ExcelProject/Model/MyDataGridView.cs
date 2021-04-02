@@ -756,6 +756,16 @@ namespace ExcelProject.Model
         public double[] calculatePercentageLimit(DataGridView dataGridView3, DataGridView dataGridView1, DataGridView dataGridView6, int searchColumnNameIndexAfterWET, string Q_X_Value, double Q_X_PercentageValue_NewTarget, DataGridView dgvRange, double TargetPercentage_Formula_Value, int columnCount)
         {
             var arrMinMax = new double[2];
+
+            // if Value is Zero
+            if (Q_X_PercentageValue_NewTarget <= 0)
+            {
+                arrMinMax[0] = 0;
+                arrMinMax[1] = 0;
+                return arrMinMax;
+            }
+
+            // If Value not Zero
             var get_Q1_ColumnData = getColumnData(dataGridView1, searchColumnNameIndexAfterWET);
             var getCurrent_Q1_ColumnData = getColumnData(dataGridView6, 0); // getting data from target file
             List<myExcel> countList = CalculateCountOf_Q_X_Using_Range(getCurrent_Q1_ColumnData, get_Q1_ColumnData);
