@@ -861,7 +861,7 @@ namespace ExcelProject
         private void Form2_Load(object sender, EventArgs e)
         {
             cbNatureOfDeptCol.Text = "AND";
-            DateTime expDate = new DateTime(2021,04,01);
+            DateTime expDate = new DateTime(2021,04,04);
 
             var dateAndTime = DateTime.Now;
             //var date = dateAndTime.Date.ToString("dd/MM/yyyy");
