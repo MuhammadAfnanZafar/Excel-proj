@@ -438,8 +438,7 @@ namespace ExcelProject
                     {
                         var item = Percentages.percentagesList[r];
                         var queryAsColumn = item[0].Query;
-                        queryAsColumn = queryAsColumn.Replace("AND", ",");
-                        queryAsColumn = queryAsColumn.Replace("=", " ");
+                        queryAsColumn = mdgv.getTrimed_QueryColName_AND(queryAsColumn);
                         //queryAsColumn = queryAsColumn.Replace("'", "");
                         dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
                     }
@@ -623,8 +622,7 @@ namespace ExcelProject
                     {
                         var item = Percentages.percentagesList[r];
                         var queryAsColumn = item[0].Query;
-                        queryAsColumn = queryAsColumn.Replace("AND", ",");
-                        queryAsColumn = queryAsColumn.Replace("=", " ");
+                        queryAsColumn = mdgv.getTrimed_QueryColName_AND(queryAsColumn);
                         //queryAsColumn = queryAsColumn.Replace("'", "");
                         dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
                     }
@@ -1203,9 +1201,10 @@ namespace ExcelProject
                 {
                     var item = Percentages.percentagesList[r];
                     var queryAsColumn = item[0].Query;
-                    //Query.quries.Add(queryAsColumn);
-                    queryAsColumn = queryAsColumn.Replace("AND", ",");
-                    queryAsColumn = queryAsColumn.Replace("=", " ");
+                    //Query.quries.Add(queryAsColumn
+                    queryAsColumn = mdgv.getTrimed_QueryColName_AND(queryAsColumn);
+                    //queryAsColumn = queryAsColumn.Replace("AND", ",");
+                    //queryAsColumn = queryAsColumn.Replace("=", " ");
                     //queryAsColumn = queryAsColumn.Replace("'", "");
                     dt.Columns.Add(new DataColumn(queryAsColumn, typeof(string)));
                 }

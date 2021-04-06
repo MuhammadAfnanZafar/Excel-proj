@@ -189,9 +189,19 @@ namespace ExcelProject.Model
         public List<string> Split(string str, int chunkSize)
         {
             str = str.Replace(" ", String.Empty);
-            return (from Match m in Regex.Matches(str, @"\d{1," + chunkSize + "}")
-                    select m.Value).ToList();
+            //return (from Match m in Regex.Matches(str, @"\d{1," + chunkSize + "}")
+            //        select m.Value).ToList();
+            return Enumerable.Range(0, str.Length / chunkSize)
+        .Select(i => str.Substring(i * chunkSize, chunkSize)).ToList();
         }
+
+        public string getTrimed_QueryColName_AND(string queryAsColumn)
+        {
+            queryAsColumn = queryAsColumn.Replace(" AND ", ",");
+            queryAsColumn = queryAsColumn.Replace("=", " ");
+            return queryAsColumn;
+        }
+
         public List<List<string>> getRowData(DataGridView dataGridView1, int Q_index)
         {
             List<List<string>> lst = new List<List<string>>();
