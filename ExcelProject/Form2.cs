@@ -861,7 +861,7 @@ namespace ExcelProject
         private void Form2_Load(object sender, EventArgs e)
         {
             cbNatureOfDeptCol.Text = "AND";
-            DateTime expDate = new DateTime(2021,04,04);
+            DateTime expDate = new DateTime(2021,04,11);
 
             var dateAndTime = DateTime.Now;
             //var date = dateAndTime.Date.ToString("dd/MM/yyyy");
@@ -1849,65 +1849,69 @@ namespace ExcelProject
                                     var minPercentageValue_decrease = arrMinMax_get_PercentageLimit_Target_decrease[0];
                                     var maxPercentageValue_decrease = arrMinMax_get_PercentageLimit_Target_decrease[1];
 
+                                    bool isDecreasedSuccess = true;
+
                                     if ((double.Parse(decreaseDataPercentage) < minPercentageValue_decrease))
                                     {
                                         dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = workingData;
-                                        //break;
+                                        isDecreasedSuccess = false;
                                     }
                                     else if (double.Parse(decreaseDataPercentage) >= minPercentageValue_decrease && double.Parse(decreaseDataPercentage) <= maxPercentageValue_decrease)
                                     {
                                         decrease.Remove(workingData);
                                     }
-
-                                    if (double.Parse(increaseDataPercentage) > maxPercentageValue_increase)
+                                    if (isDecreasedSuccess)
                                     {
-                                        if (increaseIndex+1 < increase.Count())
+                                        if (double.Parse(increaseDataPercentage) > maxPercentageValue_increase)
                                         {
-                                            increaseIndex++;
-                                            goto x;
-                                        }
-                                        dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = workingData;
-                                        //for (int k = 1; k < increase.Count; k++)
-                                        //{
-                                        //    dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[k];
-                                        //    var temp_increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[k], workingColumnIndex);
-                                        //    var temp_increaseData_Index = brands.IndexOf(increase[k]);
-                                        //    var temp_arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[k], Convert.ToDouble(targetColumns[temp_increaseData_Index]), dgvRange, TargetPercentage_Formula_Value, filterDataCount);
-                                        //    var temp_minPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[0];
-                                        //    var temp_maxPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[1];
+                                            if (increaseIndex + 1 < increase.Count())
+                                            {
+                                                increaseIndex++;
+                                                goto x;
+                                            }
+                                            dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = workingData;
+                                            //for (int k = 1; k < increase.Count; k++)
+                                            //{
+                                            //    dataGridView3.Rows[rows].Cells[workingColumnIndex].Value = increase[k];
+                                            //    var temp_increaseDataPercentage = mdgv.calculatePercentage(dataGridView3, increase[k], workingColumnIndex);
+                                            //    var temp_increaseData_Index = brands.IndexOf(increase[k]);
+                                            //    var temp_arrMinMax_get_PercentageLimit_Target_increase = mdgv.calculatePercentageLimit(dataGridView3, dataGridView1, dataGridView6, workingColumnIndex, increase[k], Convert.ToDouble(targetColumns[temp_increaseData_Index]), dgvRange, TargetPercentage_Formula_Value, filterDataCount);
+                                            //    var temp_minPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[0];
+                                            //    var temp_maxPercentageValue_increase = temp_arrMinMax_get_PercentageLimit_Target_increase[1];
 
-                                        //    if (double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase)
-                                        //    {
-                                        //        if (mustColListBoxItems.Count > 0) // Optionl
-                                        //        {
-                                        //            mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
-                                        //        }
-                                        //        increase.RemoveAt(k);
-                                        //        break;
-                                        //    }
-                                        //    else if(double.Parse(temp_increaseDataPercentage) < temp_minPercentageValue_increase)
-                                        //    {
-                                        //        if (mustColListBoxItems.Count > 0) // Optionl
-                                        //        {
-                                        //            mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
-                                        //        }
-                                        //        break;
-                                        //    }
-                                        //}
-                                    }
-                                    else if (double.Parse(increaseDataPercentage) >= minPercentageValue_increase && double.Parse(increaseDataPercentage) <= maxPercentageValue_increase)
-                                    {
-                                        if (mustColListBoxItems.Count > 0) // Optionl
+                                            //    if (double.Parse(temp_increaseDataPercentage) >= temp_minPercentageValue_increase && double.Parse(temp_increaseDataPercentage) <= temp_maxPercentageValue_increase)
+                                            //    {
+                                            //        if (mustColListBoxItems.Count > 0) // Optionl
+                                            //        {
+                                            //            mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
+                                            //        }
+                                            //        increase.RemoveAt(k);
+                                            //        break;
+                                            //    }
+                                            //    else if(double.Parse(temp_increaseDataPercentage) < temp_minPercentageValue_increase)
+                                            //    {
+                                            //        if (mustColListBoxItems.Count > 0) // Optionl
+                                            //        {
+                                            //            mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[k], rows);
+                                            //        }
+                                            //        break;
+                                            //    }
+                                            //}
+                                        }
+                                        else if (double.Parse(increaseDataPercentage) >= minPercentageValue_increase && double.Parse(increaseDataPercentage) <= maxPercentageValue_increase)
+                                        {
+                                            if (mustColListBoxItems.Count > 0) // Optionl
+                                            {
+                                                mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[increaseIndex], rows);
+                                            }
+                                            increase.RemoveAt(increaseIndex);
+                                        }
+                                        else if (double.Parse(increaseDataPercentage) < minPercentageValue_increase)
                                         {
                                             mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[increaseIndex], rows);
                                         }
-                                        increase.RemoveAt(increaseIndex);
-                                    }
-                                    else if (double.Parse(increaseDataPercentage) < minPercentageValue_increase)
-                                    {
-                                        mdgv.assignValuesToMustColumn(lbMustCol, dataGridView3, increase[increaseIndex], rows);
-                                    }
 
+                                    }
 
                                 }
                             }
