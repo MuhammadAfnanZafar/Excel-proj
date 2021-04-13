@@ -859,15 +859,18 @@ namespace ExcelProject
         private void Form2_Load(object sender, EventArgs e)
         {
             cbNatureOfDeptCol.Text = "AND";
-            DateTime expDate = new DateTime(2021,04,11);
 
-            var dateAndTime = DateTime.Now;
+            //DateTime expDate = new DateTime(2021, 04, 11);
+
+            //var dateAndTime = DateTime.Now;
+            //if (dateAndTime > expDate)
+            //{
+            //    MessageBox.Show("your trial has expired. Kindly contact developer for further information.");
+            //    Application.Exit();
+            //}
+
             //var date = dateAndTime.Date.ToString("dd/MM/yyyy");
-            if (dateAndTime > expDate)
-            {
-                MessageBox.Show("your trial has expired. Kindly contact developer for further information.");
-                Application.Exit();
-            }
+
             //button5.Hide();
             //string applicationLocation = System.Reflection.Assembly.GetEntryAssembly().Location;
             //string applicationDirectory = Path.GetDirectoryName(applicationLocation);
